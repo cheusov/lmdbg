@@ -106,9 +106,8 @@ shift
 echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN"
 
 (
-    exec
-	LMDBG_LOGFILE=$output_file \
-	LD_PRELOAD=$LMDBG_LIBDYN \
+	LMDBG_LOGFILE="$output_file" \
+	LD_PRELOAD="$LMDBG_LIBDYN" \
 	"$prog" "$@"
 )
 
