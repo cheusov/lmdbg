@@ -110,4 +110,6 @@ fi
 
 wait
 
-echo Done.
+if test $LMDBG_VERBOSE; then
+    echo Done.
+fi

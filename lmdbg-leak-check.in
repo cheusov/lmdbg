@@ -1,0 +1,81 @@
+#!/bin/sh
+
+version (){
+cat <<EOF
+lmdbg-run @LMDBG_VERSION@
+EOF
+}
+
+usage (){
+	echo -n "\
+lmdbg-leak-check is a tiny program for detecting memory leaks in C programs
+
+usage: lmdbg-leak-check [OPTIONS] <prog> [args...]
+OPTIONS:
+  -h --help                   display this screen
+  -V --version                display version
+  -o --log <filename>         set a filename for logging
+  -v --verbose                verbose loggin
+"
+}
+
+while test $# -ne 0; do
+    case $1 in
+	-h|--help)
+	    usage
+	    exit 0;;
+	-V|--version)
+	    version
+	    exit 0;;
+	-v|--verbose)
+	    verbose=--verbose;;
+	-o|--log)
+	    log_file=$2
+	    shift;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+
+    shift
+done
+
+if test $# = 0; then
+    echo "<prog> is missing. Run lmdbg-leak-check --help for more information" 1>&2
+    exit 1
+fi
+
+if test "_$log_file" = "_"; then
+    echo "log file is not specified. Run lmdbg-leak-check --help for more information" 1>&2
+    exit 1
+fi
+
+if test -d /usr/lib/debug; then
+    LD_LIBRARY_PATH=/usr/lib/debug:$LD_LIBRARY_PATH
+fi
+
+type lmdbg-run   > /dev/null || exit 1
+type lmdbg-sym   > /dev/null || exit 2
+type lmdbg-check > /dev/null || exit 3
+
+pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
+
+lmdbg-run $verbose --pipe "$pipe" -o "$log_file" "$@"
+if test -s "$log_file"; then
+    if test $verbose; then
+	echo "The file $log_file was created" 1>&2
+    fi
+
+    exit 10
+else
+    rm "$log_file"
+
+    if test $verbose; then
+	echo "No memory leaks detected" 1>&2
+    fi
+fi
