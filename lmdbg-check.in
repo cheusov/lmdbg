@@ -74,19 +74,35 @@ remove_system_leaks () {
     awk -v conf_file="$conf_file" '
     BEGIN {
 	while (0 < (ret = getline < conf_file)){
+	    sub(/#.*$/, "")
+
 	    if ($1 == "ignore_file"){
 		ignore_file [$2] = ""
+		continue
 	    }
 	    if ($1 == "ignore_line"){
 		ignore_line [$2] = ""
+		continue
 	    }
+	    if (NF == 0){
+		continue
+	    }
+
+	    print "invalid command: `" $1 "`" > "/dev/stderr"
+	    exit 2
 	}
 
 	if (ret < 0){
 	    print "reading error from \"" conf_file "\"" > "/dev/stderr"
+	    exit 1
 	}
 
 	count = 0
+	ignore = 0
+    }
+
+    {
+#	print "count=" count
     }
 
     function print_traceback (      i) {
@@ -95,16 +111,17 @@ remove_system_leaks () {
 	}
     }
 
-    NF == 0 {
+    NF == 0 || /^[^ ]/ {
 	if (!ignore){
 	    print_traceback()
-	    print ""
+#	    print ""
 	}
 
-	ignore = ""
+	ignore = 0
 	count  = 0
 
-	next
+	if (NF == 0)
+	    next
     }
 
     ignore {
@@ -118,12 +135,14 @@ remove_system_leaks () {
     /^ / {
 	if ($1 in ignore_line){
 	    ignore = 1
+	    next
 	}
 
 	sub(/:.*$/, "", $1)
 
 	if ($1 in ignore_file){
 	    ignore = 1
+	    next
 	}
     }' "$@"
 }
@@ -223,6 +242,7 @@ $1 == "realloc" {
 	print " " $i
     }
 }
-{
-    print ""
-}'
+#{
+#    print ""
+#}
+'
