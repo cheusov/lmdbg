@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
-# $Id: Makefile.in,v 1.1 2003-10-13 16:40:59 cheusov Exp $
+# $Id: Makefile.in,v 1.2 2004-03-18 20:01:49 cheusov Exp $
 #
 
 LMDBG_VERSION=@LMDBG_VERSION@
@@ -65,7 +65,7 @@ all : liblmdbg.so
 %.os : %.c
 	$(CC) -fPIC -g -O0 -c $(ALLCFLAGS) -o $@ $<
 
-liblmdbg.so : lmdbg.os
+liblmdbg.so : lmdbg.os 1st.os
 	$(CC) -g -shared -o $@ $^ $(ALLLDFLAGS)
 
 install : all
