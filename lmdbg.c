@@ -68,10 +68,29 @@ static void do_traceback(addr eip);
 static void print_header(void);
 
 /* Number of times we call __lmdbg_maybe_finish. */
-//#define TRIES_FOR_FINISH 3
+#define TRIES_FOR_FINISH 3
 
-static void startup (void) __attribute__ ((constructor));
-static void finish (void) __attribute__ ((destructor));
+void __lmdbg_maybe_startup(void);
+void __lmdbg_maybe_finish(void);
+
+static void startup (void);
+static void finish (void);
+
+/* Hook to ensure we get linked.  The asm is to avoid underscore
+   troubles. */
+int __lmdbg_hook_1 asm ("__lmdbg_hook_1") = 0;
+
+/* This file will be linked either first or last, so let's have a shot
+   at constructing. */
+
+static void construct(void) __attribute__((constructor));
+static void construct(void) { __lmdbg_maybe_startup(); }
+
+static void destruct(void) __attribute__((destructor));
+static void destruct(void) { __lmdbg_maybe_finish(); }
+
+/*
+ */
 
 #ifdef USE_LIBC_HOOKS
 typedef struct {
@@ -127,6 +146,33 @@ static hookset old_hooks = { NULL, NULL, NULL, NULL };
 	get_hooks(&old_hooks);  \
 	set_hooks(&lmdbg_hooks); \
 } while (0)
+
+/* HACK HACK HACK HACK HACK HACK HACK */
+/* We want `startup' to be run before any constructors, and `finish'
+   after all destructors and `atexit' functions.  The order depends in
+   part on link order.  Therefore we call these from all possible
+   places, and get the first or last as appropriate. */
+
+void __lmdbg_maybe_startup(void)
+{
+	static int have_run = 0;
+	if (!have_run){
+		have_run = 1;
+		atexit(__lmdbg_maybe_finish);
+		startup();
+    }else{
+		return;
+	}
+}
+
+void __lmdbg_maybe_finish(void)
+{
+	static int tries = 0;
+	if (++tries == TRIES_FOR_FINISH) /* This is the last try */
+		finish();
+	else
+		return;
+}
 
 static void startup (void)
 {
