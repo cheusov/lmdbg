@@ -1,0 +1,15 @@
+Just run
+
+lmdbg-run --help
+lmdbg-leaks --help
+lmdbg-sym --help
+
+Sample of usage:
+
+user@host$ lmdbg-run --log /tmp/PROG.memtest PROG ARG1 ARG2 ... ARGN
+user@host$ lmdbg-leak < /tmp/PROG.memtest > /tmp/PROG_LEAKS.memtest
+user@host$ lmdbg-sym --with-gdb \
+   --with-so /path/to/dll-1.so RTLD_LAZY \
+   --with-so /path/to/dll-2.so RTLD_NOW \
+   PROG \
+   < /tmp/PROG_LEAKS.memtest > /tmp/PROG_LEAKS_SRC.memtest

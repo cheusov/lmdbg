@@ -1,0 +1,95 @@
+# Makefile.in -- Makefile for dict
+# Copyright 2003 Aleksey Cheusov <vle@gmx.net>
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the
+# Free Software Foundation; either version 1, or (at your option) any
+# later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 675 Mass Ave, Cambridge, MA 02139, USA.
+# 
+# $Id: Makefile.in,v 1.1 2003-10-13 16:40:59 cheusov Exp $
+#
+
+LMDBG_VERSION=@LMDBG_VERSION@
+
+.SUFFIXES:
+
+srcdir=		@srcdir@
+VPATH=		@srcdir@
+prefix=		@prefix@
+exec_prefix=	@exec_prefix@
+man1_prefix=	@mandir@/man1
+man8_prefix=	@mandir@/man8
+bindir=         @bindir@
+libdir=         @libdir@
+libexecdir=     @libexecdir@
+sbindir=        @sbindir@
+includedir=     @includedir@
+datadir=        @datadir@
+sysconfdir=     @sysconfdir@
+
+DESTDIR=
+SHELL=		/bin/sh
+EXEEXT=         @EXEEXT@
+
+CC=		@CC@
+CPP=		@CPP@
+AR=             @AR@
+INSTALL=	@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+INSTALL_SCRIPT= @INSTALL_SCRIPT@
+INSTALL_DATA=	@INSTALL_DATA@
+
+CFLAGS=		@CFLAGS@ -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
+LDFLAGS=        @LDFLAGS@
+LDLIBS=		    @LIBS@
+
+@SET_MAKE@
+
+ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\" -DUSE_LIBC_HOOKS
+ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
+
+SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
+	lmdbg.c
+
+all : liblmdbg.so
+
+%.os : %.c
+	$(CC) -fPIC -g -O0 -c $(ALLCFLAGS) -o $@ $<
+
+liblmdbg.so : lmdbg.os
+	$(CC) -g -shared -o $@ $^ $(ALLLDFLAGS)
+
+install : all
+	install -d $(DESTDIR)$(libdir)
+	install -d $(DESTDIR)$(bindir)
+	install -m 0755 liblmdbg.so $(DESTDIR)$(libdir)
+	install -m 0755 lmdbg-run   $(DESTDIR)$(bindir)
+	install -m 0755 lmdbg-sym   $(DESTDIR)$(bindir)
+	install -m 0755 lmdbg-check $(DESTDIR)$(bindir)
+
+uninstall :
+	rm -f $(DESTDIR)$(bindir)/{lmdbg-sym,lmdbg-run,lmdbg-check}
+	rm -f $(DESTDIR)$(libdir)/liblmdbg.so
+
+clean :
+	rm -f *.a *.o *.os *.so *.exe
+
+distclean : clean
+	rm -f  lmdbg-run lmdbg-check lmdbg-sym
+	rm -f config.h config.cache config.status
+	rm -f Makefile
+
+cvsclean : distclean
+	rm -f configure
+	rm -rf autom4te.cache
+
+.PHONY : all clean cvsclean distclean install uninstall

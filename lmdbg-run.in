@@ -1,0 +1,117 @@
+#!/bin/bash --posix
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+
+usage () {
+    echo -n "\
+lmdbg-run is intended to run your program with
+liblmdbg.so LD_PRELOAD-ed in order to log
+the calls of the following functions:
+malloc, free, realloc and memalign.
+Set LMDBG_LIBDYN environment variable to liblmdbg.so
+The default is $libdir/liblmdbg.so.
+
+usage: lmdbg-run [OPTIONS] <prog> [args...]
+OPTIONS:
+  -h --help                   display this screen
+  -V --version                display version
+  -o --log <filename>         set a filename for logging
+     --pipe <pipe>            save pipe's output to log file
+"
+}
+
+version (){
+cat <<EOF
+lmdbg-run @LMDBG_VERSION@
+EOF
+}
+
+if test -z $LMDBG_LIBDYN; then
+    LMDBG_LIBDYN=$libdir/liblmdbg.so
+fi
+
+while test $# -ne 0; do
+    case $1 in
+	-h)
+	    usage
+	    exit 0;;
+	--help)
+	    usage
+	    exit 0;;
+	-V)
+	    version
+	    exit 0;;
+	--version)
+	    version
+	    exit 0;;
+	-o)
+	    output_file=$2
+	    shift;;
+	--log)
+	    output_file=$2
+	    shift;;
+        --pipe)
+	    pipe=$2
+	    shift;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+
+    shift
+done
+
+if [ ! $TMPDIR ]; then
+    TMPDIR=/tmp
+fi
+
+#echo "fifo_file=$fifo_file" 1>&2
+#echo "output_file=$output_file" 1>&2
+#exit
+
+if test "$pipe"; then
+#    pipe=`which $pipe` || {
+#	echo "Cannot found '$pipe' executable" 1>&2
+#	exit 1
+#    }
+
+    fifo_file=`mktemp -u /tmp/lmdbg-run.XXXXXX` || {
+	exit 2
+    }
+
+    trap 'rm -f "$fifo_file"' 0 1 2 3 5 15
+
+    mkfifo -m 600 "$fifo_file" || {
+	exit 3
+    }
+
+    eval "$pipe" < "$fifo_file" > "$output_file" 2>/dev/null &
+    output_file="$fifo_file"
+fi
+
+prog=`which $1` || {
+    echo "Cannot found '$1' executable" 1>&2
+    exit 4
+}
+
+shift
+
+echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN"
+
+(
+    exec
+	LMDBG_LOGFILE=$output_file \
+	LD_PRELOAD=$LMDBG_LIBDYN \
+	"$prog" "$@"
+)
+
+wait
+
+echo Done.
