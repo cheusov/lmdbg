@@ -19,6 +19,7 @@ OPTIONS:
   -V --version                display version
   -o --log <filename>         set a filename for logging
      --pipe <pipe>            save pipe's output to log file
+  -v --verbose                verbose loggin
 "
 }
 
@@ -34,22 +35,16 @@ fi
 
 while test $# -ne 0; do
     case $1 in
-	-h)
+	-h|--help)
 	    usage
 	    exit 0;;
-	--help)
-	    usage
-	    exit 0;;
-	-V)
+	-V|--version)
 	    version
 	    exit 0;;
-	--version)
-	    version
-	    exit 0;;
-	-o)
-	    output_file=$2
-	    shift;;
-	--log)
+	-v|--verbose)
+	    LMDBG_VERBOSE=1;
+	    export LMDBG_VERBOSE;;
+	-o|--log)
 	    output_file=$2
 	    shift;;
         --pipe)
@@ -103,7 +98,9 @@ prog=`which $1` || {
 
 shift
 
-echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN"
+if test $LMDBG_VERBOSE; then
+    echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN" 1>&2
+fi
 
 (
 	LMDBG_LOGFILE="$output_file" \

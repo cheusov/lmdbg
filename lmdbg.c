@@ -147,6 +147,8 @@ static hookset old_hooks = { NULL, NULL, NULL, NULL };
 	set_hooks(&lmdbg_hooks); \
 } while (0)
 
+int verbose_flag = 0;
+
 /* HACK HACK HACK HACK HACK HACK HACK */
 /* We want `startup' to be run before any constructors, and `finish'
    after all destructors and `atexit' functions.  The order depends in
@@ -174,6 +176,12 @@ void __lmdbg_maybe_finish(void)
 		return;
 }
 
+static void setting_up_verbose_flag ()
+{
+	const char *logfile_verbose = getenv ("LMDBG_VERBOSE");
+	verbose_flag = logfile_verbose && logfile_verbose [0];
+}
+
 static void startup (void)
 {
 	static int initted = 0;
@@ -185,7 +193,11 @@ static void startup (void)
 	initted = 1;
 
 	logfile_name = getenv ("LMDBG_LOGFILE");
-	fprintf (stderr, "LMDBG_LOGFILE=%s\n", logfile_name);
+
+	setting_up_verbose_flag ();
+
+	if (verbose_flag)
+		fprintf (stderr, "LMDBG_LOGFILE=%s\n", logfile_name);
 
 	if (!logfile_name || strcmp (logfile_name, "-") == 0){
 		log_fd = stderr;
