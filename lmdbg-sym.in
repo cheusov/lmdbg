@@ -125,8 +125,8 @@ if test "_$with_gdb" = "_1"; then
 	echo 'p lmdbg_dlopen_add_libs()'
 	echo 'p/x 0x22552255'
 	sed 's/^/b */' < "$tmp_file1"
-    } | tee log2 |
-    gdb -nx -q -batch -x /dev/stdin "$prog" | tee log |
+    } | #tee log2 |
+    gdb -nx -q -batch -x /dev/stdin "$prog" | #tee log |
     gawk --posix '
     flag == 1 {
 	for (i=1; i <= NF; ++i){
