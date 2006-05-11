@@ -1,9 +1,12 @@
-#!/bin/bash --posix
+#!/bin/sh
 
 LC_ALL=C
 export LC_ALL
 
 prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+libdir=@libdir@
 sysconfdir=@sysconfdir@
 
 usage (){

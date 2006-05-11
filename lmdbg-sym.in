@@ -1,11 +1,13 @@
-#!/bin/bash --posix
+#!/bin/sh
 
 LC_ALL=C
 export LC_ALL
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 libdir=@libdir@
+sysconfdir=@sysconfdir@
 
 usage (){
     echo -n "\
@@ -78,11 +80,7 @@ if test $# -lt 1; then
     exit 1
 fi
 
-prog=`which $1` || {
-    echo "Cannot found '$1' executable" 1>&2
-    exit 1
-}
-
+prog=$1
 shift
 
 trap 'rm -f $tmp_file $tmp_file1 $tmp_file2' 0 1 2 3 15

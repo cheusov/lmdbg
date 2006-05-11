@@ -1,4 +1,5 @@
 #!/bin/sh
 
-./configure --prefix ~/local/$HOSTNAME
+./configure --prefix ~/local/`hostname`
+
 

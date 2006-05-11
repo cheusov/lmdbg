@@ -1,4 +1,4 @@
-# Makefile.in -- Makefile for dict
+# Makefile.in -- Makefile for lmdbg
 # Copyright 2003 Aleksey Cheusov <vle@gmx.net>
 # 
 # This program is free software; you can redistribute it and/or modify it
@@ -15,12 +15,10 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
-# $Id: Makefile.in,v 1.3 2004-09-20 18:49:05 cheusov Exp $
+# $Id: Makefile.in,v 1.4 2006-05-11 17:18:59 cheusov Exp $
 #
 
 LMDBG_VERSION=@LMDBG_VERSION@
-
-.SUFFIXES:
 
 srcdir=		@srcdir@
 VPATH=		@srcdir@
@@ -50,11 +48,11 @@ INSTALL_DATA=	@INSTALL_DATA@
 
 CFLAGS=		@CFLAGS@ -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
 LDFLAGS=        @LDFLAGS@
-LDLIBS=		    @LIBS@
+LDLIBS=		@LIBS@
 
 @SET_MAKE@
 
-ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\" -DUSE_LIBC_HOOKS
+ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
 ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
 
 SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
@@ -62,11 +60,11 @@ SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 
 all : liblmdbg.so
 
-%.os : %.c
-	$(CC) -fPIC -g -O0 -c $(ALLCFLAGS) -o $@ $<
+lmdbg.os : lmdbg.c
+	$(CC) -D_GNU_SOURCE -fPIC -c $(ALLCFLAGS) -g -O0 -o $@ lmdbg.c
 
-liblmdbg.so : lmdbg.os 1st.os
-	$(CC) -g -shared -o $@ $^ $(ALLLDFLAGS)
+liblmdbg.so : lmdbg.os
+	$(CC) -g -shared -o $@ lmdbg.os $(ALLLDFLAGS)
 
 install : all
 	install -d $(DESTDIR)$(libdir)

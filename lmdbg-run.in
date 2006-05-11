@@ -1,8 +1,10 @@
-#!/bin/bash --posix
+#!/bin/sh
 
 prefix=@prefix@
 exec_prefix=@exec_prefix@
+bindir=@bindir@
 libdir=@libdir@
+sysconfdir=@sysconfdir@
 
 usage () {
     echo -n "\
@@ -91,22 +93,11 @@ if test "$pipe"; then
     output_file="$fifo_file"
 fi
 
-prog=`which $1` || {
-    echo "Cannot found '$1' executable" 1>&2
-    exit 4
-}
-
-shift
-
 if test $LMDBG_VERBOSE; then
     echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN" 1>&2
 fi
 
-(
-	LMDBG_LOGFILE="$output_file" \
-	LD_PRELOAD="$LMDBG_LIBDYN" \
-	"$prog" "$@"
-)
+(env LMDBG_LOGFILE="$output_file" LD_PRELOAD="$LMDBG_LIBDYN" "$@")
 
 wait
 
