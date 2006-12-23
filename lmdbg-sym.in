@@ -105,7 +105,7 @@ test $? || exit 3
 
 #echo "$tmp_file1:$tmp_file2:$tmp_file with_gdb=$with_gdb" 1>&2
 
-gawk --posix '
+@AWK@ '
 NF == 1 {
     hash [$1] = ""
 }
@@ -130,7 +130,7 @@ if test "_$with_gdb" = "_1"; then
 	sed 's/^/b */' < "$tmp_file1"
     } | #tee log2 |
     gdb -nx -q -batch -x /dev/stdin "$prog" | #tee log |
-    gawk --posix '
+    @AWK@ '
     flag == 1 {
 	for (i=1; i <= NF; ++i){
 	    if ($i == "file"){
@@ -153,7 +153,7 @@ else
     xargs addr2line -e "$prog" < "$tmp_file1"
 fi > $tmp_file2
 
-gawk --posix -v tmp1=$tmp_file1 -v tmp2=$tmp_file2 '
+@AWK@ -v tmp1=$tmp_file1 -v tmp2=$tmp_file2 '
 BEGIN {
     while (0 < getline addr < tmp1 && 0 < getline src < tmp2){
 #	print addr " --> " "`" src "`"

@@ -74,7 +74,7 @@ if test -z "$conf_file"; then
 fi
 
 remove_system_leaks () {
-    awk -v conf_file="$conf_file" '
+    @AWK@ -v conf_file="$conf_file" '
     BEGIN {
 	while (0 < (ret = getline < conf_file)){
 	    sub(/#.*$/, "")
@@ -166,7 +166,7 @@ if test "$system_leaks"; then
     fi
 fi
 
-gawk --posix '
+@AWK@ '
 NF > 0 && /^ / {
     calls = calls " " $0
     next
@@ -186,7 +186,7 @@ END {
     }
 }
 ' "$@" |
-gawk --posix '
+@AWK@ '
 BEGIN {
 }
 
@@ -216,7 +216,7 @@ END {
 	print h [addr]
     }
 }' |
-gawk --posix '
+@AWK@ '
 $1 == "malloc" {
     print $1, $2, $3, $4, $5, $6
 
