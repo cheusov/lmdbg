@@ -151,7 +151,7 @@ void * malloc (size_t s)
 		void *p = (*real_malloc) (s);
 
 		log_enabled = 0;
-		fprintf (log_fd, "malloc ( %ul ) -> %p\n", (unsigned long) s, p);
+		fprintf (log_fd, "malloc ( %u ) -> %p\n", (unsigned) s, p);
 		do_traceback ((addr) __builtin_return_address (0));
 		log_enabled = 1;
 
@@ -168,11 +168,11 @@ void * realloc (void *p, size_t s)
 		log_enabled = 0;
 
 		if (p){
-			fprintf (log_fd, "realloc ( %p , %ul ) --> %p\n",
-					 p, (unsigned long) s, np);
+			fprintf (log_fd, "realloc ( %p , %u ) --> %p\n",
+					 p, (unsigned) s, np);
 		}else{
-			fprintf (log_fd, "realloc ( NULL , %ul ) --> %p\n",
-					 (unsigned long) s, np);
+			fprintf (log_fd, "realloc ( NULL , %u ) --> %p\n",
+					 (unsigned) s, np);
 		}
 		do_traceback ((addr) __builtin_return_address (0));
 
@@ -205,8 +205,8 @@ void * memalign (size_t align, size_t size)
 		void *p = (*real_memalign) (align, size);
 
 		log_enabled = 0;
-		fprintf (log_fd, "memalign ( %ul , %ul ) --> %p\n",
-				 (unsigned long) align, (unsigned long) size, p);
+		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
+				 (unsigned) align, (unsigned) size, p);
 		do_traceback ((addr) __builtin_return_address (0));
 		log_enabled = 1;
 
