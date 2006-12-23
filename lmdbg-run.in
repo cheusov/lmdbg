@@ -6,14 +6,21 @@ bindir=@bindir@
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
+if test -z "$LMDBG_SOEXT"; then
+    LMDBG_SOEXT=so
+fi
+if test -z $LMDBG_LIBDYN; then
+    LMDBG_LIBDYN=$libdir/liblmdbg.$LMDBG_SOEXT
+fi
+
 usage () {
     echo -n "\
 lmdbg-run is intended to run your program with
-liblmdbg.so LD_PRELOAD-ed in order to log
+liblmdbg.$LMDBG_SOEXT LD_PRELOAD-ed in order to log
 the calls of the following functions:
 malloc, free, realloc and memalign.
-Set LMDBG_LIBDYN environment variable to liblmdbg.so
-The default is $libdir/liblmdbg.so.
+Set LMDBG_LIBDYN environment variable to liblmdbg.$LMDBG_SOEXT
+The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 
 usage: lmdbg-run [OPTIONS] <prog> [args...]
 OPTIONS:
@@ -30,10 +37,6 @@ cat <<EOF
 lmdbg-run @LMDBG_VERSION@
 EOF
 }
-
-if test -z $LMDBG_LIBDYN; then
-    LMDBG_LIBDYN=$libdir/liblmdbg.so
-fi
 
 while test $# -ne 0; do
     case $1 in
@@ -69,16 +72,7 @@ if [ ! $TMPDIR ]; then
     TMPDIR=/tmp
 fi
 
-#echo "fifo_file=$fifo_file" 1>&2
-#echo "output_file=$output_file" 1>&2
-#exit
-
 if test "$pipe"; then
-#    pipe=`which $pipe` || {
-#	echo "Cannot found '$pipe' executable" 1>&2
-#	exit 1
-#    }
-
     fifo_file=`mktemp -u /tmp/lmdbg-run.XXXXXX` || {
 	exit 2
     }
