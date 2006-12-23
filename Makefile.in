@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
-# $Id: Makefile.in,v 1.4 2006-05-11 17:18:59 cheusov Exp $
+# $Id: Makefile.in,v 1.5 2006-12-23 21:12:31 cheusov Exp $
 #
 
 LMDBG_VERSION=@LMDBG_VERSION@
@@ -58,18 +58,20 @@ ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
 SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 	lmdbg.c
 
-all : liblmdbg.so
+all : liblmdbg.la
 
-lmdbg.os : lmdbg.c
-	$(CC) -D_GNU_SOURCE -fPIC -c $(ALLCFLAGS) -g -O0 -o $@ lmdbg.c
+lmdbg.o : lmdbg.c
+	libtool --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE $(ALLCFLAGS) \
+	   -g -O0 lmdbg.c
 
-liblmdbg.so : lmdbg.os
-	$(CC) -g -shared -o $@ lmdbg.os $(ALLLDFLAGS)
+liblmdbg.la : lmdbg.o
+	libtool --mode=link $(CC) -o $@ -rpath $(libdir) \
+	   -version-info 0:0 -g lmdbg.lo $(ALLLDFLAGS)
 
 install : all
 	install -d $(DESTDIR)$(libdir)
 	install -d $(DESTDIR)$(bindir)
-	install -m 0755 liblmdbg.so $(DESTDIR)$(libdir)
+	libtool --mode=install install -m 0755 liblmdbg.la $(DESTDIR)$(libdir)
 	install -m 0755 lmdbg-run   $(DESTDIR)$(bindir)
 	install -m 0755 lmdbg-sym   $(DESTDIR)$(bindir)
 	install -m 0755 lmdbg-check $(DESTDIR)$(bindir)
@@ -80,10 +82,11 @@ uninstall :
 	rm -f $(DESTDIR)$(bindir)/lmdbg-run
 	rm -f $(DESTDIR)$(bindir)/lmdbg-check
 	rm -f $(DESTDIR)$(bindir)/lmdbg-leak-check
-	rm -f $(DESTDIR)$(libdir)/liblmdbg.so
+	rm -f $(DESTDIR)$(libdir)/liblmdbg.la
 
 clean :
-	rm -f *.a *.o *.os *.so *.exe
+	rm -f *.a *.o *.os *.so *.lo *.la *.exe
+	rm -rf .libs
 
 distclean : clean
 	rm -f  lmdbg-run lmdbg-check lmdbg-sym lmdbg-leak-check
