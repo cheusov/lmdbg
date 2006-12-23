@@ -9,6 +9,13 @@ bindir=@bindir@
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
+if test -z "$LMDBG_SOEXT"; then
+    LMDBG_SOEXT=so
+fi
+if test -z $LMDBG_LIBDYN; then
+    LMDBG_LIBDYN=$libdir/liblmdbg.so
+fi
+
 usage (){
     echo -n "\
 lmdbg-sym analyses lmdbg-run's output and converts
@@ -33,10 +40,6 @@ cat <<EOF
 lmdbg-sym-@LMDBG_VERSION@
 EOF
 }
-
-if test -z $LMDBG_LIBDYN; then
-    LMDBG_LIBDYN=$libdir/liblmdbg.so
-fi
 
 additional_libs=
 
@@ -118,9 +121,11 @@ if test "_$with_gdb" = "_1"; then
 	echo 'break _init'
 	echo 'set print demangle on'
 	echo "set environment LD_PRELOAD=$LMDBG_LIBDYN"
-	echo "set environment LMDBG_ADD_LIBS=$additional_libs"
+	if test "$additional_libs"; then
+	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
+	fi
 	echo 'r'
-	echo 'p lmdbg_dlopen_add_libs()'
+#	echo 'p lmdbg_dlopen_add_libs()'
 	echo 'p/x 0x22552255'
 	sed 's/^/b */' < "$tmp_file1"
     } | #tee log2 |
