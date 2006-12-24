@@ -84,7 +84,7 @@ generate_any_traceback (
 #define one_traceback(x) \
 		tb [x] = (addr)__builtin_return_address (x); \
 		frame  = (addr)__builtin_frame_address (x); \
-		if (!tb [x] || !frame || (frame > last_frame && last_frame)){\
+		if (!tb [x] || !frame){\
 			tb [x] = 0; \
 			return;\
 		};\

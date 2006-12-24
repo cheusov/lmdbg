@@ -7,7 +7,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include <malloc.h>
 #include <assert.h>
 
 #include <dlfcn.h>
@@ -18,7 +17,7 @@ static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
 static int         log_verbose  = 0;
 
-#define POINTER_FORMAT "%#08lx"
+#define POINTER_FORMAT "%p"
 
 static void * (*real_malloc)  (size_t s);
 static void * (*real_realloc) (void *p, size_t s);
@@ -135,7 +134,7 @@ static void lmdbg_startup (void)
 	init_verbose_flag ();
 	init_log ();
 
-	log_enabled = 1;
+	log_enabled = 0;
 }
 
 static void lmdbg_finish (void)

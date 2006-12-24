@@ -125,6 +125,7 @@ if test "_$with_gdb" = "_1"; then
 	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
 	fi
 	echo 'r'
+	echo 'set variable log_enabled=1'
 #	echo 'p lmdbg_dlopen_add_libs()'
 	echo 'p/x 0x22552255'
 	sed 's/^/b */' < "$tmp_file1"

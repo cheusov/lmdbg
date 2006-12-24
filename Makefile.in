@@ -15,7 +15,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
-# $Id: Makefile.in,v 1.6 2006-12-24 14:53:45 cheusov Exp $
+# $Id: Makefile.in,v 1.7 2006-12-24 15:14:14 cheusov Exp $
 #
 
 LMDBG_VERSION=@LMDBG_VERSION@
@@ -52,7 +52,7 @@ LDLIBS=		@LIBS@
 
 @SET_MAKE@
 
-ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
+ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\" -I.
 ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
 
 SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
