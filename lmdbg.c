@@ -134,7 +134,7 @@ static void lmdbg_startup (void)
 	init_verbose_flag ();
 	init_log ();
 
-	log_enabled = 0;
+	log_enabled = (log_filename != NULL);
 }
 
 static void lmdbg_finish (void)
