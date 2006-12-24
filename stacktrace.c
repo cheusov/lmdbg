@@ -78,7 +78,7 @@ generate_any_traceback (
 	tb[i] = 0; 
 }
 
-#if 0
+#ifdef USE_GCC_BUILTINS
 #define one_traceback(x) \
 		tb [x] = (addr)__builtin_return_address (x); \
 		frame  = (addr)__builtin_frame_address (x); \
@@ -91,18 +91,13 @@ generate_any_traceback (
 
 static void generate_traceback(TRACEBACK tb, addr eip)
 { 
-#if 1
+#ifndef USE_GCC_BUILTINS
 	generate_any_traceback(tb, eip, (addr)__builtin_frame_address(0), 1); 
 #else
 	unsigned i = 0;
 	addr frame      = 0;
 	addr last_frame = 0;
 
-//	for (i=0; i < 5 ;++i){
-//		tb [i] = (addr)__builtin_frame_address (1);
-//		if (!tb [i])
-//			break;
-//	}
 	one_traceback(0);
 	one_traceback(1);
 	one_traceback(2);
@@ -115,7 +110,5 @@ static void generate_traceback(TRACEBACK tb, addr eip)
 	one_traceback(9);
 	one_traceback(10);
 	one_traceback(11);
-
-	tb [i] = 0;
 #endif
 } 
