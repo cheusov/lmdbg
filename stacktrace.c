@@ -10,7 +10,9 @@
 */
 
 #if !defined(__i386__)
-#error Can be compiled on x86 only!
+#ifndef USE_GCC_BUILTINS
+#define USE_GCC_BUILTINS 1
+#endif
 #endif
 
 typedef unsigned long addr;
