@@ -9,7 +9,7 @@ sysconfdir=@sysconfdir@
 if test -z "$LMDBG_SOEXT"; then
     LMDBG_SOEXT=so
 fi
-if test -z $LMDBG_LIBDYN; then
+if test -z "$LMDBG_LIBDYN"; then
     LMDBG_LIBDYN=$libdir/liblmdbg.$LMDBG_SOEXT
 fi
 
@@ -87,7 +87,7 @@ if test "$pipe"; then
     output_file="$fifo_file"
 fi
 
-if test $LMDBG_VERBOSE; then
+if test "$LMDBG_VERBOSE"; then
     echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN" 1>&2
 fi
 
@@ -95,6 +95,6 @@ fi
 
 wait
 
-if test $LMDBG_VERBOSE; then
+if test "$LMDBG_VERBOSE"; then
     echo Done.
 fi

@@ -12,7 +12,7 @@ sysconfdir=@sysconfdir@
 if test -z "$LMDBG_SOEXT"; then
     LMDBG_SOEXT=so
 fi
-if test -z $LMDBG_LIBDYN; then
+if test -z "$LMDBG_LIBDYN"; then
     LMDBG_LIBDYN=$libdir/liblmdbg.so
 fi
 

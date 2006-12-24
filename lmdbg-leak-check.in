@@ -67,7 +67,7 @@ pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
 
 lmdbg-run $verbose --pipe "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
-    if test $verbose; then
+    if test "$verbose"; then
 	echo "The file $log_file was created" 1>&2
     fi
 
