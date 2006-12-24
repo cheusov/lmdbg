@@ -1,3 +1,18 @@
+/* This code is derived from yamd */
+
+/*
+  Yet Another Malloc Debugger
+
+  This file and the rest of YAMD is copyright (C) 1999 by Nate Eldredge.
+  There is no warranty whatever; I disclaim responsibility for any
+  damage caused.  Released under the GNU General Public License (see the
+  file COPYING).
+*/
+
+#if !defined(__i386__)
+#error Can be compiled on x86 only!
+#endif
+
 typedef unsigned long addr;
 
 #define MAX_TRACEBACK_LEVELS 50
