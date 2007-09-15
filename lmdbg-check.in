@@ -104,10 +104,6 @@ remove_system_leaks () {
 	ignore = 0
     }
 
-    {
-#	print "count=" count
-    }
-
     function print_traceback (      i) {
 	for (i=0; i < count; ++i){
 	    print traceback [i]
@@ -127,7 +123,7 @@ remove_system_leaks () {
 	    next
     }
 
-    ignore {
+    ignore != 0 {
 	next
     }
 
@@ -166,86 +162,91 @@ if test "$system_leaks"; then
     fi
 fi
 
-@AWK@ '
-NF > 0 && /^ / {
-    calls = calls " " $0
-    next
+multiline2singleline (){
+    @AWK@ '
+    NF > 0 && /^ / {
+	calls = calls " " $0
+	next
+    }
+    NF > 0 {
+	if (calls){
+	    print last "\t" calls
+	    calls = ""
+	}
+
+	last = $0
+    }
+    END {
+	if (calls){
+	    print last "\t" calls
+	    calls = ""
+	}
+    }
+    ' "$@"
 }
-NF > 0 {
-    if (calls){
-	print last "\t" calls
-	calls = ""
+
+leaks_themself () {
+    @AWK@ '
+    $1 == "malloc" {
+	h [$6] = $0
     }
 
-    last = $0
-}
-END {
-    if (calls){
-	print last "\t" calls
-	calls = ""
-    }
-}
-' "$@" |
-@AWK@ '
-BEGIN {
-}
-
-$1 == "malloc" {
-    h [$6] = $0
-}
-
-$1 == "memalign" {
-    h [$8] = $0
-}
-
-$1 == "free" {
-    delete h [$3]
-}
-
-$1 == "realloc" {
-    if ($3 == "NULL"){
+    $1 == "memalign" {
 	h [$8] = $0
-    }else if ($8 != $3){
-	h [$8] = h [$3]
+    }
+
+    $1 == "free" {
 	delete h [$3]
     }
-}
 
-END {
-    for (addr in h){
-	print h [addr]
+    $1 == "realloc" {
+	if ($3 == "NULL"){
+	    h [$8] = $0
+	}else if ($8 != $3){
+	    h [$8] = h [$3]
+	    delete h [$3]
+	}
     }
-}' |
-@AWK@ '
-$1 == "malloc" {
-    print $1, $2, $3, $4, $5, $6
 
-    for (i=7; i <= NF; ++i){
-	print " " $i
+    END {
+	for (addr in h){
+	    print h [addr]
+	}
+    }' "$@"
+}
+
+singleline2multiline () {
+    @AWK@ '
+    $1 == "malloc" {
+	print $1, $2, $3, $4, $5, $6
+
+	for (i=7; i <= NF; ++i){
+	    print " " $i
+	}
     }
-}
 
-$1 == "memalign" {
-    print $1, $2, $3, $4, $5, $6, $7, $8
+    $1 == "memalign" {
+	print $1, $2, $3, $4, $5, $6, $7, $8
 
-    for (i=9; i <= NF; ++i){
-	print " " $i
+	for (i=9; i <= NF; ++i){
+	    print " " $i
+	}
     }
-}
 
-$1 == "free" {
-    print "this should not happen" > "/dev/stderr"
-    exit 1
-}
-
-$1 == "realloc" {
-    print $1, $2, $3, $4, $5, $6, $7, $8
-
-    for (i=9; i <= NF; ++i){
-	print " " $i
+    $1 == "free" {
+	print "this should not happen" > "/dev/stderr"
+	exit 1
     }
+
+    $1 == "realloc" {
+	print $1, $2, $3, $4, $5, $6, $7, $8
+
+	for (i=9; i <= NF; ++i){
+	    print " " $i
+	}
+    }' "$@"
 }
-#{
-#    print ""
-#}
-'
+
+multiline2singleline "$@" |
+leaks_themself |
+singleline2multiline
