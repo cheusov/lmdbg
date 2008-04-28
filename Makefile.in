@@ -15,8 +15,6 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 675 Mass Ave, Cambridge, MA 02139, USA.
 # 
-# $Id: Makefile.in,v 1.7 2006-12-24 15:14:14 cheusov Exp $
-#
 
 LMDBG_VERSION=@LMDBG_VERSION@
 
@@ -96,5 +94,14 @@ distclean : clean
 cvsclean : distclean
 	rm -f configure
 	rm -rf autom4te.cache
+
+###########################
+VERSION=	@LMDBG_VERSION@
+
+BIRTHDATE=	2008-04-28
+
+sinclude Makefile.cvsdist
+
+###########################
 
 .PHONY : all clean cvsclean distclean install uninstall
