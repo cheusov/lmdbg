@@ -98,6 +98,8 @@ cvsclean : distclean
 ###########################
 VERSION=	@LMDBG_VERSION@
 
+PROJNAME=	lmdbg
+
 BIRTHDATE=	2008-04-28
 
 sinclude Makefile.cvsdist
