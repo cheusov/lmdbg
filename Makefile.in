@@ -98,7 +98,7 @@ cvsclean : distclean
 ###########################
 VERSION=	@LMDBG_VERSION@
 
-PROJNAME=	lmdbg
+PROJECTNAME=	lmdbg
 
 BIRTHDATE=	2008-04-28
 
