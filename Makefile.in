@@ -58,9 +58,9 @@ SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 
 all : liblmdbg.la
 
-lmdbg.o : lmdbg.c
+%.o : %.c
 	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE $(ALLCFLAGS) \
-	   -g -O0 lmdbg.c
+	   -g -O0 $<
 
 liblmdbg.la : lmdbg.o
 	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(libdir) \

@@ -11,6 +11,10 @@
 
 #include <dlfcn.h>
 
+#ifdef __linux__
+#include <malloc.h>
+#endif
+
 static int log_enabled = 0;
 
 static const char *log_filename = NULL;
@@ -34,6 +38,12 @@ static void construct(void) { lmdbg_startup(); }
 
 static void destruct(void) __attribute__((destructor));
 static void destruct(void) { lmdbg_finish(); }
+
+#ifdef __linux__
+#define WRAP(name) wrap_ ## name
+#else
+#define WRAP(name) name
+#endif
 
 #include "stacktrace.c"
 
@@ -80,27 +90,19 @@ static void init_fun_ptrs (void)
 		exit (40);
 
 	real_malloc  = dlsym (libc_so, "malloc");
-	if (log_verbose)
-		fprintf (stderr, "real_malloc=%p\n", real_malloc);
 	if (!real_malloc)
 		exit (41);
 
 	real_realloc = dlsym (libc_so, "realloc");
-	if (log_verbose)
-		fprintf (stderr, "real_realloc=%p\n", real_realloc);
 	if (!real_realloc)
 		exit (42);
 
 	real_free    = dlsym (libc_so, "free");
-	if (log_verbose)
-		fprintf (stderr, "real_free=%p\n", real_free);
 	if (!real_free)
 		exit (43);
 
 #if HAVE_MEMALIGN
 	real_memalign    = dlsym (libc_so, "memalign");
-	if (log_verbose)
-		fprintf (stderr, "real_memalign=%p\n", real_memalign);
 	if (!real_memalign)
 		exit (44);
 #endif
@@ -131,11 +133,52 @@ static void init_log (void)
 	}
 }
 
+void * WRAP(malloc) (size_t s);
+void * WRAP(realloc) (void *p, size_t s);
+void WRAP(free) (void *p);
+#if HAVE_MEMALIGN
+void * WRAP(memalign) (size_t align, size_t size);
+#endif
+
+#ifdef __linux__
+static void (*malloc_hook_orig) (size_t align, size_t size);
+static void (*realloc_hook_orig) (void *p, size_t s);
+static void (*free_hook_orig) (void *p);
+#if HAVE_MEMALIGN
+static void (*memalign_hook_orig) (size_t align, size_t size);
+#endif
+#endif
+
+static void enable_logging (void)
+{
+	log_enabled = 1;
+
+#ifdef __linux__
+	__malloc_hook   = WRAP(malloc);
+	__realloc_hook  = WRAP(realloc);
+	__free_hook     = WRAP(free);
+#if HAVE_MEMALIGN
+	__memalign_hook = WRAP(memalign);
+#endif
+#endif
+}
+
+static void disable_logging (void)
+{
+	log_enabled = 0;
+
+#ifdef __linux__
+	__malloc_hook   = malloc_hook_orig;
+	__realloc_hook  = realloc_hook_orig;
+	__free_hook     = free_hook_orig;
+#if HAVE_MEMALIGN
+	__memalign_hook = memalign_hook_orig;
+#endif
+#endif
+}
+
 static void lmdbg_startup (void)
 {
-	if (log_verbose)
-		fprintf (stderr, "I'm inside lmdbg_startup\n");
-
 	if (real_malloc){
 		/* already initialized */
 		return;
@@ -145,42 +188,59 @@ static void lmdbg_startup (void)
 	init_verbose_flag ();
 	init_log ();
 
-	log_enabled = (log_filename != NULL);
+	/*
+	fprintf (stderr, "real_malloc=%p\n", real_malloc);
+	fprintf (stderr, "real_realloc=%p\n", real_realloc);
+	fprintf (stderr, "real_free=%p\n", real_free);
+	fprintf (stderr, "real_memalign=%p\n", real_memalign);
+	*/
+
+#ifdef __linux__
+	malloc_hook_orig   = __malloc_hook;
+	realloc_hook_orig  = __realloc_hook;
+	free_hook_orig     = __free_hook;
+#if HAVE_MEMALIGN
+	memalign_hook_orig = __memalign_hook;
+#endif
+#endif
+
+	if (log_filename != NULL)
+		enable_logging ();
 }
 
 static void lmdbg_finish (void)
 {
-	log_enabled = 0;
+	disable_logging ();
 	fclose (log_fd);
 }
 
 /* replacement functions */
-void * malloc (size_t s)
+void * WRAP(malloc) (size_t s)
 {
 	assert (real_malloc);
 
 	if (log_enabled){
-		void *p = (*real_malloc) (s);
+		disable_logging ();
 
-		log_enabled = 0;
+		void *p = (*real_malloc) (s);
 		fprintf (log_fd, "malloc ( %u ) -> %p\n", (unsigned) s, p);
 		do_traceback ((addr) __builtin_return_address (0));
-		log_enabled = 1;
 
+		enable_logging ();
 		return p;
 	}else{
 		return (*real_malloc) (s);
 	}
 }
 
-void * realloc (void *p, size_t s)
+void * WRAP(realloc) (void *p, size_t s)
 {
 	assert (real_realloc);
 
 	if (log_enabled){
-		void *np = (*real_realloc) (p, s);
-		log_enabled = 0;
+		disable_logging ();
 
+		void *np = (*real_realloc) (p, s);
 		if (p){
 			fprintf (log_fd, "realloc ( %p , %u ) --> %p\n",
 					 p, (unsigned) s, np);
@@ -190,44 +250,44 @@ void * realloc (void *p, size_t s)
 		}
 		do_traceback ((addr) __builtin_return_address (0));
 
-		log_enabled = 1;
+		enable_logging ();
 		return np;
 	}else{
 		return (*real_realloc) (p, s);
 	}
 }
 
-void free (void *p)
+void WRAP(free) (void *p)
 {
 	assert (real_free);
 
 	if (log_enabled){
-		(*real_free) (p);
+		disable_logging ();
 
-		log_enabled = 0;
+		(*real_free) (p);
 		fprintf (log_fd, "free ( %p )\n", p);
 		do_traceback ((addr) __builtin_return_address (0));
 
-		log_enabled = 1;
+		enable_logging ();
 	}else{
 		(*real_free) (p);
 	}
 }
 
 #if HAVE_MEMALIGN
-void * memalign (size_t align, size_t size)
+void * WRAP(memalign) (size_t align, size_t size)
 {
 	assert (real_memalign);
 
 	if (log_enabled){
-		void *p = (*real_memalign) (align, size);
+		disable_logging ();
 
-		log_enabled = 0;
+		void *p = (*real_memalign) (align, size);
 		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
 				 (unsigned) align, (unsigned) size, p);
 		do_traceback ((addr) __builtin_return_address (0));
-		log_enabled = 1;
 
+		enable_logging ();
 		return p;
 	}else{
 		return (*real_memalign) (align, size);
