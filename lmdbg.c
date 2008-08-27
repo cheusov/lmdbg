@@ -80,19 +80,27 @@ static void init_fun_ptrs (void)
 		exit (40);
 
 	real_malloc  = dlsym (libc_so, "malloc");
+	if (log_verbose)
+		fprintf (stderr, "real_malloc=%p\n", real_malloc);
 	if (!real_malloc)
 		exit (41);
 
 	real_realloc = dlsym (libc_so, "realloc");
+	if (log_verbose)
+		fprintf (stderr, "real_realloc=%p\n", real_realloc);
 	if (!real_realloc)
 		exit (42);
 
 	real_free    = dlsym (libc_so, "free");
+	if (log_verbose)
+		fprintf (stderr, "real_free=%p\n", real_free);
 	if (!real_free)
 		exit (43);
 
 #if HAVE_MEMALIGN
 	real_memalign    = dlsym (libc_so, "memalign");
+	if (log_verbose)
+		fprintf (stderr, "real_memalign=%p\n", real_memalign);
 	if (!real_memalign)
 		exit (44);
 #endif
@@ -125,6 +133,9 @@ static void init_log (void)
 
 static void lmdbg_startup (void)
 {
+	if (log_verbose)
+		fprintf (stderr, "I'm inside lmdbg_startup\n");
+
 	if (real_malloc){
 		/* already initialized */
 		return;
@@ -146,6 +157,8 @@ static void lmdbg_finish (void)
 /* replacement functions */
 void * malloc (size_t s)
 {
+	assert (real_malloc);
+
 	if (log_enabled){
 		void *p = (*real_malloc) (s);
 
@@ -162,6 +175,8 @@ void * malloc (size_t s)
 
 void * realloc (void *p, size_t s)
 {
+	assert (real_realloc);
+
 	if (log_enabled){
 		void *np = (*real_realloc) (p, s);
 		log_enabled = 0;
@@ -184,6 +199,8 @@ void * realloc (void *p, size_t s)
 
 void free (void *p)
 {
+	assert (real_free);
+
 	if (log_enabled){
 		(*real_free) (p);
 
@@ -200,6 +217,8 @@ void free (void *p)
 #if HAVE_MEMALIGN
 void * memalign (size_t align, size_t size)
 {
+	assert (real_memalign);
+
 	if (log_enabled){
 		void *p = (*real_memalign) (align, size);
 
