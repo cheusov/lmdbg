@@ -16,7 +16,7 @@ dnl You should have received a copy of the GNU General Public License along
 dnl with this program; if not, write to the Free Software Foundation, Inc.,
 dnl 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-dnl $Id: configure.in,v 1.4 2008-04-28 10:11:37 cheusov Exp $
+dnl $Id: configure.in,v 1.5 2008-08-28 08:24:36 cheusov Exp $
 dnl
 dnl Flag conventions:
 dnl     CFLAGS and LDFLAGS should be settable on the make commandline
@@ -25,7 +25,7 @@ dnl     WCFLAGS and WLDFLAGS are warnings and stuff that we like (e.g., -pipe)
 dnl     LIBOBJS is an automatically-generated list of extra objects we need
 
 # Process this file with autoconf to produce a configure script.
-define(VERSION, 0.0.0)
+define(VERSION, 0.4.0)
 
 AC_PREREQ(2.53)
 
