@@ -1,11 +1,13 @@
 ======================================================================
-Version 0.4.0, by Aleksey Cheusov, Thu, 28 Aug 2008 11:31:42 +0300
+Version 0.4.0, by Aleksey Cheusov, Thu, 28 Aug 2008 11:53:42 +0300
 
   FIXED: segfault under Linux (glibc-2.3.6). It happens because
       (not checked) dlsym/dlopen use malloc/free etc.
 
       Now, under Linux glibc's __malloc_hook, __realloc_hook
       etc. are used
+
+  config.guess and config.sub updated
 
 ======================================================================
 Version 0.0.0, by Aleksey Cheusov, Apr 2008
