@@ -133,19 +133,25 @@ static void init_log (void)
 	}
 }
 
-void * WRAP(malloc) (size_t s);
-void * WRAP(realloc) (void *p, size_t s);
-void WRAP(free) (void *p);
+#ifdef __linux__
+#define EXTRA_ARG , const void *CALLER
+#else
+#define EXTRA_ARG
+#endif
+
+void * WRAP(malloc) (size_t s EXTRA_ARG);
+void * WRAP(realloc) (void *p, size_t s EXTRA_ARG);
+void WRAP(free) (void *p EXTRA_ARG);
 #if HAVE_MEMALIGN
-void * WRAP(memalign) (size_t align, size_t size);
+void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
 
 #ifdef __linux__
-static void (*malloc_hook_orig) (size_t align, size_t size);
-static void (*realloc_hook_orig) (void *p, size_t s);
-static void (*free_hook_orig) (void *p);
+static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
+static void *(*realloc_hook_orig) (void *p, size_t s EXTRA_ARG);
+static void (*free_hook_orig) (void *p EXTRA_ARG);
 #if HAVE_MEMALIGN
-static void (*memalign_hook_orig) (size_t align, size_t size);
+static void *(*memalign_hook_orig) (size_t align, size_t size EXTRA_ARG);
 #endif
 #endif
 
@@ -215,7 +221,7 @@ static void lmdbg_finish (void)
 }
 
 /* replacement functions */
-void * WRAP(malloc) (size_t s)
+void * WRAP(malloc) (size_t s EXTRA_ARG)
 {
 	assert (real_malloc);
 
@@ -233,7 +239,7 @@ void * WRAP(malloc) (size_t s)
 	}
 }
 
-void * WRAP(realloc) (void *p, size_t s)
+void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 {
 	assert (real_realloc);
 
@@ -257,7 +263,7 @@ void * WRAP(realloc) (void *p, size_t s)
 	}
 }
 
-void WRAP(free) (void *p)
+void WRAP(free) (void *p EXTRA_ARG)
 {
 	assert (real_free);
 
@@ -275,7 +281,7 @@ void WRAP(free) (void *p)
 }
 
 #if HAVE_MEMALIGN
-void * WRAP(memalign) (size_t align, size_t size)
+void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 {
 	assert (real_memalign);
 
