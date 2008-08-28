@@ -88,24 +88,22 @@ fi
 prog=$1
 shift
 
-trap 'rm -f $tmp_file $tmp_file1 $tmp_file2' 0 1 2 3 15
+tmp_dir="/tmp/lmdbg-sym.$$"
+trap "rm -rf $tmp_dir" 0 1 2 15
+mkdir -m 700 "$tmp_dir"
+
+tmp_file=$tmp_dir/0
+tmp_file1=$tmp_dir/1
+tmp_file2=$tmp_dir/2
+tmp_file3=$tmp_dir/3
 
 if test $# -ne 1; then
-    tmp_file=`mktemp /tmp/lmdbg-sym.XXXXXX`
-    test $? || exit 1
-
     cat "$@" > "$tmp_file"
 else
     tmp_file=$1
 fi
 
-tmp_file1=`mktemp /tmp/lmdbg-sym.XXXXXX`
-test $? || exit 2
-
-tmp_file2=`mktemp /tmp/lmdbg-sym.XXXXXX`
 test $? || exit 3
-
-#echo "$tmp_file1:$tmp_file2:$tmp_file with_gdb=$with_gdb" 1>&2
 
 @AWK@ '
 NF == 1 {
@@ -118,6 +116,7 @@ END {
 }' "$tmp_file" > "$tmp_file1"
 
 if test "_$with_gdb" = "_1"; then
+    # command file for GDB
     {
 	echo 'set width 0'
 	echo 'break _init'
@@ -132,8 +131,10 @@ if test "_$with_gdb" = "_1"; then
 	echo 'p/x 0x22552255'
 	sed 's/^/b */' < "$tmp_file1"
 	echo 'q'
-    } | #tee log2 |
-    gdb -nx -q -batch -x /dev/stdin "$prog" | #tee log |
+    } > $tmp_file2
+
+    # GDB Solo!
+    gdb -nx -q -batch -x $tmp_file2 "$prog" | # tee log |
     @AWK@ '
     flag == 1 {
 	for (i=1; i <= NF; ++i){
@@ -154,12 +155,13 @@ if test "_$with_gdb" = "_1"; then
 	next
     }'
 else
+    # ADDR2LINE 
     xargs addr2line -e "$prog" < "$tmp_file1"
-fi > $tmp_file2
+fi > $tmp_file3
 
-@AWK@ -v tmp1=$tmp_file1 -v tmp2=$tmp_file2 '
+@AWK@ -v tmp1=$tmp_file1 -v tmp3=$tmp_file3 '
 BEGIN {
-    while (0 < getline addr < tmp1 && 0 < getline src < tmp2){
+    while (0 < getline addr < tmp1 && 0 < getline src < tmp3){
 #	print addr " --> " "`" src "`"
 	if (src != ""){
 	    h [addr] = src
