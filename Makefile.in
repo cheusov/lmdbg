@@ -88,12 +88,12 @@ clean :
 
 distclean : clean
 	rm -f  lmdbg-run lmdbg-check lmdbg-sym lmdbg-leak-check
-	rm -f config.h config.cache config.status
+	rm -f config.h config.cache config.status config.log
 	rm -f Makefile
+	rm -rf autom4te.cache
 
 cvsclean : distclean
-	rm -f configure
-	rm -rf autom4te.cache
+	rm -f configure config.h.in ChangeLog
 
 ###########################
 VERSION=	@LMDBG_VERSION@
