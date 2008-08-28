@@ -1,4 +1,8 @@
-Just run
+               LMDBG - lightweight malloc debugger
+
+It logs the calls of malloc/realloc/free/memalign and nothing more
+
+====================================================================
 
 lmdbg-run --help
 lmdbg-leaks --help
