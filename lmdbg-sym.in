@@ -125,18 +125,22 @@ if test "_$with_gdb" = "_1"; then
 	if test "$additional_libs"; then
 	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
 	fi
-	echo 'r'
+	echo 'run'
 	echo 'set variable log_enabled=1'
 #	echo 'p lmdbg_dlopen_add_libs()'
-	echo 'p/x 0x22552255'
-	sed 's/^/b */' < "$tmp_file1"
-	echo 'q'
-    } > $tmp_file2
+	echo 'print/x 0x22552255'
+	awk '{print "b *" $0 "\ninfo break " NR+1}' "$tmp_file1"
+	echo 'quit'
+    } > "$tmp_file2"
 
     # GDB Solo!
     gdb -nx -q -batch -x $tmp_file2 "$prog" | # tee log |
     @AWK@ '
-    flag == 1 {
+    !flag {
+	flag = /22552255/
+	next
+    }
+    $1 == "Breakpoint" { # result of `b *<address>` command
 	for (i=1; i <= NF; ++i){
 	    if ($i == "file"){
 		gsub(/[,.]$/, "", $(i+1))
@@ -144,16 +148,22 @@ if test "_$with_gdb" = "_1"; then
 	    }
 	    if ($i == "line"){
 		gsub(/[,.]$/, "", $(i+1))
-		printf "%s ", $(i+1)
+		printf "%s", $(i+1)
 	    }
 	}
 
-	printf "\n"
-    }
-    /22552255/ {
-	flag=1
 	next
-    }'
+    }
+    $2 == "breakpoint" { # result of `info break <NUM>` command
+	if (match($0, / in .* at /)){
+	    print "\t" substr($0, RSTART+4, RLENGTH-8)
+	}else{
+	    print ""
+	}
+
+	next
+    }
+    '
 else
     # ADDR2LINE 
     xargs addr2line -e "$prog" < "$tmp_file1"
