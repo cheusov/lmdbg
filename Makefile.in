@@ -58,7 +58,7 @@ SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 
 all : liblmdbg.la
 
-%.o : %.c
+.c.o:
 	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE $(ALLCFLAGS) \
 	   -g -O0 $<
 
@@ -101,8 +101,6 @@ VERSION=	@LMDBG_VERSION@
 PROJECTNAME=	lmdbg
 
 BIRTHDATE=	2008-04-28
-
-sinclude Makefile.cvsdist
 
 ###########################
 
