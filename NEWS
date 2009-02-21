@@ -1,4 +1,10 @@
 ======================================================================
+Version 0.4.1, by Aleksey Cheusov, Sat, 21 Feb 2009 13:41:37 +0200
+
+  fix: lmdbg can also be build by BSD make.
+       GNUmake-isms were removed from Makefile.in.
+
+======================================================================
 Version 0.4.0, by Aleksey Cheusov, Thu, 28 Aug 2008 11:53:42 +0300
 
   FIXED: segfault under Linux (glibc-2.3.6). It happens because
