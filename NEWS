@@ -1,4 +1,37 @@
 ======================================================================
+Version 0.8.0, by Aleksey Cheusov, Sun, 22 Feb 2009 23:07:59 +0200
+
+  Completely new implementation of stacktrace function.  Now it is my
+  own, portable to almost any hardware where gcc works. There is no
+  limit on i386 anymore. YAMD code was thrown out.  GPL was thrown out
+  too. I prefer MIT license.
+
+  Documentation is now in READ file. Read it! ;-)
+
+  Lots of regression tests was written. This release of LMDBG were
+  sucessfully tested under the following platforms:
+    NetBSD/x86/gcc
+    NetBSD/alpha/gcc
+    FreeBSD/x86/gcc
+    Linux/x86/gcc
+    Solaris/x86/gcc
+
+  lmdbg-sym:
+      added: -g option, synonym for --with-gdb.
+      -g becomes the default.
+      added: -a option for using addr2line(1) instead of gdb(1).
+      fix for Solaris (printf ("%p") doesn't output leading 0x).
+
+  lmdbg-run:
+      added: -p option, synonyms for --pipe.
+      malloc uses --> as a separator, not ->.
+
+  lmdbg-check ins splitted in two executables:
+     lmdbg-leaks    - for normal memory leaks,
+     lmdbg-sysleaks - for memory leaks in system/external libraries.
+     See README file.
+
+======================================================================
 Version 0.4.1, by Aleksey Cheusov, Sat, 21 Feb 2009 13:41:37 +0200
 
   fix: lmdbg can also be build by BSD make.
