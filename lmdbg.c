@@ -226,7 +226,7 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 		disable_logging ();
 
 		void *p = (*real_malloc) (s);
-		fprintf (log_fd, "malloc ( %u ) -> %p\n", (unsigned) s, p);
+		fprintf (log_fd, "malloc ( %u ) --> %p\n", (unsigned) s, p);
 		do_traceback ();
 
 		enable_logging ();

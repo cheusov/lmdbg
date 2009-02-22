@@ -74,7 +74,7 @@ runtest lmdbg-leak-check -V        | head -3 | unify_text 3
 ####################
 # real tests
 
-# lmdbg-run
+# test1.c
 execname="$OBJDIR"/_test1
 srcname="$SRCDIR"/tests/test1.c
 logname="$OBJDIR"/_log
@@ -130,3 +130,57 @@ runtest lmdbg-run -o "$logname" -p "$OBJDIR"/lmdbg-check "$execname"
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
+
+# test1.c
+execname="$OBJDIR"/_test2
+srcname="$SRCDIR"/tests/test2.c
+logname="$OBJDIR"/_log
+
+"$CC" -O0 -g -o "$execname" "$srcname"
+
+# lmdbg-run -o with two leaks
+runtest lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"
+
+grep ^malloc  "$logname" | unify_address
+grep ^realloc "$logname" | unify_address
+grep ^free    "$logname" | unify_address
+
+# lmdbg-check with two leaks
+logname2="$OBJDIR"/_log2
+runtest lmdbg-check "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep ^malloc  "$logname2" | unify_address
+grep ^realloc "$logname2" | unify_address
+grep ^free    "$logname2" | unify_address
+
+# lmdbg-check with lmdbg-leak1.conf
+runtest lmdbg-check -c ./lmdbg-check1.conf --system-leaks \
+    "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep ^malloc  "$logname2" | unify_address
+grep ^realloc "$logname2" | unify_address
+grep ^free    "$logname2" | unify_address
+
+# lmdbg-check with lmdbg-leak2.conf
+runtest lmdbg-check -c ./lmdbg-check2.conf --system-leaks \
+    "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep ^malloc  "$logname2" | unify_address
+grep ^realloc "$logname2" | unify_address
+grep ^free    "$logname2" | unify_address
+
+# lmdbg-check with lmdbg-leak3.conf
+runtest lmdbg-check -c ./lmdbg-check3.conf -s \
+    "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep ^malloc  "$logname2" | unify_address
+grep ^realloc "$logname2" | unify_address
+grep ^free    "$logname2" | unify_address

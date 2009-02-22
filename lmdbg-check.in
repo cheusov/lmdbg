@@ -22,7 +22,7 @@ OPTIONS:
     -h --help                  displays this screen
     -V --version               display version
     -c --config <config_file>  sets configuration file
-       --system-leaks          remove memory leaks of system function
+    -s --system-leaks          remove memory leaks of system function
 "
 }
 
@@ -43,7 +43,7 @@ while test $# -ne 0; do
         -c|--config)
 	    conf_file=$2
 	    shift;;
-	--system-leaks)
+	-s|--system-leaks)
 	    system_leaks=1;;
 	--)
 	    shift
@@ -72,7 +72,7 @@ fi
 remove_system_leaks () {
     @AWK@ -v conf_file="$conf_file" '
     BEGIN {
-	while (0 < (ret = getline < conf_file)){
+	while (0 < (ret = (getline < conf_file))){
 	    sub(/#.*$/, "")
 
 	    if ($1 == "ignore_file"){
@@ -109,7 +109,6 @@ remove_system_leaks () {
     NF == 0 || /^[^ ]/ {
 	if (!ignore){
 	    print_traceback()
-#	    print ""
 	}
 
 	ignore = 0
@@ -128,16 +127,21 @@ remove_system_leaks () {
     }
 
     /^ / {
-	if ($1 in ignore_line){
+	if ($2 in ignore_line){
 	    ignore = 1
 	    next
 	}
 
-	sub(/:.*$/, "", $1)
+	sub(/:.*$/, "", $2)
 
-	if ($1 in ignore_file){
+	if ($2 in ignore_file){
 	    ignore = 1
 	    next
+	}
+    }
+    END {
+	if (!ignore){
+	    print_traceback()
 	}
     }' "$@"
 }
@@ -163,16 +167,17 @@ multiline2singleline (){
     #   malloc/realloc/free ...
     #    address1
     #    address2
+    #    address3
     # Output:
-    #   malloc/realloc/free ...<TAB>address1 address2
+    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
     @AWK@ '
     NF > 0 && /^ / {
-	calls = calls " " $0
+	calls = calls SUBSEP $0
 	next
     }
     NF > 0 {
 	if (calls){
-	    print last "\t" calls
+	    print last " " calls
 	    calls = ""
 	}
 
@@ -180,7 +185,7 @@ multiline2singleline (){
     }
     END {
 	if (calls){
-	    print last "\t" calls
+	    print last " " calls
 	    calls = ""
 	}
     }
@@ -222,39 +227,25 @@ leaks_themself () {
 
 singleline2multiline () {
     # Input:
-    #   malloc/realloc/free ...<TAB>address1 address2
+    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
     # Output:
     #   malloc/realloc/free ...
     #    address1
     #    address2
     @AWK@ '
-    $1 == "malloc" {
-	print $1, $2, $3, $4, $5, $6
-
-	for (i=7; i <= NF; ++i){
-	    print " " $i
-	}
+    BEGIN {
+	FS = SUBSEP
     }
-
-    $1 == "memalign" {
-	print $1, $2, $3, $4, $5, $6, $7, $8
-
-	for (i=9; i <= NF; ++i){
-	    print " " $i
+    $1 ~ /^(malloc|realloc|memalign) / {
+	sub(/ $/, "", $1)
+	for (i=1; i <= NF; ++i){
+	    print $i
 	}
     }
 
     $1 == "free" {
 	print "this should not happen" > "/dev/stderr"
 	exit 1
-    }
-
-    $1 == "realloc" {
-	print $1, $2, $3, $4, $5, $6, $7, $8
-
-	for (i=9; i <= NF; ++i){
-	    print " " $i
-	}
     }' "$@"
 }
 

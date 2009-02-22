@@ -65,12 +65,13 @@ type lmdbg-run   > /dev/null || exit 1
 type lmdbg-sym   > /dev/null || exit 2
 type lmdbg-check > /dev/null || exit 3
 
+#pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
 pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
 
-lmdbg-run $verbose --pipe "$pipe" -o "$log_file" "$@"
+lmdbg-run --pipe "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
     if test "$verbose"; then
-	echo "The file $log_file was created" 1>&2
+	echo "Memory leaks were detected and saved to the file '$log_file'" 1>&2
     fi
 
     exit 10

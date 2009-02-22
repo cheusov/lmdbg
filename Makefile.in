@@ -119,7 +119,7 @@ test: liblmdbg.la lmdbg-sym lmdbg-check lmdbg-run
 	    diff -u test.out ../_test.res > ../_test2.res; \
 	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' \
 		../_test2.res > ../_test3.res; \
-	    grep '^[-+] ' ../_test3.res > /dev/null; \
+	    grep '^[-+][^+-]' ../_test3.res > /dev/null; \
 	    ); \
 	then \
 	    echo '   failed'; \
