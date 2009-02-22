@@ -75,6 +75,7 @@ install : all
 	$(INSTALL) -m 0755 lmdbg-run   $(DESTDIR)$(bindir)
 	$(INSTALL) -m 0755 lmdbg-sym   $(DESTDIR)$(bindir)
 	$(INSTALL) -m 0755 lmdbg-leaks $(DESTDIR)$(bindir)
+	$(INSTALL) -m 0755 lmdbg-sysleaks $(DESTDIR)$(bindir)
 	$(INSTALL) -m 0755 lmdbg-leak-check $(DESTDIR)$(bindir)
 
 .PHONY: uninstall
@@ -82,14 +83,14 @@ uninstall :
 	rm -f $(DESTDIR)$(bindir)/lmdbg-sym
 	rm -f $(DESTDIR)$(bindir)/lmdbg-run
 	rm -f $(DESTDIR)$(bindir)/lmdbg-leaks
+	rm -f $(DESTDIR)$(bindir)/lmdbg-sysleaks
 	rm -f $(DESTDIR)$(bindir)/lmdbg-leak-check
 	rm -f $(DESTDIR)$(libdir)/liblmdbg.la
 
 .PHONY: clean
 clean :
-	rm -f *.a *.o *.os *.so *.lo *.la *.exe
+	rm -f *.a *.o *.os *.so *.lo *.la *.exe _*
 	rm -rf .libs
-	rm -f _* lmdbg-run lmdbg-sym lmdbg-leaks lmdbg-leak-check
 
 .PHONY: distclean
 distclean : clean
