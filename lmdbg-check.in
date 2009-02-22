@@ -22,7 +22,8 @@ OPTIONS:
     -h --help                  displays this screen
     -V --version               display version
     -c --config <config_file>  sets configuration file
-    -s --system-leaks          remove memory leaks of system function
+    -s --system-leaks          remove memory leaks only,
+                               by default memory all leaks are output
 "
 }
 
