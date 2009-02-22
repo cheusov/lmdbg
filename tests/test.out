@@ -70,7 +70,7 @@ malloc ( 555 ) -> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
@@ -78,7 +78,7 @@ realloc ( NULL , 666 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
@@ -86,7 +86,7 @@ realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
@@ -94,7 +94,7 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 free ( 0xF00DBEAF )
@@ -102,7 +102,7 @@ free ( 0xF00DBEAF )
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 --------------------------------------------------
@@ -112,7 +112,7 @@ malloc ( 555 ) -> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
@@ -120,7 +120,7 @@ realloc ( NULL , 666 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
@@ -128,7 +128,7 @@ realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
@@ -136,7 +136,7 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 free ( 0xF00DBEAF )
@@ -144,7 +144,7 @@ free ( 0xF00DBEAF )
  0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
- 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF	test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 --------------------------------------------------
@@ -154,7 +154,7 @@ malloc ( 555 ) -> 0xF00DBEAF
  ??:NNN
  ??:NNN
  ??:NNN
- ../tests/test1.c:NNN
+ test1.c:NNN
  ??:NNN
  ??:NNN
 realloc ( NULL , 666 ) --> 0xF00DBEAF
@@ -162,7 +162,7 @@ realloc ( NULL , 666 ) --> 0xF00DBEAF
  ??:NNN
  ??:NNN
  ??:NNN
- ../tests/test1.c:NNN
+ test1.c:NNN
  ??:NNN
  ??:NNN
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
@@ -170,7 +170,7 @@ realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
  ??:NNN
  ??:NNN
  ??:NNN
- ../tests/test1.c:NNN
+ test1.c:NNN
  ??:NNN
  ??:NNN
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
@@ -178,7 +178,7 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  ??:NNN
  ??:NNN
  ??:NNN
- ../tests/test1.c:NNN
+ test1.c:NNN
  ??:NNN
  ??:NNN
 free ( 0xF00DBEAF )
@@ -186,7 +186,7 @@ free ( 0xF00DBEAF )
  ??:NNN
  ??:NNN
  ??:NNN
- ../tests/test1.c:NNN
+ test1.c:NNN
  ??:NNN
  ??:NNN
 --------------------------------------------------

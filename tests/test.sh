@@ -45,6 +45,10 @@ hide_line_numbers (){
     sed 's,:[0-9][0-9]*,:NNN,' "$@"
 }
 
+canonize_paths (){
+    awk '/^ / {sub(/[^ ]*\//, "")} {print}' "$@"
+}
+
 ####################
 # stupid tests
 runtest lmdbg-run --help        | head -3 | unify_text 3
@@ -102,15 +106,16 @@ grep free    "$logname2" | unify_address
 
 # lmdbg-sym --with-gdb
 runtest lmdbg-sym --with-gdb "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers
+unify_address | hide_lmdbg_code | hide_line_numbers | canonize_paths
 
 # lmdbg-sym -g
 runtest lmdbg-sym -g "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers
+unify_address | hide_lmdbg_code | hide_line_numbers | canonize_paths
 
 # lmdbg-sym -a
 runtest lmdbg-sym -a "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers | hide_foreign_code
+unify_address | hide_lmdbg_code | hide_line_numbers |
+hide_foreign_code | canonize_paths
 
 # lmdbg-run --pipe lmdbg-check
 runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-check "$execname"
