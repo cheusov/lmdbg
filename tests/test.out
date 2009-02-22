@@ -53,3 +53,10 @@ realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 free ( 0xF00DBEAF )
+--------------------------------------------------
+------- args: lmdbg-run --log ../_log ../_test1
+malloc ( 555 ) -> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+free ( 0xF00DBEAF )

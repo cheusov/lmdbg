@@ -30,6 +30,7 @@ unify_address (){
     sed 's,0x[0-9a-fA-F][0-9a-fA-F]*,0xF00DBEAF,g' "$@"
 }
 
+####################
 # stupid tests
 runtest lmdbg-run --help        | head -3 | unify_text 3
 runtest lmdbg-sym --help        | head -3 | unify_text 3
@@ -51,13 +52,22 @@ runtest lmdbg-sym -V               | head -3 | unify_text 3
 runtest lmdbg-check -V             | head -3 | unify_text 3
 runtest lmdbg-leak-check -V        | head -3 | unify_text 3
 
+####################
 # real tests
 execname="$OBJDIR"/_test1
 srcname="$SRCDIR"/tests/test1.c
 logname="$OBJDIR"/_log
 
 "$CC" -O0 -g -o "$execname" "$srcname"
+
+# -o
 runtest lmdbg-run -o "$logname" "$execname"
+
+grep malloc  "$logname" | unify_address
+grep realloc "$logname" | unify_address
+grep free    "$logname" | unify_address
+# --log
+runtest lmdbg-run --log "$logname" "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
