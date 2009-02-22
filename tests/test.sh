@@ -156,7 +156,7 @@ grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak1.conf
-runtest lmdbg-sysleaks -c ./lmdbg-check1.conf -s \
+runtest lmdbg-sysleaks -c ./lmdbg1.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
@@ -166,7 +166,7 @@ grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak2.conf
-runtest lmdbg-sysleaks -c ./lmdbg-check2.conf -s \
+runtest lmdbg-sysleaks -c ./lmdbg2.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
@@ -176,7 +176,7 @@ grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak3.conf
-runtest lmdbg-sysleaks -c ./lmdbg-check3.conf -s \
+runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
