@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2007-2008 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -42,7 +42,7 @@ usage:
 OPTIONS:
     -h --help                  displays this screen
     -V --version               display version
-    -c --config <config_file>  sets configuration file
+    -c --config <config_file>  configuration file
     -s --system-leaks          remove memory leaks only,
                                by default memory all leaks are output
 "
