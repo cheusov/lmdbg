@@ -29,7 +29,7 @@ OPTIONS:
   -h --help                   display this screen
   -V --version                display version
   -o --log <filename>         set a filename for logging
-     --pipe <pipe>            save pipe's output to log file
+  -p --pipe <pipe>            save pipe's output to log file
   -v --verbose                verbose loggin
 "
 }
@@ -54,7 +54,7 @@ while test $# -ne 0; do
 	-o|--log)
 	    output_file=$2
 	    shift;;
-        --pipe)
+        -p|--pipe)
 	    pipe=$2
 	    shift;;
 	--)
