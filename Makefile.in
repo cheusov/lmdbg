@@ -114,8 +114,13 @@ BIRTHDATE=	2008-04-28
 test: liblmdbg.la lmdbg-sym lmdbg-check lmdbg-run
 	@echo 'running tests...'; \
 	export OBJDIR=.. SRCDIR=.. CC=${CC}; \
-	if cd ./tests && ./test.sh > ../_test.res && \
-	    diff -u test.out ../_test.res; \
+	if ( cd ./tests; ./test.sh > ../_test.res; \
+	    diff -u test.out ../_test.res > ../_test2.res; \
+	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' \
+		../_test2.res > ../_test3.res; \
+	    ! grep '^[-+] ' ../_test3.res > /dev/null; ); \
 	then echo '   succeeded'; \
-	else echo '   failed'; false; \
+	else echo '   failed'; \
+	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' ./_test2.res; \
+	    false; \
 	fi
