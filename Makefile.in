@@ -113,9 +113,9 @@ BIRTHDATE=	2008-04-28
 .PHONY: test
 test: liblmdbg.la lmdbg-sym lmdbg-check lmdbg-run
 	@echo 'running tests...'; \
-	export OBJDIR=..; \
-	if cd ./tests && ./test.sh > ./_test.res && \
-	    diff -u test.out ./_test.res; \
+	export OBJDIR=.. SRCDIR=.. CC=${CC}; \
+	if cd ./tests && ./test.sh > ../_test.res && \
+	    diff -u test.out ../_test.res; \
 	then echo '   succeeded'; \
 	else echo '   failed'; false; \
 	fi
