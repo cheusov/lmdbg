@@ -106,3 +106,17 @@ unify_address | hide_lmdbg_code | hide_line_numbers
 # lmdbg-sym -a
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers
+
+# lmdbg-run --pipe lmdbg-check
+runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-check "$execname"
+
+grep malloc  "$logname" | unify_address
+grep realloc "$logname" | unify_address
+grep free    "$logname" | unify_address
+
+# lmdbg-run -p lmdbg-check
+runtest lmdbg-run -o "$logname" -p "$OBJDIR"/lmdbg-check "$execname"
+
+grep malloc  "$logname" | unify_address
+grep realloc "$logname" | unify_address
+grep free    "$logname" | unify_address

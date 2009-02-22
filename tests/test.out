@@ -139,3 +139,9 @@ free ( 0xF00DBEAF )
  ../tests/test1.c:NNN
  ??:NNN
  ??:NNN
+--------------------------------------------------
+------- args: lmdbg-run -o ../_log --pipe ../lmdbg-check ../_test1
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-run -o ../_log -p ../lmdbg-check ../_test1
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
