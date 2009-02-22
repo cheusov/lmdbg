@@ -46,7 +46,7 @@ hide_line_numbers (){
 }
 
 canonize_paths (){
-    awk '/^ / {sub(/[^ ]*\//, "")} {print}' "$@"
+    awk '/^ / {sub(/[^ \t]*\//, "")} {print}' "$@"
 }
 
 ####################
