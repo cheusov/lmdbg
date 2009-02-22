@@ -205,11 +205,11 @@ leaks_themself () {
     }
 
     $1 == "realloc" {
-	if ($3 == "NULL"){
+	if ($3 == "NULL" || $3 == $8){
 	    h [$8] = $0
-	}else if ($8 != $3){
+	}else{
+	    h [$8] = $0
 	    delete h [$3]
-	    h [$8] = $0
 	}
     }
 
