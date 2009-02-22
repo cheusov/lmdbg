@@ -4,6 +4,8 @@ export LC_ALL=C
 
 set -e
 
+export LMDBG_LIBDYN="$OBJDIR"/.libs/liblmdbg.so
+
 unify_paths (){
     cat "$@"
 }
