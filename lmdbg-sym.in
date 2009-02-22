@@ -55,6 +55,8 @@ while [ $# -ne 0 ]; do
 	    exit 0;;
 	-g|--with-gdb)
 	    with_gdb=1;;
+	-a)
+	    with_gdb='';;
         --with-so)
 	    additional_libs="${additional_libs},$2:$3"
 	    shift

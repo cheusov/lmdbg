@@ -100,3 +100,7 @@ unify_address | hide_lmdbg_code | hide_line_numbers
 # lmdbg-sym -g
 runtest lmdbg-sym -g "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers
+
+# lmdbg-sym -a
+runtest lmdbg-sym -a "$execname" "$logname" |
+unify_address | hide_lmdbg_code | hide_line_numbers
