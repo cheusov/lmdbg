@@ -184,3 +184,13 @@ grep -- --- "$logname2"
 grep ^malloc  "$logname2" | unify_address
 grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
+
+# lmdbg-leaks with lmdbg-leak3.conf
+runtest lmdbg-sysleaks -c ./lmdbg3.conf \
+    "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep ^malloc  "$logname2" | unify_address
+grep ^realloc "$logname2" | unify_address
+grep ^free    "$logname2" | unify_address

@@ -218,3 +218,6 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-sysleaks -c ./lmdbg-check3.conf -s ../_log
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
