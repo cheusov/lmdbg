@@ -37,7 +37,7 @@ usage: lmdbg-leak-check [OPTIONS] <prog> [args...]
 OPTIONS:
   -h --help                   display this screen
   -V --version                display version
-  -c --config <config_file>   configuration file for lmdbg-check
+  -c --config <config_file>   configuration file for lmdbg-leaks
   -o --log <filename>         set a filename for logging
   -v --verbose                verbose loggin
 "
@@ -88,10 +88,10 @@ fi
 
 type lmdbg-run   > /dev/null || exit 1
 type lmdbg-sym   > /dev/null || exit 2
-type lmdbg-check > /dev/null || exit 3
+type lmdbg-leaks > /dev/null || exit 3
+type lmdbg-sysleaks > /dev/null || exit 3
 
-pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check $conf_opts --system-leaks"
-echo $pipe
+pipe="lmdbg-leaks | lmdbg-sym $1 | lmdbg-sysleaks $conf_opts -s"
 
 lmdbg-run -p "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
