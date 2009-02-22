@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2007-2008 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -37,6 +37,7 @@ usage: lmdbg-leak-check [OPTIONS] <prog> [args...]
 OPTIONS:
   -h --help                   display this screen
   -V --version                display version
+  -c --config <config_file>   configuration file for lmdbg-check
   -o --log <filename>         set a filename for logging
   -v --verbose                verbose loggin
 "
@@ -54,6 +55,9 @@ while test $# -ne 0; do
 	    verbose=--verbose;;
 	-o|--log)
 	    log_file=$2
+	    shift;;
+        -c|--config)
+	    conf_opts="-c $2"
 	    shift;;
 	--)
 	    shift
@@ -86,10 +90,10 @@ type lmdbg-run   > /dev/null || exit 1
 type lmdbg-sym   > /dev/null || exit 2
 type lmdbg-check > /dev/null || exit 3
 
-#pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
-pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check --system-leaks"
+pipe="lmdbg-check | lmdbg-sym --with-gdb $1 | lmdbg-check $conf_opts --system-leaks"
+echo $pipe
 
-lmdbg-run --pipe "$pipe" -o "$log_file" "$@"
+lmdbg-run -p "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
     if test "$verbose"; then
 	echo "Memory leaks were detected and saved to the file '$log_file'" 1>&2
