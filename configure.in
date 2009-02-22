@@ -16,7 +16,7 @@ dnl You should have received a copy of the GNU General Public License along
 dnl with this program; if not, write to the Free Software Foundation, Inc.,
 dnl 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl
-dnl $Id: configure.in,v 1.7 2009-02-22 18:31:21 cheusov Exp $
+dnl $Id: configure.in,v 1.8 2009-02-22 19:36:12 cheusov Exp $
 dnl
 dnl Flag conventions:
 dnl     CFLAGS and LDFLAGS should be settable on the make commandline
@@ -89,7 +89,8 @@ AC_SUBST(EXEEXT)
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([lmdbg-sym],   [chmod +x lmdbg-sym])
 AC_CONFIG_FILES([lmdbg-run],   [chmod +x lmdbg-run])
-AC_CONFIG_FILES([lmdbg-check], [chmod +x lmdbg-check])
+AC_CONFIG_FILES([lmdbg-leaks], [chmod +x lmdbg-leaks])
+AC_CONFIG_FILES([lmdbg-sysleaks], [chmod +x lmdbg-sysleaks])
 AC_CONFIG_FILES([lmdbg-leak-check], [chmod +x lmdbg-leak-check])
 
 AC_OUTPUT

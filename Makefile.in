@@ -74,14 +74,14 @@ install : all
 	libtool --mode=install $(INSTALL) -m 0755 liblmdbg.la $(DESTDIR)$(libdir)
 	$(INSTALL) -m 0755 lmdbg-run   $(DESTDIR)$(bindir)
 	$(INSTALL) -m 0755 lmdbg-sym   $(DESTDIR)$(bindir)
-	$(INSTALL) -m 0755 lmdbg-check $(DESTDIR)$(bindir)
+	$(INSTALL) -m 0755 lmdbg-leaks $(DESTDIR)$(bindir)
 	$(INSTALL) -m 0755 lmdbg-leak-check $(DESTDIR)$(bindir)
 
 .PHONY: uninstall
 uninstall :
 	rm -f $(DESTDIR)$(bindir)/lmdbg-sym
 	rm -f $(DESTDIR)$(bindir)/lmdbg-run
-	rm -f $(DESTDIR)$(bindir)/lmdbg-check
+	rm -f $(DESTDIR)$(bindir)/lmdbg-leaks
 	rm -f $(DESTDIR)$(bindir)/lmdbg-leak-check
 	rm -f $(DESTDIR)$(libdir)/liblmdbg.la
 
@@ -89,11 +89,11 @@ uninstall :
 clean :
 	rm -f *.a *.o *.os *.so *.lo *.la *.exe
 	rm -rf .libs
-	rm -f _* lmdbg-run lmdbg-sym lmdbg-check lmdbg-leak-check
+	rm -f _* lmdbg-run lmdbg-sym lmdbg-leaks lmdbg-leak-check
 
 .PHONY: distclean
 distclean : clean
-	rm -f  lmdbg-run lmdbg-check lmdbg-sym lmdbg-leak-check
+	rm -f  lmdbg-run lmdbg-leaks lmdbg-sym lmdbg-leak-check
 	rm -f config.h config.cache config.status config.log
 	rm -f Makefile
 	rm -rf autom4te.cache
@@ -112,7 +112,7 @@ BIRTHDATE=	2008-04-28
 ###########################
 
 .PHONY: test
-test: liblmdbg.la lmdbg-sym lmdbg-check lmdbg-run
+test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 	@echo 'running tests...'; \
 	OBJDIR=.. SRCDIR=.. CC=${CC}; \
 	export OBJDIR SRCDIR CC; \

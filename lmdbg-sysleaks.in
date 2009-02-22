@@ -38,19 +38,18 @@ This program analyses lmdbg-run's or lmdbg-sym's output and
 produces information about memory leaks.
 
 usage:
-    lmdbg-check [OPTIONS] [files...]
+    lmdbg-sysleaks [OPTIONS] [files...]
 OPTIONS:
     -h --help                  displays this screen
     -V --version               display version
     -c --config <config_file>  configuration file
-    -s --system-leaks          remove memory leaks only,
-                               by default memory all leaks are output
+    -s --skip-leaks            (like grep -v)
 "
 }
 
 version () {
     cat <<EOF
-lmdbg-check @LMDBG_VERSION@
+lmdbg-sysleaks @LMDBG_VERSION@
 EOF
 }
 
@@ -65,8 +64,8 @@ while test $# -ne 0; do
         -c|--config)
 	    conf_file=$2
 	    shift;;
-	-s|--system-leaks)
-	    system_leaks=1;;
+	-s|--skip-leaks)
+	    export skip_leaks=1;;
 	--)
 	    shift
 	    break;;
@@ -80,20 +79,18 @@ while test $# -ne 0; do
 done
 
 if test -z "$conf_file"; then
-    conf_file=$HOME/.lmdbg-check
+    conf_file=$HOME/.lmdbg.conf
 
-    if ! test -r "$conf_file"; then
-	conf_file=$sysconfdir/lmdbg-check.conf
-
-	if ! test -r "$conf_file"; then
-	    conf_file=''
-	fi
+    if ! test -f "$conf_file"; then
+	conf_file=$sysconfdir/lmdbg.conf
     fi
 fi
 
-remove_system_leaks () {
+system_leaks () {
     @AWK@ -v conf_file="$conf_file" '
     BEGIN {
+	skip_leaks = ENVIRON ["skip_leaks"] + 0
+
 	while (0 < (ret = (getline < conf_file))){
 	    sub(/#.*$/, "")
 
@@ -119,7 +116,14 @@ remove_system_leaks () {
 	}
 
 	count = 0
-	ignore = 0
+	is_system = 0
+    }
+
+    function print_me (){
+	if (is_system)
+	    return !skip_leaks
+	else
+	    return skip_leaks
     }
 
     function print_traceback (      i) {
@@ -129,18 +133,18 @@ remove_system_leaks () {
     }
 
     NF == 0 || /^[^ ]/ {
-	if (!ignore){
+	if (print_me()){
 	    print_traceback()
 	}
 
-	ignore = 0
+	is_system = 0
 	count  = 0
 
 	if (NF == 0)
 	    next
     }
 
-    ignore != 0 {
+    is_system && !print_me() {
 	next
     }
 
@@ -150,127 +154,22 @@ remove_system_leaks () {
 
     /^ / {
 	if ($2 in ignore_line){
-	    ignore = 1
+	    is_system = 1
 	    next
 	}
 
 	sub(/:.*$/, "", $2)
 
 	if ($2 in ignore_file){
-	    ignore = 1
+	    is_system = 1
 	    next
 	}
     }
     END {
-	if (!ignore){
+	if (print_me()){
 	    print_traceback()
 	}
     }' "$@"
 }
 
-#echo "conf_file='$conf_file'"
-if test "_$conf_file" != "_" && ! test -r "$conf_file"; then
-    echo "configuration file '$conf_file' is not readable" 1>&2
-    exit 1
-fi
-
-if test "$system_leaks"; then
-    if test "_$conf_file" != "_" && test -r "$conf_file"; then
-	remove_system_leaks "$@"
-	exit $?
-    else
-	echo "configuration file is not available" 1>&2
-	exit 1
-    fi
-fi
-
-multiline2singleline (){
-    # Input:
-    #   malloc/realloc/free ...
-    #    address1
-    #    address2
-    #    address3
-    # Output:
-    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
-    @AWK@ '
-    NF > 0 && /^ / {
-	calls = calls SUBSEP $0
-	next
-    }
-    NF > 0 {
-	if (calls){
-	    print last " " calls
-	    calls = ""
-	}
-
-	last = $0
-    }
-    END {
-	if (calls){
-	    print last " " calls
-	    calls = ""
-	}
-    }
-    ' "$@"
-}
-
-leaks_themself () {
-    @AWK@ '
-    $1 == "malloc" {
-	h [$6] = $0
-	next
-    }
-
-    $1 == "memalign" {
-	h [$8] = $0
-	next
-    }
-
-    $1 == "free" {
-	delete h [$3]
-	next
-    }
-
-    $1 == "realloc" {
-	if ($3 == "NULL" || $3 == $8){
-	    h [$8] = $0
-	}else{
-	    h [$8] = $0
-	    delete h [$3]
-	}
-    }
-
-    END {
-	for (addr in h){
-	    print h [addr]
-	}
-    }' "$@"
-}
-
-singleline2multiline () {
-    # Input:
-    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
-    # Output:
-    #   malloc/realloc/free ...
-    #    address1
-    #    address2
-    @AWK@ '
-    BEGIN {
-	FS = SUBSEP
-    }
-    $1 ~ /^(malloc|realloc|memalign) / {
-	sub(/ $/, "", $1)
-	for (i=1; i <= NF; ++i){
-	    print $i
-	}
-    }
-
-    $1 == "free" {
-	print "this should not happen" > "/dev/stderr"
-	exit 1
-    }' "$@"
-}
-
-multiline2singleline "$@" |
-leaks_themself |
-singleline2multiline
+system_leaks "$@"

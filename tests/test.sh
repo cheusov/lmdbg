@@ -53,23 +53,23 @@ canonize_paths (){
 # stupid tests
 runtest lmdbg-run --help        | head -3 | unify_text 3
 runtest lmdbg-sym --help        | head -3 | unify_text 3
-runtest lmdbg-check --help      | head -3 | unify_text 3
-runtest lmdbg-leak-check --help | head -3 | unify_text 3
+runtest lmdbg-leaks --help      | head -3 | unify_text 3
+runtest lmdbg-sysleaks --help   | head -3 | unify_text 3
 
 runtest lmdbg-run -h            | head -3 | unify_text 3
 runtest lmdbg-sym -h            | head -3 | unify_text 3
-runtest lmdbg-check -h          | head -3 | unify_text 3
-runtest lmdbg-leak-check -h     | head -3 | unify_text 3
+runtest lmdbg-leaks -h          | head -3 | unify_text 3
+runtest lmdbg-sysleaks -h       | head -3 | unify_text 3
 
 runtest lmdbg-run --version        | head -3 | unify_text 3
 runtest lmdbg-sym --version        | head -3 | unify_text 3
-runtest lmdbg-check --version      | head -3 | unify_text 3
-runtest lmdbg-leak-check --version | head -3 | unify_text 3
+runtest lmdbg-leaks --version      | head -3 | unify_text 3
+runtest lmdbg-sysleaks --version   | head -3 | unify_text 3
 
 runtest lmdbg-run -V               | head -3 | unify_text 3
 runtest lmdbg-sym -V               | head -3 | unify_text 3
-runtest lmdbg-check -V             | head -3 | unify_text 3
-runtest lmdbg-leak-check -V        | head -3 | unify_text 3
+runtest lmdbg-leaks -V             | head -3 | unify_text 3
+runtest lmdbg-sysleaks -V          | head -3 | unify_text 3
 
 ####################
 # real tests
@@ -94,9 +94,9 @@ grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
 
-# lmdbg-check
+# lmdbg-leaks
 logname2="$OBJDIR"/_log2
-runtest lmdbg-check "$logname" > "$logname2"
+runtest lmdbg-leaks "$logname" > "$logname2"
 
 grep -- --- "$logname2"
 
@@ -117,15 +117,15 @@ runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 hide_foreign_code | canonize_paths
 
-# lmdbg-run --pipe lmdbg-check
-runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-check "$execname"
+# lmdbg-run --pipe lmdbg-leaks
+runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-leaks "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
 
-# lmdbg-run -p lmdbg-check
-runtest lmdbg-run -o "$logname" -p "$OBJDIR"/lmdbg-check "$execname"
+# lmdbg-run -p lmdbg-leaks
+runtest lmdbg-run -o "$logname" -p "$OBJDIR"/lmdbg-leaks "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
@@ -145,9 +145,9 @@ grep ^malloc  "$logname" | unify_address
 grep ^realloc "$logname" | unify_address
 grep ^free    "$logname" | unify_address
 
-# lmdbg-check with two leaks
+# lmdbg-leaks with two leaks
 logname2="$OBJDIR"/_log2
-runtest lmdbg-check "$logname" > "$logname2"
+runtest lmdbg-leaks "$logname" > "$logname2"
 
 grep -- --- "$logname2"
 
@@ -155,8 +155,8 @@ grep ^malloc  "$logname2" | unify_address
 grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
-# lmdbg-check with lmdbg-leak1.conf
-runtest lmdbg-check -c ./lmdbg-check1.conf --system-leaks \
+# lmdbg-leaks with lmdbg-leak1.conf
+runtest lmdbg-sysleaks -c ./lmdbg-check1.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
@@ -165,8 +165,8 @@ grep ^malloc  "$logname2" | unify_address
 grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
-# lmdbg-check with lmdbg-leak2.conf
-runtest lmdbg-check -c ./lmdbg-check2.conf --system-leaks \
+# lmdbg-leaks with lmdbg-leak2.conf
+runtest lmdbg-sysleaks -c ./lmdbg-check2.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
@@ -175,8 +175,8 @@ grep ^malloc  "$logname2" | unify_address
 grep ^realloc "$logname2" | unify_address
 grep ^free    "$logname2" | unify_address
 
-# lmdbg-check with lmdbg-leak3.conf
-runtest lmdbg-check -c ./lmdbg-check3.conf -s \
+# lmdbg-leaks with lmdbg-leak3.conf
+runtest lmdbg-sysleaks -c ./lmdbg-check3.conf -s \
     "$logname" > "$logname2"
 
 grep -- --- "$logname2"
