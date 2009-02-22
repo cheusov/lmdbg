@@ -83,6 +83,10 @@ if test -z "$conf_file"; then
 
     if ! test -f "$conf_file"; then
 	conf_file=$sysconfdir/lmdbg.conf
+
+	if ! test -f "$conf_file"; then
+	    conf_file=''
+	fi
     fi
 fi
 
@@ -91,7 +95,7 @@ system_leaks () {
     BEGIN {
 	skip_leaks = ENVIRON ["skip_leaks"] + 0
 
-	while (0 < (ret = (getline < conf_file))){
+	while (conf_file && 0 < (ret = (getline < conf_file))){
 	    sub(/#.*$/, "")
 
 	    if ($1 == "ignore_file"){

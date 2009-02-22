@@ -143,7 +143,9 @@
       ??:0
      $
 
-- lmdbg-sysleaks XXX
+- lmdbg-sysleaks - greps or skips system memory leaks found in
+  libc, libdl, C++ stl etc. See tests/lmdbg*.conf files.
+  The default config files are: ~/.lmdbg.conf and /etc/lmdbg.conf
 
 - lmdbg-leak-check = lmdbg-run + lmdbg-leaks + lmdbg-sym + lmdbg-sysleaks
 
@@ -151,7 +153,22 @@
 
    Example:
 
-     XXX
+     $ lmdbg-leak-check -v -o _log ./_test2
+     Memory leaks were detected and saved to the file '_log'
+     10 $ cat _log
+     realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
+      0xbbbe6e12     lmdbg.c:87      do_traceback
+      0xbbbe7246     lmdbg.c:277     realloc
+      0x804877a      ../tests/test2.c:11     main
+      0x8048584
+      0x80484e7
+     malloc ( 555 ) --> 0xbb901400
+      0xbbbe6e12     lmdbg.c:87      do_traceback
+      0xbbbe716d     lmdbg.c:253     malloc
+      0x8048738      ../tests/test2.c:8      main
+      0x8048584
+      0x80484e7
+     $
 
 ====================================================================
                           QUICK GUIDE
