@@ -54,6 +54,8 @@ runtest lmdbg-leak-check -V        | head -3 | unify_text 3
 
 ####################
 # real tests
+
+# lmdbg-run
 execname="$OBJDIR"/_test1
 srcname="$SRCDIR"/tests/test1.c
 logname="$OBJDIR"/_log
@@ -72,3 +74,13 @@ runtest lmdbg-run --log "$logname" "$execname"
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
+
+# lmdbg-check
+logname2="$OBJDIR"/_log2
+runtest lmdbg-check "$logname" > "$logname2"
+
+grep -- --- "$logname2"
+
+grep malloc  "$logname2" | unify_address
+grep realloc "$logname2" | unify_address
+grep free    "$logname2" | unify_address
