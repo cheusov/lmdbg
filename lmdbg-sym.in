@@ -128,7 +128,11 @@ if test "_$with_gdb" = "_1"; then
 	echo 'set variable log_enabled=1'
 #	echo 'p lmdbg_dlopen_add_libs()'
 	echo 'print/x 0x22552255'
-	awk '{print "b *" $0 "\ninfo break " NR+1}' "$tmp_file1"
+	awk '{
+	    if ($0 !~ /^0x/)
+		$0 = "0x" $0 # This is necessary for Solaris
+	    print "b *" $0 "\ninfo break " NR+1
+	}' "$tmp_file1"
 	echo 'quit'
     } > "$tmp_file2"
 
@@ -182,7 +186,7 @@ BEGIN {
 	}
     }
 }
-NF == 1 && $1 ~ /^0x[0-9a-fA-Z]+$/ {
+NF == 1 && $0 ~ /^ / {
     if ($1 in h){
 	print " " h [$1]
     }else{
