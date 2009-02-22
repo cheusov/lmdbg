@@ -93,7 +93,8 @@ clean :
 
 .PHONY: distclean
 distclean : clean
-	rm -f  lmdbg-run lmdbg-leaks lmdbg-sym lmdbg-leak-check
+	rm -f lmdbg-run lmdbg-leaks lmdbg-sysleaks
+	rm -f lmdbg-sym lmdbg-leak-check
 	rm -f config.h config.cache config.status config.log
 	rm -f Makefile
 	rm -rf autom4te.cache
