@@ -34,7 +34,11 @@ unify_address (){
 }
 
 hide_lmdbg_code (){
-    grep -v '[[:space:]]lmdbg[.]c' "$@"
+    awk '/^ 0x/ && !/main/ {$0 = " " $1} {print}' "$@"
+}
+
+hide_foreign_code (){
+    awk '/^ .*[.][cS]/ && !/test.[.]c/ {$0 = " ??:NNN"} {print}' "$@"
 }
 
 hide_line_numbers (){
@@ -106,7 +110,7 @@ unify_address | hide_lmdbg_code | hide_line_numbers
 
 # lmdbg-sym -a
 runtest lmdbg-sym -a "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers
+unify_address | hide_lmdbg_code | hide_line_numbers | hide_foreign_code
 
 # lmdbg-run --pipe lmdbg-check
 runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-check "$execname"
