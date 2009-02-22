@@ -21,6 +21,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#if HAVE_EXECINFO_H
+#include <execinfo.h>
+#else /* HAVE_EXECINFO_H */
 #include <string.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -53,10 +56,6 @@ static void restore_sigfatal_handlers (void)
 	sigaction (SIGBUS,  &sigbus_orig_handler, NULL);
 }
 
-#define MAX_TRACEBACK_LEVELS 50
-
-typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
-
 #define one_traceback(x) \
 		tb [x] = __builtin_return_address (x); \
 		frame  = __builtin_frame_address (x); \
@@ -66,15 +65,26 @@ typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
 		};\
 		last_frame = frame;
 
+#endif /* HAVE_EXECINFO_H */
+
+#define MAX_TRACEBACK_LEVELS 50
+typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
+
 static void generate_traceback (traceback_t tb)
 { 
 	unsigned i = 0;
+#if !HAVE_EXECINFO_H
 	void* frame      = NULL;
 	void* last_frame = NULL;
+#endif
 
 	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
 		tb [i] = 0;
 	}
+
+#if HAVE_EXECINFO_H
+	backtrace (tb, MAX_TRACEBACK_LEVELS);
+#else
 
 	set_sigfatal_handlers ();
 
@@ -99,4 +109,5 @@ static void generate_traceback (traceback_t tb)
 	}
 
 	restore_sigfatal_handlers ();
+#endif
 }
