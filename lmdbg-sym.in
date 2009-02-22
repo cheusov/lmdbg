@@ -47,16 +47,10 @@ additional_libs=
 
 while [ $# -ne 0 ]; do
     case $1 in
-	-h)
+	-h|--help)
 	    usage
 	    exit 0;;
-	--help)
-	    usage
-	    exit 0;;
-	-V)
-	    version
-	    exit 0;;
-	--version)
+	-V|--version)
 	    version
 	    exit 0;;
 	--with-gdb)
