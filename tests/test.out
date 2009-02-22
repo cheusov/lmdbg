@@ -66,32 +66,44 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
 ------- args: lmdbg-sym --with-gdb ../_test1 ../_log
 malloc ( 555 ) -> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
  0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
  0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
  0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
  0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
 free ( 0xF00DBEAF )
+ 0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-sym -g ../_test1 ../_log
+malloc ( 555 ) -> 0xF00DBEAF
+ 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF
+ 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+ 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+ 0xF00DBEAF	../tests/test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+free ( 0xF00DBEAF )
  0xF00DBEAF	../tests/test1.c:NNN	main
  0xF00DBEAF
  0xF00DBEAF
