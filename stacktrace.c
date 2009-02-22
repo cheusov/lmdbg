@@ -1,116 +1,102 @@
-/* This code is derived from yamd */
-
 /*
-  Yet Another Malloc Debugger
+ * Copyright (c) 2007-2008 Aleksey Cheusov <vle@gmx.net>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
-  This file and the rest of YAMD is copyright (C) 1999 by Nate Eldredge.
-  There is no warranty whatever; I disclaim responsibility for any
-  damage caused.  Released under the GNU General Public License (see the
-  file COPYING).
-*/
+#include <string.h>
+#include <signal.h>
+#include <setjmp.h>
 
-#if !defined(__i386__)
-#ifndef USE_GCC_BUILTINS
-#define USE_GCC_BUILTINS 1
-#endif
-#endif
+static struct sigaction sigsegv_orig_handler;
+static struct sigaction  sigbus_orig_handler;
 
-typedef unsigned long addr;
+static jmp_buf jmpbuf;
+
+static void handler_sigfatal (int dummy)
+{
+	longjmp (jmpbuf,1);
+}
+
+static void set_sigfatal_handlers (void)
+{
+	struct sigaction sa;
+
+	sa.sa_handler = handler_sigfatal;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = 0;
+
+	sigaction (SIGSEGV, &sa, &sigsegv_orig_handler);
+	sigaction (SIGBUS,  &sa,  &sigbus_orig_handler);
+}
+
+static void restore_sigfatal_handlers (void)
+{
+	sigaction (SIGSEGV, &sigsegv_orig_handler, NULL);
+	sigaction (SIGBUS,  &sigbus_orig_handler, NULL);
+}
 
 #define MAX_TRACEBACK_LEVELS 50
 
-typedef addr TRACEBACK [MAX_TRACEBACK_LEVELS+1];
+typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
 
-#define STACK_ADDR_OK(x) ((x) != 0)
-
-static void 
-generate_any_traceback (
-	TRACEBACK tb,
-	addr start_eip,
-	addr start_ebp, 
-	int eip_on_stack) 
-{ 
-/* Wow.  Here be lots of ugly typecasts. */ 
-	addr ebp; 
-	addr last_ebp; 
-	addr eip; 
-	size_t i; 
-
-	if (eip_on_stack){ 
-		last_ebp = 0; 
-		ebp = start_ebp; 
-		eip = 0;  /* In case we abort immediately */ 
-/* The last test really needs to be done only once, but this 
-   is cleaner */ 
-		while (ebp > last_ebp && STACK_ADDR_OK(ebp)){ 
-			eip = *((addr *)ebp + 1); 
-			last_ebp = ebp; 
-			ebp = *(addr *)ebp; 
-			if (eip == start_eip) 
-				break; 
-		}
-		if (eip != start_eip){ 
-/* We broke out because the frame address went wrong, or maybe 
-   we reached the top.  Assume start_eip is right, but don't 
-   go any farther than that. */ 
-			tb[0] = start_eip; 
-			tb[1] = 0; 
-			return; 
-		} 
-	}else{ 
-		eip = start_eip; 
-		ebp = start_ebp; 
-	} 
- 
-	i = 0; 
-	last_ebp = 0; 
-	tb[i++] = eip; /* Log the first one */ 
- 
-/* The last test really needs to be done only once, but this 
-   is cleaner */ 
-	while (
-		i < MAX_TRACEBACK_LEVELS - 1 &&
-		ebp > last_ebp &&
-		STACK_ADDR_OK(ebp))
-	{
-		tb[i++] = *((addr *)ebp + 1); 
-		last_ebp = ebp; 
-		ebp = *(addr *)ebp; 
-	} 
-	tb[i] = 0; 
-}
-
-#ifdef USE_GCC_BUILTINS
 #define one_traceback(x) \
-		tb [x] = (addr)__builtin_return_address (x); \
-		frame  = (addr)__builtin_frame_address (x); \
+		tb [x] = __builtin_return_address (x); \
+		frame  = __builtin_frame_address (x); \
 		if (!tb [x] || !frame){\
 			tb [x] = 0; \
-			return;\
+			break;\
 		};\
 		last_frame = frame;
-#endif
 
-static void generate_traceback(TRACEBACK tb, addr eip)
+static void generate_traceback (traceback_t tb)
 { 
-#ifndef USE_GCC_BUILTINS
-	generate_any_traceback(tb, eip, (addr)__builtin_frame_address(0), 1); 
-#else
 	unsigned i = 0;
-	addr frame      = 0;
-	addr last_frame = 0;
+	void* frame      = NULL;
+	void* last_frame = NULL;
 
-	one_traceback(0);
-	one_traceback(1);
-	one_traceback(2);
-	one_traceback(3);
-	one_traceback(4);
-	one_traceback(5);
-	one_traceback(6);
-	one_traceback(7);
-	one_traceback(8);
-	one_traceback(9);
-	one_traceback(10);
-	one_traceback(11);
-#endif
-} 
+	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
+		tb [i] = 0;
+	}
+
+	set_sigfatal_handlers ();
+
+	if (!setjmp (jmpbuf)){
+		while (1){
+			one_traceback(0);
+			one_traceback(1);
+			one_traceback(2);
+			one_traceback(3);
+			one_traceback(4);
+			one_traceback(5);
+			one_traceback(6);
+			one_traceback(7);
+			one_traceback(8);
+			one_traceback(9);
+			one_traceback(10);
+			one_traceback(11);
+			break;
+		}
+
+		longjmp (jmpbuf, 2);
+	}
+
+	restore_sigfatal_handlers ();
+}

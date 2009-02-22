@@ -1,4 +1,4 @@
-/* Lightwight Malloc DeBuGger */
+/* Lightweght Malloc DeBuGger */
 
 #include "config.h"
 
@@ -47,27 +47,24 @@ static void destruct(void) { lmdbg_finish(); }
 
 #include "stacktrace.c"
 
-static void generate_traceback(TRACEBACK tb, addr eip);
-static void do_traceback(addr eip);
+static void do_traceback (void);
 
-static void print_traceback(TRACEBACK tb)
+static void print_traceback (traceback_t tb)
 {
 	size_t i;
 	int count;
-
-//	count = backtrace ((void **)tb, MAX_TRACEBACK_LEVELS);
 
 	for (i = 0; i < MAX_TRACEBACK_LEVELS && tb [i]; ++i) {
 		fprintf (log_fd, " " POINTER_FORMAT "\n", tb[i]);
 	}
 }
 
-static void do_traceback(addr eip)
+static void do_traceback (void)
 {
-	TRACEBACK buf;
+	traceback_t buf;
 	memset (&buf, 0, sizeof (buf));
-	generate_traceback(buf, eip);
-	print_traceback(buf);
+	generate_traceback (buf);
+	print_traceback (buf);
 }
 
 #if defined(RTLD_LAZY)
@@ -230,7 +227,7 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 
 		void *p = (*real_malloc) (s);
 		fprintf (log_fd, "malloc ( %u ) -> %p\n", (unsigned) s, p);
-		do_traceback ((addr) __builtin_return_address (0));
+		do_traceback ();
 
 		enable_logging ();
 		return p;
@@ -254,7 +251,7 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 			fprintf (log_fd, "realloc ( NULL , %u ) --> %p\n",
 					 (unsigned) s, np);
 		}
-		do_traceback ((addr) __builtin_return_address (0));
+		do_traceback ();
 
 		enable_logging ();
 		return np;
@@ -272,7 +269,7 @@ void WRAP(free) (void *p EXTRA_ARG)
 
 		(*real_free) (p);
 		fprintf (log_fd, "free ( %p )\n", p);
-		do_traceback ((addr) __builtin_return_address (0));
+		do_traceback ();
 
 		enable_logging ();
 	}else{
@@ -291,7 +288,7 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 		void *p = (*real_memalign) (align, size);
 		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
 				 (unsigned) align, (unsigned) size, p);
-		do_traceback ((addr) __builtin_return_address (0));
+		do_traceback ();
 
 		enable_logging ();
 		return p;
