@@ -33,3 +33,13 @@ runtest lmdbg-run -h            | head -3 | unify_text 3
 runtest lmdbg-sym -h            | head -3 | unify_text 3
 runtest lmdbg-check -h          | head -3 | unify_text 3
 runtest lmdbg-leak-check -h     | head -3 | unify_text 3
+
+runtest lmdbg-run --version        | head -3 | unify_text 3
+runtest lmdbg-sym --version        | head -3 | unify_text 3
+runtest lmdbg-check --version      | head -3 | unify_text 3
+runtest lmdbg-leak-check --version | head -3 | unify_text 3
+
+runtest lmdbg-run -V               | head -3 | unify_text 3
+runtest lmdbg-sym -V               | head -3 | unify_text 3
+runtest lmdbg-check -V             | head -3 | unify_text 3
+runtest lmdbg-leak-check -V        | head -3 | unify_text 3
