@@ -30,6 +30,14 @@ unify_address (){
     sed 's,0x[0-9a-fA-F][0-9a-fA-F]*,0xF00DBEAF,g' "$@"
 }
 
+hide_lmdbg_code (){
+    sed 's,[[:space:]]lmdbg[.]c.*$,,' "$@"
+}
+
+hide_line_numbers (){
+    sed 's,:[0-9][0-9]*,:NNN,' "$@"
+}
+
 ####################
 # stupid tests
 runtest lmdbg-run --help        | head -3 | unify_text 3
@@ -84,3 +92,7 @@ grep -- --- "$logname2"
 grep malloc  "$logname2" | unify_address
 grep realloc "$logname2" | unify_address
 grep free    "$logname2" | unify_address
+
+# lmdbg-sym
+runtest lmdbg-sym --with-gdb "$execname" "$logname" |
+unify_address | hide_lmdbg_code | hide_line_numbers
