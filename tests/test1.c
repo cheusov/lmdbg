@@ -11,4 +11,6 @@ int main ()
 	p2 = realloc (p2, 888);
 
 	free (p1);
+
+	return 0;
 }
