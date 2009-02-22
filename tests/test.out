@@ -62,4 +62,4 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 free ( 0xF00DBEAF )
 --------------------------------------------------
 ------- args: lmdbg-check ../_log
-realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF

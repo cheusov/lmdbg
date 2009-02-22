@@ -159,6 +159,12 @@ if test "$system_leaks"; then
 fi
 
 multiline2singleline (){
+    # Input:
+    #   malloc/realloc/free ...
+    #    address1
+    #    address2
+    # Output:
+    #   malloc/realloc/free ...<TAB>address1 address2
     @AWK@ '
     NF > 0 && /^ / {
 	calls = calls " " $0
@@ -185,22 +191,25 @@ leaks_themself () {
     @AWK@ '
     $1 == "malloc" {
 	h [$6] = $0
+	next
     }
 
     $1 == "memalign" {
 	h [$8] = $0
+	next
     }
 
     $1 == "free" {
 	delete h [$3]
+	next
     }
 
     $1 == "realloc" {
 	if ($3 == "NULL"){
 	    h [$8] = $0
 	}else if ($8 != $3){
-	    h [$8] = h [$3]
 	    delete h [$3]
+	    h [$8] = $0
 	}
     }
 
@@ -212,6 +221,12 @@ leaks_themself () {
 }
 
 singleline2multiline () {
+    # Input:
+    #   malloc/realloc/free ...<TAB>address1 address2
+    # Output:
+    #   malloc/realloc/free ...
+    #    address1
+    #    address2
     @AWK@ '
     $1 == "malloc" {
 	print $1, $2, $3, $4, $5, $6
