@@ -30,7 +30,8 @@ usage:
 OPTIONS:
     -h --help        displays this screen
     -V --version     display version
-    -g --with-gdb    use 'gdb'. By default 'addr2line' is used.
+    -g --with-gdb    use 'gdb' for resolving (the default).
+    -a               use 'addr2line' for resolving. By default 'gdb' is used.
        --with-so <filename> <flags>
                      dlopen(3) specified libraries with specified flags.
                      Possible flags are: RTLD_LAZY, RTLD_NOW and RTLD_GLOBAL
@@ -44,6 +45,8 @@ EOF
 }
 
 additional_libs=
+
+with_gdb=1
 
 while [ $# -ne 0 ]; do
     case $1 in
