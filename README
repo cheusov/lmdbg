@@ -143,10 +143,15 @@
       ??:0
      $
 
-- 
-  lmdbg-leaks converts addresses to source.c:999 if it is possible
+- lmdbg-sysleaks XXX
 
-  Example (gdb(1) is in action):
+- lmdbg-leak-check = lmdbg-run + lmdbg-leaks + lmdbg-sym + lmdbg-sysleaks
+
+  That is lmdbg-leak-check is all-in-one higher level tool.
+
+   Example:
+
+     XXX
 
 ====================================================================
                           QUICK GUIDE
@@ -158,8 +163,13 @@ lmdbg-leak-check --help
 
 Sample of usage:
 
-user@host$ lmdbg-run --log /tmp/PROG.memtest PROG ARG1 ARG2 ... ARGN
-user@host$ lmdbg-leak < /tmp/PROG.memtest > /tmp/PROG_LEAKS.memtest
-user@host$ lmdbg-sym --with-gdb \
-   PROG \
-   < /tmp/PROG_LEAKS.memtest > /tmp/PROG_LEAKS_SRC.memtest
+user@host$ lmdbg-run -o /tmp/PROG.log PROG ARG1 ARG2 ... ARGN
+user@host$ lmdbg-leak < /tmp/PROG.log > /tmp/PROG.log2
+user@host$ lmdbg-sym PROG \
+   < /tmp/PROG.log2 > /tmp/PROG_LEAKS_SRC.log3
+
+====================================================================
+                AUTHOR: Aleksey Cheusov <vle@gmx.net>
+
+====================================================================
+                LICENSE: MIT License
