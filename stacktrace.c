@@ -21,9 +21,24 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#define MAX_TRACEBACK_LEVELS 50
+typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
+
 #if HAVE_EXECINFO_H
 #include <execinfo.h>
+/* Linux ? */
+static void generate_traceback (traceback_t tb)
+{
+	int i;
+	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
+		tb [i] = 0;
+	}
+
+	backtrace (tb, MAX_TRACEBACK_LEVELS);
+}
+
 #else /* HAVE_EXECINFO_H */
+
 #include <string.h>
 #include <signal.h>
 #include <setjmp.h>
@@ -65,49 +80,35 @@ static void restore_sigfatal_handlers (void)
 		};\
 		last_frame = frame;
 
-#endif /* HAVE_EXECINFO_H */
-
-#define MAX_TRACEBACK_LEVELS 50
-typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
-
 static void generate_traceback (traceback_t tb)
 { 
 	unsigned i = 0;
-#if !HAVE_EXECINFO_H
 	void* frame      = NULL;
 	void* last_frame = NULL;
-#endif
 
 	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
 		tb [i] = 0;
 	}
 
-#if HAVE_EXECINFO_H
-	backtrace (tb, MAX_TRACEBACK_LEVELS);
-#else
-
 	set_sigfatal_handlers ();
 
 	if (!setjmp (jmpbuf)){
-		while (1){
-			one_traceback(0);
-			one_traceback(1);
-			one_traceback(2);
-			one_traceback(3);
-			one_traceback(4);
-			one_traceback(5);
-			one_traceback(6);
-			one_traceback(7);
-			one_traceback(8);
-			one_traceback(9);
-			one_traceback(10);
-			one_traceback(11);
-			break;
-		}
+		one_traceback(0);
+		one_traceback(1);
+		one_traceback(2);
+		one_traceback(3);
+		one_traceback(4);
+		one_traceback(5);
+		one_traceback(6);
+		one_traceback(7);
+		one_traceback(8);
+		one_traceback(9);
+		one_traceback(10);
+		one_traceback(11);
 
 		longjmp (jmpbuf, 2);
 	}
 
 	restore_sigfatal_handlers ();
-#endif
 }
+#endif /* HAVE_EXECINFO_H */
