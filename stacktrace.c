@@ -93,18 +93,20 @@ static void generate_traceback (traceback_t tb)
 	set_sigfatal_handlers ();
 
 	if (!setjmp (jmpbuf)){
-		one_traceback(0);
-		one_traceback(1);
-		one_traceback(2);
-		one_traceback(3);
-		one_traceback(4);
-		one_traceback(5);
-		one_traceback(6);
-		one_traceback(7);
-		one_traceback(8);
-		one_traceback(9);
-		one_traceback(10);
-		one_traceback(11);
+		while (1){
+			one_traceback(0);
+			one_traceback(1);
+			one_traceback(2);
+			one_traceback(3);
+			one_traceback(4);
+			one_traceback(5);
+			one_traceback(6);
+			one_traceback(7);
+			one_traceback(8);
+			one_traceback(9);
+			one_traceback(10);
+			one_traceback(11);
+		}
 
 		longjmp (jmpbuf, 2);
 	}
