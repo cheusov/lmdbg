@@ -44,7 +44,7 @@ INSTALL_PROGRAM=@INSTALL_PROGRAM@
 INSTALL_SCRIPT= @INSTALL_SCRIPT@
 INSTALL_DATA=	@INSTALL_DATA@
 
-CFLAGS=		@CFLAGS@ -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
+CFLAGS=		@CFLAGS@ -D_FILE_OFFSET_BITS=64 -DLMDBG_VERSION=\"$(LMDBG_VERSION)\"
 LDFLAGS=        @LDFLAGS@
 LDLIBS=		@LIBS@
 
@@ -59,9 +59,11 @@ SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 .PHONY: all
 all : liblmdbg.la
 
+lmdbg.o : config.h
+
 .c.o:
-	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE $(ALLCFLAGS) \
-	   -g -O0 $<
+	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE \
+		$(ALLCFLAGS) -g -O0 $<
 
 liblmdbg.la : lmdbg.o
 	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(libdir) \
