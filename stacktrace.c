@@ -106,6 +106,34 @@ static void generate_traceback (traceback_t tb)
 			one_traceback(9);
 			one_traceback(10);
 			one_traceback(11);
+			one_traceback(12);
+			one_traceback(13);
+			one_traceback(14);
+			one_traceback(15);
+			one_traceback(16);
+			one_traceback(17);
+			one_traceback(18);
+			one_traceback(19);
+			one_traceback(20);
+			one_traceback(21);
+			one_traceback(22);
+			one_traceback(23);
+			one_traceback(24);
+			one_traceback(25);
+			one_traceback(26);
+			one_traceback(27);
+			one_traceback(28);
+			one_traceback(29);
+			one_traceback(30);
+			one_traceback(31);
+			one_traceback(32);
+			one_traceback(33);
+			one_traceback(34);
+			one_traceback(35);
+			one_traceback(36);
+			one_traceback(37);
+			one_traceback(38);
+			one_traceback(39);
 		}
 
 		longjmp (jmpbuf, 2);
