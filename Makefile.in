@@ -44,7 +44,7 @@ SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
 .PHONY: all
 all : liblmdbg.la
 
-lmdbg.o : config.h
+lmdbg.o : config.h stacktrace.c
 
 .c.o:
 	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE \
