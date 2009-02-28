@@ -1,4 +1,13 @@
 ======================================================================
+Version 0.8.1, by Aleksey Cheusov, Sat, 28 Feb 2009 15:58:33 +0200
+
+  GPL phantoms were completely removed.
+
+  Minor fixes in Makefile
+
+  Minor clean-ups in stacktrace.c
+
+======================================================================
 Version 0.8.0, by Aleksey Cheusov, Sun, 22 Feb 2009 23:07:59 +0200
 
   Completely new implementation of stacktrace function.  Now it is my
