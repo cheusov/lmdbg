@@ -70,9 +70,9 @@ static void destruct(void) { lmdbg_finish(); }
 #define WRAP(name) name
 #endif
 
-static void do_traceback (void);
+static void log_stacktrace (void);
 
-static void print_traceback (void **buffer, int size)
+static void print_stacktrace (void **buffer, int size)
 {
 	int i;
 	for (i = 0; i < size; ++i) {
@@ -80,13 +80,13 @@ static void print_traceback (void **buffer, int size)
 	}
 }
 
-static void do_traceback (void)
+static void log_stacktrace (void)
 {
 	void * buf [MAX_FRAMES_CNT];
 	int cnt;
 
 	cnt = stacktrace (buf, MAX_FRAMES_CNT);
-	print_traceback (buf, cnt);
+	print_stacktrace (buf, cnt);
 }
 
 #if defined(RTLD_LAZY)
@@ -249,7 +249,7 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 
 		void *p = (*real_malloc) (s);
 		fprintf (log_fd, "malloc ( %u ) --> %p\n", (unsigned) s, p);
-		do_traceback ();
+		log_stacktrace ();
 
 		enable_logging ();
 		return p;
@@ -273,7 +273,7 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 			fprintf (log_fd, "realloc ( NULL , %u ) --> %p\n",
 					 (unsigned) s, np);
 		}
-		do_traceback ();
+		log_stacktrace ();
 
 		enable_logging ();
 		return np;
@@ -291,7 +291,7 @@ void WRAP(free) (void *p EXTRA_ARG)
 
 		(*real_free) (p);
 		fprintf (log_fd, "free ( %p )\n", p);
-		do_traceback ();
+		log_stacktrace ();
 
 		enable_logging ();
 	}else{
@@ -310,7 +310,7 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 		void *p = (*real_memalign) (align, size);
 		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
 				 (unsigned) align, (unsigned) size, p);
-		do_traceback ();
+		log_stacktrace ();
 
 		enable_logging ();
 		return p;
