@@ -68,7 +68,7 @@ static void restore_sigfatal_handlers (void)
 	sigaction (SIGBUS,  &sigbus_orig_handler, NULL);
 }
 
-#define one_traceback(x)					   \
+#define one_return_address(x)                  \
 		if (x >= size) break;                  \
 		tb [x] = __builtin_return_address (x); \
 		frame  = __builtin_frame_address (x); \
@@ -90,46 +90,46 @@ int stacktrace (void **tb, int size)
 
 	if (!setjmp (jmpbuf)){
 		while (1){
-			one_traceback(0);
-			one_traceback(1);
-			one_traceback(2);
-			one_traceback(3);
-			one_traceback(4);
-			one_traceback(5);
-			one_traceback(6);
-			one_traceback(7);
-			one_traceback(8);
-			one_traceback(9);
-			one_traceback(10);
-			one_traceback(11);
-			one_traceback(12);
-			one_traceback(13);
-			one_traceback(14);
-			one_traceback(15);
-			one_traceback(16);
-			one_traceback(17);
-			one_traceback(18);
-			one_traceback(19);
-			one_traceback(20);
-			one_traceback(21);
-			one_traceback(22);
-			one_traceback(23);
-			one_traceback(24);
-			one_traceback(25);
-			one_traceback(26);
-			one_traceback(27);
-			one_traceback(28);
-			one_traceback(29);
-			one_traceback(30);
-			one_traceback(31);
-			one_traceback(32);
-			one_traceback(33);
-			one_traceback(34);
-			one_traceback(35);
-			one_traceback(36);
-			one_traceback(37);
-			one_traceback(38);
-			one_traceback(39);
+			one_return_address(0);
+			one_return_address(1);
+			one_return_address(2);
+			one_return_address(3);
+			one_return_address(4);
+			one_return_address(5);
+			one_return_address(6);
+			one_return_address(7);
+			one_return_address(8);
+			one_return_address(9);
+			one_return_address(10);
+			one_return_address(11);
+			one_return_address(12);
+			one_return_address(13);
+			one_return_address(14);
+			one_return_address(15);
+			one_return_address(16);
+			one_return_address(17);
+			one_return_address(18);
+			one_return_address(19);
+			one_return_address(20);
+			one_return_address(21);
+			one_return_address(22);
+			one_return_address(23);
+			one_return_address(24);
+			one_return_address(25);
+			one_return_address(26);
+			one_return_address(27);
+			one_return_address(28);
+			one_return_address(29);
+			one_return_address(30);
+			one_return_address(31);
+			one_return_address(32);
+			one_return_address(33);
+			one_return_address(34);
+			one_return_address(35);
+			one_return_address(36);
+			one_return_address(37);
+			one_return_address(38);
+			one_return_address(39);
 		}
 
 		longjmp (jmpbuf, 2);
