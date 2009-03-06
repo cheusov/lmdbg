@@ -79,7 +79,7 @@ execname="$OBJDIR"/_test1
 srcname="$SRCDIR"/tests/test1.c
 logname="$OBJDIR"/_log
 
-"$CC" -O0 -g -o "$execname" "$srcname"
+$CC -O0 -g -o "$execname" "$srcname"
 
 # -o
 runtest lmdbg-run -o "$logname" "$execname"
@@ -136,7 +136,7 @@ execname="$OBJDIR"/_test2
 srcname="$SRCDIR"/tests/test2.c
 logname="$OBJDIR"/_log
 
-"$CC" -O0 -g -o "$execname" "$srcname"
+$CC -O0 -g -o "$execname" "$srcname"
 
 # lmdbg-run -o with two leaks
 runtest lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"

@@ -103,7 +103,7 @@ BIRTHDATE=	2008-04-28
 .PHONY: test
 test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 	@echo 'running tests...'; \
-	OBJDIR=.. SRCDIR=.. CC=${CC}; \
+	OBJDIR=.. SRCDIR=.. CC='${CC}'; \
 	export OBJDIR SRCDIR CC; \
 	if ( cd ./tests || exit 0; \
 	    ./test.sh > ../_test.res || exit 0; \
