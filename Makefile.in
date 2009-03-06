@@ -38,8 +38,8 @@ LDLIBS=		@LIBS@
 ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\" -I.
 ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
 
-SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
-	lmdbg.c
+#SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
+#	lmdbg.c stacktrace.c
 
 .PHONY: all
 all : liblmdbg.la
@@ -50,9 +50,9 @@ lmdbg.o : config.h stacktrace.c
 	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE \
 		$(ALLCFLAGS) -g -O0 $<
 
-liblmdbg.la : lmdbg.o
+liblmdbg.la : lmdbg.o stacktrace.o
 	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(libdir) \
-	   -version-info 0:0 -g lmdbg.lo $(ALLLDFLAGS)
+	   -version-info 0:0 -g lmdbg.lo stacktrace.lo $(ALLLDFLAGS)
 
 .PHONY: install
 install : all

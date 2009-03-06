@@ -36,6 +36,10 @@
 #include <malloc.h>
 #endif
 
+#include "stacktrace.h"
+
+#define MAX_FRAMES_CNT 50
+
 static int log_enabled = 0;
 
 static const char *log_filename = NULL;
@@ -66,26 +70,23 @@ static void destruct(void) { lmdbg_finish(); }
 #define WRAP(name) name
 #endif
 
-#include "stacktrace.c"
-
 static void do_traceback (void);
 
-static void print_traceback (traceback_t tb)
+static void print_traceback (void **buffer, int size)
 {
-	size_t i;
-	int count;
-
-	for (i = 0; i < MAX_TRACEBACK_LEVELS && tb [i]; ++i) {
-		fprintf (log_fd, " " POINTER_FORMAT "\n", tb[i]);
+	int i;
+	for (i = 0; i < size; ++i) {
+		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
 	}
 }
 
 static void do_traceback (void)
 {
-	traceback_t buf;
-	memset (&buf, 0, sizeof (buf));
-	generate_traceback (buf);
-	print_traceback (buf);
+	void * buf [MAX_FRAMES_CNT];
+	int cnt;
+
+	cnt = stacktrace (buf, MAX_FRAMES_CNT);
+	print_traceback (buf, cnt);
 }
 
 #if defined(RTLD_LAZY)

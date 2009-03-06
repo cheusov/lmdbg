@@ -21,23 +21,16 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#define MAX_TRACEBACK_LEVELS 50
-typedef void* traceback_t [MAX_TRACEBACK_LEVELS];
-
 #if HAVE_EXECINFO_H
 #include <execinfo.h>
-/* Linux ? */
-static void generate_traceback (traceback_t tb)
+/* GNU libc ? */
+int stacktrace (void **buffer, int size)
 {
-	int i;
-	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
-		tb [i] = 0;
-	}
-
-	backtrace (tb, MAX_TRACEBACK_LEVELS);
+	return backtrace (buffer, size);
 }
 
-#else /* HAVE_EXECINFO_H */
+#else
+/* !HAVE_EXECINFO_H (probably NetBSD/FreeBSD/Solaris etc.) */
 
 #include <string.h>
 #include <signal.h>
@@ -71,22 +64,21 @@ static void restore_sigfatal_handlers (void)
 	sigaction (SIGBUS,  &sigbus_orig_handler, NULL);
 }
 
-#define one_traceback(x) \
+#define one_traceback(x)					   \
+		if (x >= size) break;                  \
 		tb [x] = __builtin_return_address (x); \
 		frame  = __builtin_frame_address (x); \
 		if (!tb [x] || !frame){\
 			tb [x] = 0; \
 			break;\
-		};\
-		last_frame = frame;
+		}
 
-static void generate_traceback (traceback_t tb)
-{ 
-	unsigned i = 0;
-	void* frame      = NULL;
-	void* last_frame = NULL;
+int stacktrace (void **tb, int size)
+{
+	unsigned i  = 0;
+	void* frame = NULL;
 
-	for (i=0; i < MAX_TRACEBACK_LEVELS; ++i){
+	for (i=0; i < size; ++i){
 		tb [i] = 0;
 	}
 
@@ -140,5 +132,11 @@ static void generate_traceback (traceback_t tb)
 	}
 
 	restore_sigfatal_handlers ();
+
+	for (i=0; i < size; ++i){
+		if (!tb [i])
+			return i;
+	}
+	return size;
 }
 #endif /* HAVE_EXECINFO_H */
