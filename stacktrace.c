@@ -21,6 +21,10 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #if HAVE_EXECINFO_H
 #include <execinfo.h>
 /* GNU libc ? */
