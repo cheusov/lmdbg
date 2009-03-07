@@ -39,11 +39,11 @@ LDLIBS=		@LIBS@
 ALLCFLAGS=$(CFLAGS) -DLMDBG_VERSION=\"$(LMDBG_VERSION)\" -I.
 ALLLDFLAGS=$(LDFLAGS) $(LDLIBS)
 
-#SRCS = Makefile TODO README NEWS COPYING lmdbg-run.in \
-#	lmdbg.c stacktrace.c
-
 .PHONY: all
 all : liblmdbg.la
+
+.PHONY: stacktrace
+stacktrace : libstacktrace.la
 
 lmdbg.o : config.h stacktrace.c
 
@@ -54,6 +54,17 @@ lmdbg.o : config.h stacktrace.c
 liblmdbg.la : lmdbg.o stacktrace.o
 	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(libdir) \
 	   -version-info 0:0 -g lmdbg.lo stacktrace.lo $(ALLLDFLAGS)
+
+libstacktrace.la : stacktrace.o
+	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(libdir) \
+	   -version-info 0:0 -g stacktrace.lo $(ALLLDFLAGS)
+
+.PHONY: install.stacktrace
+install.stacktrace : libstacktrace.la
+	$(INSTALL) -d $(DESTDIR)$(libdir)
+	$(INSTALL) -d $(DESTDIR)$(includedir)
+	libtool --mode=install $(INSTALL) -m 0755 libstacktrace.la $(DESTDIR)$(libdir)
+	$(INSTALL) -m 0755 stacktrace.h $(DESTDIR)$(includedir)
 
 .PHONY: install
 install : all
