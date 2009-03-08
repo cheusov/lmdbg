@@ -1,4 +1,13 @@
 ======================================================================
+Version 0.9.0, by Aleksey Cheusov, Sun,  8 Mar 2009 12:59:45 +0200
+
+  stacktrace.c + stacktrace.h = libstacktrace with API
+  compatible with GLIBC's backtrace(3).
+  See install.stacktrace Makefile's target.
+
+  Code clean-ups
+
+======================================================================
 Version 0.8.1, by Aleksey Cheusov, Sat, 28 Feb 2009 15:58:33 +0200
 
   GPL phantoms were completely removed.
