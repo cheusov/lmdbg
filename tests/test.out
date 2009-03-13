@@ -225,8 +225,8 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 ------- args: lmdbg-leak-check -c ./lmdbg3.conf -o /lmdbg/dir/_log /lmdbg/dir/_test1
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-leak-check -v -c ./lmdbg4.conf -o /lmdbg/dir/_log /lmdbg/dir/_test1
+------- args: lmdbg-leak-check -v -c ./lmdbg5.conf -o /lmdbg/dir/_log /lmdbg/dir/_test1
 No memory leaks detected
 --------------------------------------------------
-------- args: lmdbg-leak-check -c ./lmdbg3.conf -o /lmdbg/dir/_log /lmdbg/dir/_test2
+------- args: lmdbg-leak-check -c ./lmdbg6.conf -o /lmdbg/dir/_log /lmdbg/dir/_test2
 malloc ( 555 ) --> 0xF00DBEAF

@@ -112,17 +112,17 @@ grep free    "$logname2" | unify_address
 # lmdbg-sym --with-gdb
 runtest lmdbg-sym --with-gdb "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
-unify_paths | canonize_paths
+canonize_paths
 
 # lmdbg-sym -g
 runtest lmdbg-sym -g "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
-unify_paths | canonize_paths
+canonize_paths
 
 # lmdbg-sym -a
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
-hide_foreign_code | unify_paths | canonize_paths
+hide_foreign_code | canonize_paths
 
 # lmdbg-run --pipe lmdbg-leaks
 runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-leaks "$execname"
@@ -215,10 +215,10 @@ grep ^realloc "$logname" | unify_address
 grep ^free    "$logname" | unify_address
 
 # lmdbg-leak-check!
-runtest lmdbg-leak-check -v -c ./lmdbg4.conf -o "$logname" "$OBJDIR"/_test1
+runtest lmdbg-leak-check -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/_test1
 
 # lmdbg-leak-check!
-runtest lmdbg-leak-check -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test2 \
+runtest lmdbg-leak-check -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2 \
     > "$logname2"
 
 grep -- --- "$logname2"
