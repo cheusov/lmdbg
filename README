@@ -1,7 +1,12 @@
                LMDBG - lightweight malloc debugger
 
 ====================================================================
-                          DESCRIPTION
+                      INSTALLATION
+
+See INSTALL file
+
+====================================================================
+                      DOCUMENTATION/TUTORIAL
 
 - Unlike many other malloc debuggers (electric-fence, dmalloc,
   valgrind etc.) LMDBG does *NOT* protect your memory in any way.
