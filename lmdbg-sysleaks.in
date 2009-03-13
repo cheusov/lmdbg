@@ -94,6 +94,14 @@ system_leaks () {
 	while (conf_file && 0 < (ret = (getline < conf_file))){
 	    sub(/#.*$/, "")
 
+	    if ($1 == "ignore_basename"){
+		ignore_basename [$2] = ""
+		continue
+	    }
+	    if ($1 == "ignore_baseline"){
+		ignore_baseline [$2] = ""
+		continue
+	    }
 	    if ($1 == "ignore_file"){
 		ignore_file [$2] = ""
 		continue
@@ -153,14 +161,34 @@ system_leaks () {
     }
 
     /^ / {
+	if (-1 == match($2, /[^\/:]+($|:)/))
+	    next
+
+	if (substr($2, RSTART+RLENGTH-1, 1) == ":")
+	    --RLENGTH
+
+#	print $2 > "/dev/stderr"
+#	print substr($2, 1, RSTART+RLENGTH-1) > "/dev/stderr"
+#	print substr($2, RSTART) > "/dev/stderr"
+#	print substr($2, RSTART, RLENGTH) > "/dev/stderr"
+#	print "" > "/dev/stderr"
+
 	if ($2 in ignore_line){
 	    is_system = 1
 	    next
 	}
 
-	sub(/:.*$/, "", $2)
+	if (substr($2, 1, RSTART+RLENGTH-1) in ignore_file){
+	    is_system = 1
+	    next
+	}
 
-	if ($2 in ignore_file){
+	if (substr($2, RSTART) in ignore_baseline){
+	    is_system = 1
+	    next
+	}
+
+	if (substr($2, RSTART, RLENGTH) in ignore_basename){
 	    is_system = 1
 	    next
 	}
