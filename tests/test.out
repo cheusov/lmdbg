@@ -47,66 +47,24 @@ XXX
 ------- args: lmdbg-sysleaks -V
 XXX
 --------------------------------------------------
-------- args: lmdbg-run -o ../_log ../_test1
+------- args: lmdbg-run -o /lmdbg/dir/_log /lmdbg/dir/_test1
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 free ( 0xF00DBEAF )
 --------------------------------------------------
-------- args: lmdbg-run --log ../_log ../_test1
+------- args: lmdbg-run --log /lmdbg/dir/_log /lmdbg/dir/_test1
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 free ( 0xF00DBEAF )
 --------------------------------------------------
-------- args: lmdbg-leaks ../_log
+------- args: lmdbg-leaks /lmdbg/dir/_log
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-sym --with-gdb ../_test1 ../_log
-malloc ( 555 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF	test1.c:NNN	main
- 0xF00DBEAF
- 0xF00DBEAF
-realloc ( NULL , 666 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF	test1.c:NNN	main
- 0xF00DBEAF
- 0xF00DBEAF
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF	test1.c:NNN	main
- 0xF00DBEAF
- 0xF00DBEAF
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF	test1.c:NNN	main
- 0xF00DBEAF
- 0xF00DBEAF
-free ( 0xF00DBEAF )
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF
- 0xF00DBEAF	test1.c:NNN	main
- 0xF00DBEAF
- 0xF00DBEAF
---------------------------------------------------
-------- args: lmdbg-sym -g ../_test1 ../_log
+------- args: lmdbg-sym --with-gdb /lmdbg/dir/_test1 /lmdbg/dir/_log
 malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF
  0xF00DBEAF
@@ -148,7 +106,49 @@ free ( 0xF00DBEAF )
  0xF00DBEAF
  0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-sym -a ../_test1 ../_log
+------- args: lmdbg-sym -g /lmdbg/dir/_test1 /lmdbg/dir/_log
+malloc ( 555 ) --> 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF	test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF	test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF	test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF	test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+free ( 0xF00DBEAF )
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF
+ 0xF00DBEAF	test1.c:NNN	main
+ 0xF00DBEAF
+ 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-sym -a /lmdbg/dir/_test1 /lmdbg/dir/_log
 malloc ( 555 ) --> 0xF00DBEAF
  ??:NNN
  ??:NNN
@@ -190,43 +190,43 @@ free ( 0xF00DBEAF )
  ??:NNN
  ??:NNN
 --------------------------------------------------
-------- args: lmdbg-run -o ../_log --pipe ../lmdbg-leaks ../_test1
+------- args: lmdbg-run -o /lmdbg/dir/_log --pipe /lmdbg/dir/lmdbg-leaks /lmdbg/dir/_test1
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-run -o ../_log -p ../lmdbg-leaks ../_test1
+------- args: lmdbg-run -o /lmdbg/dir/_log -p /lmdbg/dir/lmdbg-leaks /lmdbg/dir/_test1
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-run -o ../_log -p lmdbg-sym ../_test2 ../_test2
+------- args: lmdbg-run -o /lmdbg/dir/_log -p lmdbg-sym /lmdbg/dir/_test2 /lmdbg/dir/_test2
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-leaks ../_log
+------- args: lmdbg-leaks /lmdbg/dir/_log
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-sysleaks -c ./lmdbg1.conf -s ../_log
-malloc ( 555 ) --> 0xF00DBEAF
-realloc ( NULL , 666 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
---------------------------------------------------
-------- args: lmdbg-sysleaks -c ./lmdbg2.conf -s ../_log
---------------------------------------------------
-------- args: lmdbg-sysleaks -c ./lmdbg3.conf -s ../_log
+------- args: lmdbg-sysleaks -c ./lmdbg1.conf -s /lmdbg/dir/_log
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( NULL , 666 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
---------------------------------------------------
-------- args: lmdbg-sysleaks -c ./lmdbg3.conf ../_log
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-leak-check -c ./lmdbg3.conf -o ../_log ../_test1
+------- args: lmdbg-sysleaks -c ./lmdbg2.conf -s /lmdbg/dir/_log
+--------------------------------------------------
+------- args: lmdbg-sysleaks -c ./lmdbg3.conf -s /lmdbg/dir/_log
+malloc ( 555 ) --> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-sysleaks -c ./lmdbg3.conf /lmdbg/dir/_log
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 --------------------------------------------------
-------- args: lmdbg-leak-check -v -c ./lmdbg4.conf -o ../_log ../_test1
+------- args: lmdbg-leak-check -c ./lmdbg3.conf -o /lmdbg/dir/_log /lmdbg/dir/_test1
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-leak-check -v -c ./lmdbg4.conf -o /lmdbg/dir/_log /lmdbg/dir/_test1
 No memory leaks detected
 --------------------------------------------------
-------- args: lmdbg-leak-check -c ./lmdbg3.conf -o ../_log ../_test2
+------- args: lmdbg-leak-check -c ./lmdbg3.conf -o /lmdbg/dir/_log /lmdbg/dir/_test2
 malloc ( 555 ) --> 0xF00DBEAF

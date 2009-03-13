@@ -26,9 +26,6 @@ set -e
 LC_ALL=C
 export LC_ALL
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
@@ -125,7 +122,7 @@ fi
 
 test $? || exit 3
 
-@AWK@ '
+awk '
 NF == 1 {
     hash [$1] = ""
 }
@@ -159,7 +156,7 @@ if test "_$with_gdb" = "_1"; then
 
     # GDB Solo!
     gdb -nx -q -batch -x $tmp_file2 "$prog" | # tee log |
-    @AWK@ '
+    awk '
     !flag {
 	flag = /22552255/
 	next
@@ -197,7 +194,7 @@ else
     xargs addr2line -e "$prog" < "$tmp_file1"
 fi > $tmp_file3
 
-@AWK@ -v tmp1=$tmp_file1 -v tmp3=$tmp_file3 '
+awk -v tmp1=$tmp_file1 -v tmp3=$tmp_file3 '
 BEGIN {
     while (0 < getline addr < tmp1 && 0 < getline src < tmp3){
 #	print addr " --> " "`" src "`"

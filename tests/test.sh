@@ -8,7 +8,12 @@ export LMDBG_LIBDYN="$OBJDIR"/.libs/liblmdbg.so
 export PATH=$OBJDIR:$PATH
 
 unify_paths (){
-    cat "$@"
+    sed 's,/[^ ]*lmdbg/,/lmdbg/dir/,g' "$@"
+}
+
+unify_paths_inplace (){
+    unify_paths "$1" > "$1"_
+    mv "$1"_ "$1"
 }
 
 runtest (){
@@ -106,16 +111,18 @@ grep free    "$logname2" | unify_address
 
 # lmdbg-sym --with-gdb
 runtest lmdbg-sym --with-gdb "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers | canonize_paths
+unify_address | hide_lmdbg_code | hide_line_numbers |
+unify_paths | canonize_paths
 
 # lmdbg-sym -g
 runtest lmdbg-sym -g "$execname" "$logname" |
-unify_address | hide_lmdbg_code | hide_line_numbers | canonize_paths
+unify_address | hide_lmdbg_code | hide_line_numbers |
+unify_paths | canonize_paths
 
 # lmdbg-sym -a
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
-hide_foreign_code | canonize_paths
+hide_foreign_code | unify_paths | canonize_paths
 
 # lmdbg-run --pipe lmdbg-leaks
 runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-leaks "$execname"
@@ -140,6 +147,8 @@ $CC -O0 -g -o "$execname" "$srcname"
 
 # lmdbg-run -o with two leaks
 runtest lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"
+
+unify_paths_inplace "$logname"
 
 grep ^malloc  "$logname" | unify_address
 grep ^realloc "$logname" | unify_address

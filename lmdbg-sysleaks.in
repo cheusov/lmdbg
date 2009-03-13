@@ -26,10 +26,6 @@ set -e
 LC_ALL=C
 export LC_ALL
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-libdir=@libdir@
 sysconfdir=@sysconfdir@
 
 usage (){
@@ -91,7 +87,7 @@ if test -z "$conf_file"; then
 fi
 
 system_leaks () {
-    @AWK@ -v conf_file="$conf_file" '
+    awk -v conf_file="$conf_file" '
     BEGIN {
 	skip_leaks = ENVIRON ["skip_leaks"] + 0
 

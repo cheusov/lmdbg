@@ -34,7 +34,7 @@
 
 #include <dlfcn.h>
 
-#ifdef __linux__
+#ifdef HAVE_FUNC2_MEMALIGN_MALLOC_H
 #include <malloc.h>
 #endif
 
@@ -53,7 +53,7 @@ static int         log_verbose  = 0;
 static void * (*real_malloc)  (size_t s);
 static void * (*real_realloc) (void *p, size_t s);
 static void   (*real_free)    (void *p);
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 static void * (*real_memalign) (size_t align, size_t size);
 #endif
 
@@ -66,7 +66,7 @@ static void construct(void) { lmdbg_startup(); }
 static void destruct(void) __attribute__((destructor));
 static void destruct(void) { lmdbg_finish(); }
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 #define WRAP(name) wrap_ ## name
 #else
 #define WRAP(name) name
@@ -122,7 +122,7 @@ static void init_fun_ptrs (void)
 	if (!real_free)
 		exit (43);
 
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	real_memalign    = dlsym (libc_so, "memalign");
 	if (!real_memalign)
 		exit (44);
@@ -154,7 +154,7 @@ static void init_log (void)
 	}
 }
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 #define EXTRA_ARG , const void *CALLER
 #else
 #define EXTRA_ARG
@@ -163,15 +163,15 @@ static void init_log (void)
 void * WRAP(malloc) (size_t s EXTRA_ARG);
 void * WRAP(realloc) (void *p, size_t s EXTRA_ARG);
 void WRAP(free) (void *p EXTRA_ARG);
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
 static void *(*realloc_hook_orig) (void *p, size_t s EXTRA_ARG);
 static void (*free_hook_orig) (void *p EXTRA_ARG);
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 static void *(*memalign_hook_orig) (size_t align, size_t size EXTRA_ARG);
 #endif
 #endif
@@ -180,11 +180,11 @@ static void enable_logging (void)
 {
 	log_enabled = 1;
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 	__malloc_hook   = WRAP(malloc);
 	__realloc_hook  = WRAP(realloc);
 	__free_hook     = WRAP(free);
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	__memalign_hook = WRAP(memalign);
 #endif
 #endif
@@ -194,11 +194,11 @@ static void disable_logging (void)
 {
 	log_enabled = 0;
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 	__malloc_hook   = malloc_hook_orig;
 	__realloc_hook  = realloc_hook_orig;
 	__free_hook     = free_hook_orig;
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	__memalign_hook = memalign_hook_orig;
 #endif
 #endif
@@ -222,11 +222,11 @@ static void lmdbg_startup (void)
 	fprintf (stderr, "real_memalign=%p\n", real_memalign);
 	*/
 
-#ifdef __linux__
+#ifdef HAVE_VAR___MALLOC_HOOK
 	malloc_hook_orig   = __malloc_hook;
 	realloc_hook_orig  = __realloc_hook;
 	free_hook_orig     = __free_hook;
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	memalign_hook_orig = __memalign_hook;
 #endif
 #endif
@@ -301,7 +301,7 @@ void WRAP(free) (void *p EXTRA_ARG)
 	}
 }
 
-#if HAVE_MEMALIGN
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 {
 	assert (real_memalign);

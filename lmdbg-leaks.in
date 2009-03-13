@@ -26,10 +26,6 @@ set -e
 LC_ALL=C
 export LC_ALL
 
-prefix=@prefix@
-exec_prefix=@exec_prefix@
-bindir=@bindir@
-libdir=@libdir@
 sysconfdir=@sysconfdir@
 
 usage (){
@@ -79,7 +75,7 @@ multiline2singleline (){
     #    address3
     # Output:
     #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
-    @AWK@ '
+    awk '
     NF > 0 && /^ / {
 	calls = calls SUBSEP $0
 	next
@@ -102,7 +98,7 @@ multiline2singleline (){
 }
 
 leaks () {
-    @AWK@ '
+    awk '
     $1 == "malloc" {
 	h [$6] = $0
 	next
@@ -141,7 +137,7 @@ singleline2multiline () {
     #   malloc/realloc/free ...
     #    address1
     #    address2
-    @AWK@ '
+    awk '
     BEGIN {
 	FS = SUBSEP
     }
