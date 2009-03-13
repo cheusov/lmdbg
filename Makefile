@@ -8,6 +8,7 @@ MKC_COMMON_DEFINES=	-D_ALL_SOURCE -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 MKC_CHECK_HEADERS+=	execinfo.h
 MKC_CHECK_FUNCS2+=	memalign:malloc.h
 MKC_CHECK_VARS+=	__malloc_hook:malloc.h
+MKC_CHECK_FUNCLIBS+=	dlopen:dl
 
 ##################################################
 
@@ -108,7 +109,7 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 	@echo 'running tests...'; \
 	OBJDIR=${.OBJDIR} SRCDIR=${.CURDIR} CC='${CC}'; \
 	export OBJDIR SRCDIR CC; \
-	if ( cd ./tests || exit 0; \
+	if ( cd ${.CURDIR}/tests || exit 0; \
 	    ./test.sh > ${.OBJDIR}/_test.res || exit 0; \
 	    diff -u test.out ${.OBJDIR}/_test.res > ${.OBJDIR}/_test2.res; \
 	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' \

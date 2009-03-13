@@ -25,7 +25,7 @@
 #include "config.h"
 #endif
 
-#if HAVE_EXECINFO_H
+#if HAVE_HEADER_EXECINFO_H
 #include <execinfo.h>
 /* GNU libc ? */
 int stacktrace (void **buffer, int size)
@@ -34,7 +34,7 @@ int stacktrace (void **buffer, int size)
 }
 
 #else
-/* !HAVE_EXECINFO_H (probably NetBSD/FreeBSD/Solaris etc.) */
+/* !HAVE_HEADER_EXECINFO_H (probably NetBSD/FreeBSD/Solaris etc.) */
 
 #include <string.h>
 #include <signal.h>
@@ -143,4 +143,4 @@ int stacktrace (void **tb, int size)
 	}
 	return size;
 }
-#endif /* HAVE_EXECINFO_H */
+#endif /* HAVE_HEADER_EXECINFO_H */
