@@ -1,4 +1,3 @@
-- Throw out autobloat
 - Debian: support for /usr/lib/debug LMDBG_ENV?
 - Manual pages, pod2man or plain man?
 - lmdbg-leaks written in Judy
