@@ -26,12 +26,8 @@ set -e
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
-if test -z "$LMDBG_SOEXT"; then
-    LMDBG_SOEXT=so
-fi
-if test -z "$LMDBG_LIBDYN"; then
-    LMDBG_LIBDYN=$libdir/liblmdbg.$LMDBG_SOEXT
-fi
+LMDBG_SOEXT=${LMDBG_SOEXT:=so}
+LMDBG_LIBDYN=${LMDBG_LIBDYN:=$libdir/liblmdbg.$LMDBG_SOEXT}
 
 usage () {
     echo -n "\
@@ -70,7 +66,7 @@ while test $# -ne 0; do
 	    LMDBG_VERBOSE=1;
 	    export LMDBG_VERBOSE;;
 	-o|--log)
-	    output_file=$2
+	    ofile=$2
 	    shift;;
         -p|--pipe)
 	    pipe=$2
@@ -88,12 +84,10 @@ while test $# -ne 0; do
     shift
 done
 
-if [ ! $TMPDIR ]; then
-    TMPDIR=/tmp
-fi
+TMPDIR=${TMPDIR:=/tmp}
 
 if test "$pipe"; then
-    fifo_file=`mktemp -u /tmp/lmdbg-run.XXXXXX` || {
+    fifo_file=`mktemp -u $TMPDIR/lmdbg-run.XXXXXX` || {
 	exit 2
     }
 
@@ -103,15 +97,17 @@ if test "$pipe"; then
 	exit 3
     }
 
-    eval "$pipe" < "$fifo_file" > "$output_file" 2>/dev/null &
-    output_file="$fifo_file"
+    eval "$pipe" < "$fifo_file" > "$ofile" 2>/dev/null &
+    ofile="$fifo_file"
 fi
 
 if test "$LMDBG_VERBOSE"; then
     echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN" 1>&2
 fi
 
-(env LMDBG_LOGFILE="$output_file" LD_PRELOAD="$LMDBG_LIBDYN" "$@")
+LMDBG_FULL_ENV="LMDBG_LOGFILE='$ofile' LD_PRELOAD='$LMDBG_LIBDYN' $LMDBG_ENV"
+
+(eval env $LMDBG_FULL_ENV "$@")
 
 wait
 
