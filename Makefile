@@ -47,13 +47,11 @@ all : liblmdbg.la ${SCRIPTS}
 .PHONY: stacktrace
 stacktrace : libstacktrace.la
 
-lmdbg.o: lmdbg.c
+.for f in lmdbg stacktrace
+${f}.o: ${f}.c
 	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
 		$(CFLAGS) -g -O0 $<
-
-stacktrace.o: stacktrace.c
-	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
-		$(CFLAGS) -g -O0 $<
+.endfor
 
 liblmdbg.la : lmdbg.o stacktrace.o
 	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
