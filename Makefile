@@ -57,7 +57,7 @@ liblmdbg.la : lmdbg.o stacktrace.o
 libstacktrace.la : stacktrace.o
 
 .for f in liblmdbg libstacktrace
-${f}:
+${f}.la:
 	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
 	   -version-info 0:0 -g ${.ALLSRC:S/.o/.lo/g} $(LDFLAGS) $(LDADD)
 .endfor
