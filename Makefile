@@ -47,16 +47,20 @@ all : liblmdbg.la ${SCRIPTS}
 .PHONY: stacktrace
 stacktrace : libstacktrace.la
 
-.c.o:
-	libtool --tag=CC --mode=compile $(CC) -o $@ -c -D_GNU_SOURCE \
+lmdbg.o: lmdbg.c
+	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
+		$(CFLAGS) -g -O0 $<
+
+stacktrace.o: stacktrace.c
+	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
 		$(CFLAGS) -g -O0 $<
 
 liblmdbg.la : lmdbg.o stacktrace.o
-	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(LIBDIR) \
+	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
 	   -version-info 0:0 -g ${.ALLSRC:S/.o/.lo/g} $(LDFLAGS) $(LDADD)
 
 libstacktrace.la : stacktrace.o
-	libtool --tag=CC --mode=link $(CC) -o $@ -rpath $(LIBDIR) \
+	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
 	   -version-info 0:0 -g ${.ALLSRC:S/.o/.lo/g} $(LDFLAGS) $(LDADD)
 
 .SUFFIXES:	.in
