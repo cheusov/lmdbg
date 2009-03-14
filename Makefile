@@ -126,5 +126,5 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 
 ###########################
 
-.include <configure.mk>
+.include "configure.mk"
 .include <bsd.prog.mk>
