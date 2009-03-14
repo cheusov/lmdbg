@@ -27,7 +27,7 @@ libdir=@libdir@
 sysconfdir=@sysconfdir@
 
 LMDBG_SOEXT=${LMDBG_SOEXT:=so}
-LMDBG_LIBDYN=${LMDBG_LIBDYN:=$libdir/liblmdbg.$LMDBG_SOEXT}
+LMDBG_LIB=${LMDBG_LIB:=$libdir/liblmdbg.$LMDBG_SOEXT}
 
 usage () {
     echo -n "\
@@ -35,7 +35,7 @@ lmdbg-run is intended to run your program with
 liblmdbg.$LMDBG_SOEXT LD_PRELOAD-ed in order to log
 the calls of the following functions:
 malloc, free, realloc and memalign.
-Set LMDBG_LIBDYN environment variable to liblmdbg.$LMDBG_SOEXT
+Set LMDBG_LIB environment variable to liblmdbg.$LMDBG_SOEXT
 The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 
 usage: lmdbg-run [OPTIONS] <prog> [args...]
@@ -102,10 +102,10 @@ if test "$pipe"; then
 fi
 
 if test "$LMDBG_VERBOSE"; then
-    echo Running "'$@' with LD_PRELOAD=$LMDBG_LIBDYN" 1>&2
+    echo Running "'$@' with LD_PRELOAD=$LMDBG_LIB" 1>&2
 fi
 
-LMDBG_FULL_ENV="LMDBG_LOGFILE='$ofile' LD_PRELOAD='$LMDBG_LIBDYN' $LMDBG_ENV"
+LMDBG_FULL_ENV="LMDBG_LOGFILE='$ofile' LD_PRELOAD='$LMDBG_LIB' $LMDBG_ENV"
 
 (eval env $LMDBG_FULL_ENV "$@")
 

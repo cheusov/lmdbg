@@ -29,18 +29,14 @@ export LC_ALL
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
-if test -z "$LMDBG_SOEXT"; then
-    LMDBG_SOEXT=so
-fi
-if test -z "$LMDBG_LIBDYN"; then
-    LMDBG_LIBDYN=$libdir/liblmdbg.so
-fi
+LMDBG_SOEXT=${LMDBG_SOEXT:=so}
+LMDBG_LIB=${LMDBG_LIB:=$libdir/liblmdbg.$LMDBG_SOEXT}
 
 usage (){
     echo -n "\
 lmdbg-sym analyses lmdbg-run's output and converts
 function addresses to source code position.
-Set LMDBG_LIBDYN environment variable to liblmdbg.so
+Set LMDBG_LIB environment variable to liblmdbg.so
 The default is $libdir/liblmdbg.so.
 
 usage:
@@ -138,7 +134,7 @@ if test "_$with_gdb" = "_1"; then
 	echo 'set width 0'
 	echo 'break _init'
 	echo 'set print demangle on'
-	echo "set environment LD_PRELOAD=$LMDBG_LIBDYN"
+	echo "set environment LD_PRELOAD=$LMDBG_LIB $LMDBG_ENV"
 	if test "$additional_libs"; then
 	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
 	fi
