@@ -77,12 +77,10 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 
 ###########################
 
-.include <mkc.configure.mk>
-#.include <mkc.lib.mk>
-#.include <mkc.prog.mk>
 SUBDIR+=	libstacktrace
 SUBDIR+=	scripts
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 
+.include <mkc.configure.mk>
 .include <mkc.subdir.mk>
