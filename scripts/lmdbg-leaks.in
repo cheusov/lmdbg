@@ -1,0 +1,159 @@
+#!/bin/sh
+
+# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+
+LC_ALL=C
+export LC_ALL
+
+sysconfdir=@sysconfdir@
+
+usage (){
+    echo -n "\
+This program analyses lmdbg-run's or lmdbg-sym's output and
+produces information about memory leaks.
+
+usage:
+    lmdbg-leaks [OPTIONS] [files...]
+OPTIONS:
+    -h --help                  displays this screen
+    -V --version               display version
+"
+}
+
+version () {
+    cat <<EOF
+lmdbg-leaks @LMDBG_VERSION@
+EOF
+}
+
+while test $# -ne 0; do
+    case $1 in
+	-h|--help)
+	    usage
+	    exit 0;;
+	-V|--version)
+	    version
+	    exit 0;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+    shift
+done
+
+multiline2singleline (){
+    # Input:
+    #   malloc/realloc/free ...
+    #    address1
+    #    address2
+    #    address3
+    # Output:
+    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
+    awk '
+    NF > 0 && /^ / {
+	calls = calls SUBSEP $0
+	next
+    }
+    NF > 0 {
+	if (calls){
+	    print last " " calls
+	    calls = ""
+	}
+
+	last = $0
+    }
+    END {
+	if (calls){
+	    print last " " calls
+	    calls = ""
+	}
+    }
+    ' "$@"
+}
+
+leaks () {
+    awk '
+    $1 == "malloc" {
+	h [$6] = $0
+	next
+    }
+
+    $1 == "memalign" {
+	h [$8] = $0
+	next
+    }
+
+    $1 == "free" {
+	delete h [$3]
+	next
+    }
+
+    $1 == "realloc" {
+	if ($3 == "NULL" || $3 == $8){
+	    h [$8] = $0
+	}else{
+	    h [$8] = $0
+	    delete h [$3]
+	}
+    }
+
+    END {
+	for (addr in h){
+	    print h [addr]
+	}
+    }' "$@"
+}
+
+singleline2multiline () {
+    # Input:
+    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
+    # Output:
+    #   malloc/realloc/free ...
+    #    address1
+    #    address2
+    awk '
+    BEGIN {
+	FS = SUBSEP
+    }
+    $1 ~ /^(malloc|realloc|memalign) / {
+	sub(/ $/, "", $1)
+	for (i=1; i <= NF; ++i){
+	    print $i
+	}
+    }
+
+    $1 == "free" {
+	print "this should not happen" > "/dev/stderr"
+	exit 1
+    }' "$@"
+}
+
+multiline2singleline "$@" |
+leaks |
+singleline2multiline

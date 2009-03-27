@@ -1,0 +1,116 @@
+#!/bin/sh
+
+# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+
+libdir=@libdir@
+sysconfdir=@sysconfdir@
+
+LMDBG_SOEXT=${LMDBG_SOEXT:=so}
+LMDBG_LIB=${LMDBG_LIB:=$libdir/liblmdbg.$LMDBG_SOEXT}
+
+usage () {
+    echo -n "\
+lmdbg-run is intended to run your program with
+liblmdbg.$LMDBG_SOEXT LD_PRELOAD-ed in order to log
+the calls of the following functions:
+malloc, free, realloc and memalign.
+Set LMDBG_LIB environment variable to liblmdbg.$LMDBG_SOEXT
+The default is $libdir/liblmdbg.$LMDBG_SOEXT.
+
+usage: lmdbg-run [OPTIONS] <prog> [args...]
+OPTIONS:
+  -h --help                   display this screen
+  -V --version                display version
+  -o --log <filename>         set a filename for logging
+  -p --pipe <pipe>            save pipe's output to log file
+  -v --verbose                verbose loggin
+"
+}
+
+version (){
+cat <<EOF
+lmdbg-run @LMDBG_VERSION@
+EOF
+}
+
+while test $# -ne 0; do
+    case $1 in
+	-h|--help)
+	    usage
+	    exit 0;;
+	-V|--version)
+	    version
+	    exit 0;;
+	-v|--verbose)
+	    LMDBG_VERBOSE=1;
+	    export LMDBG_VERBOSE;;
+	-o|--log)
+	    ofile=$2
+	    shift;;
+        -p|--pipe)
+	    pipe=$2
+	    shift;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+
+    shift
+done
+
+TMPDIR=${TMPDIR:=/tmp}
+
+if test "$pipe"; then
+    fifo_file=`mktemp -u $TMPDIR/lmdbg-run.XXXXXX` || {
+	exit 2
+    }
+
+    trap 'rm -f "$fifo_file"' 0 1 2 3 5 15
+
+    mkfifo -m 600 "$fifo_file" || {
+	exit 3
+    }
+
+    eval "$pipe" < "$fifo_file" > "$ofile" 2>/dev/null &
+    ofile="$fifo_file"
+fi
+
+if test "$LMDBG_VERBOSE"; then
+    echo Running "'$@' with LD_PRELOAD=$LMDBG_LIB" 1>&2
+fi
+
+LMDBG_FULL_ENV="LMDBG_LOGFILE='$ofile' LD_PRELOAD='$LMDBG_LIB' $LMDBG_ENV"
+
+(eval env $LMDBG_FULL_ENV "$@")
+
+wait
+
+if test "$LMDBG_VERBOSE"; then
+    echo Done.
+fi

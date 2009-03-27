@@ -1,0 +1,203 @@
+#!/bin/sh
+
+# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+
+LC_ALL=C
+export LC_ALL
+
+sysconfdir=@sysconfdir@
+
+usage (){
+    echo -n "\
+This program analyses lmdbg-run's or lmdbg-sym's output and
+produces information about memory leaks.
+
+usage:
+    lmdbg-sysleaks [OPTIONS] [files...]
+OPTIONS:
+    -h --help                  displays this screen
+    -V --version               display version
+    -c --config <config_file>  configuration file
+    -s --skip-leaks            (like grep -v)
+"
+}
+
+version () {
+    cat <<EOF
+lmdbg-sysleaks @LMDBG_VERSION@
+EOF
+}
+
+while test $# -ne 0; do
+    case $1 in
+	-h|--help)
+	    usage
+	    exit 0;;
+	-V|--version)
+	    version
+	    exit 0;;
+        -c|--config)
+	    conf_file=$2
+	    shift;;
+	-s|--skip-leaks)
+	    export skip_leaks=1;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+    shift
+done
+
+if test -z "$conf_file"; then
+    conf_file=$HOME/.lmdbg.conf
+
+    if ! test -f "$conf_file"; then
+	conf_file=$sysconfdir/lmdbg.conf
+
+	if ! test -f "$conf_file"; then
+	    conf_file=''
+	fi
+    fi
+fi
+
+system_leaks () {
+    awk -v conf_file="$conf_file" '
+    BEGIN {
+	skip_leaks = ENVIRON ["skip_leaks"] + 0
+
+	while (conf_file && 0 < (ret = (getline < conf_file))){
+	    sub(/#.*$/, "")
+
+	    if ($1 == "ignore_basename"){
+		ignore_basename [$2] = ""
+		continue
+	    }
+	    if ($1 == "ignore_baseline"){
+		ignore_baseline [$2] = ""
+		continue
+	    }
+	    if ($1 == "ignore_file"){
+		ignore_file [$2] = ""
+		continue
+	    }
+	    if ($1 == "ignore_line"){
+		ignore_line [$2] = ""
+		continue
+	    }
+	    if (NF == 0){
+		continue
+	    }
+
+	    print "invalid command: `" $1 "`" > "/dev/stderr"
+	    exit 2
+	}
+
+	if (ret < 0){
+	    print "reading error from \"" conf_file "\"" > "/dev/stderr"
+	    exit 1
+	}
+
+	count = 0
+	is_system = 0
+    }
+
+    function print_me (){
+	if (is_system)
+	    return !skip_leaks
+	else
+	    return skip_leaks
+    }
+
+    function print_traceback (      i) {
+	for (i=0; i < count; ++i){
+	    print traceback [i]
+	}
+    }
+
+    NF == 0 || /^[^ ]/ {
+	if (print_me()){
+	    print_traceback()
+	}
+
+	is_system = 0
+	count  = 0
+
+	if (NF == 0)
+	    next
+    }
+
+    is_system && !print_me() {
+	next
+    }
+
+    {
+	traceback [count++] = $0
+    }
+
+    /^ / {
+	if (-1 == match($2, /[^\/:]+($|:)/))
+	    next
+
+	if (substr($2, RSTART+RLENGTH-1, 1) == ":")
+	    --RLENGTH
+
+#	print $2 > "/dev/stderr"
+#	print substr($2, 1, RSTART+RLENGTH-1) > "/dev/stderr"
+#	print substr($2, RSTART) > "/dev/stderr"
+#	print substr($2, RSTART, RLENGTH) > "/dev/stderr"
+#	print "" > "/dev/stderr"
+
+	if ($2 in ignore_line){
+	    is_system = 1
+	    next
+	}
+
+	if (substr($2, 1, RSTART+RLENGTH-1) in ignore_file){
+	    is_system = 1
+	    next
+	}
+
+	if (substr($2, RSTART) in ignore_baseline){
+	    is_system = 1
+	    next
+	}
+
+	if (substr($2, RSTART, RLENGTH) in ignore_basename){
+	    is_system = 1
+	    next
+	}
+    }
+    END {
+	if (print_me()){
+	    print_traceback()
+	}
+    }' "$@"
+}
+
+system_leaks "$@"
