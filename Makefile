@@ -35,66 +35,10 @@ BIRTHDATE=	2008-04-28
 
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
-SCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
-SCRIPTS+=	lmdbg-sym lmdbg-leak-check
-
-CLEANFILES=	ChangeLog *.lo *.la *.o _* ${SCRIPTS} .libs _mkc_*
+CLEANFILES=	ChangeLog *.lo *.la *.o _* .libs _mkc_*
 
 ##################################################
 
-.PHONY: all
-all : liblmdbg.la ${SCRIPTS}
-
-#LIB?=		lmdbg
-#SRCS=		lmdbg.c stacktrace.c
-#SHLIB_MAJOR=	0
-#SHLIB_MINOR=	0
-
-.PHONY: stacktrace
-stacktrace : libstacktrace.la
-
-.for f in lmdbg stacktrace
-${f}.o: ${f}.c
-	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
-		$(CFLAGS) -g -O0 $<
-.endfor
-
-liblmdbg.la : lmdbg.o stacktrace.o
-libstacktrace.la : stacktrace.o
-
-.for f in liblmdbg libstacktrace
-${f}.la:
-	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
-	   -version-info 0:0 -g ${.ALLSRC:S/.o/.lo/g} $(LDFLAGS) $(LDADD)
-.endfor
-
-.SUFFIXES:	.in
-
-.in:
-	sed -e 's,@sysconfdir@,${SYSCONFDIR},g' \
-	    -e 's,@libdir@,${LIBDIR},g' \
-	    -e 's,@prefix@,${PREFIX},g' \
-	    -e 's,@bindir@,${BINDIR},g' \
-	    -e 's,@sbindir@,${SBINDIR},g' \
-	    -e 's,@datadir@,${DATADIR},g' \
-	    -e 's,@LMDBG_VERSION@,${VERSION},g' \
-	    ${.ALLSRC} > ${.TARGET} && chmod +x ${.TARGET}
-
-.PHONY: install.stacktrace
-install.stacktrace : libstacktrace.la
-	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
-	$(INSTALL) -d $(DESTDIR)$(INCLUDEDIR)
-	libtool --mode=install $(INSTALL) -m 0644 libstacktrace.la \
-		$(DESTDIR)$(LIBDIR)
-	$(INSTALL) -m 0644 stacktrace.h $(DESTDIR)$(INCLUDEDIR)
-
-.PHONY: install-lmdbg
-install-lmdbg : all
-	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
-	libtool --mode=install $(INSTALL) -m 0755 liblmdbg.la $(DESTDIR)$(LIBDIR)
-
-.PHONY: install
-install : install-lmdbg
 
 ##################################################
 
@@ -135,4 +79,10 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 
 .include <mkc.configure.mk>
 #.include <mkc.lib.mk>
-.include <mkc.prog.mk>
+#.include <mkc.prog.mk>
+SUBDIR+=	libstacktrace
+SUBDIR+=	scripts
+SUBDIR+=	.WAIT
+SUBDIR+=	liblmdbg
+
+.include <mkc.subdir.mk>
