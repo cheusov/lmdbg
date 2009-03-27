@@ -8,7 +8,7 @@ export LMDBG_LIB="$OBJDIR"/.libs/liblmdbg.so
 export PATH=$OBJDIR:$PATH
 
 unify_paths (){
-    sed 's,/[^ ]*lmdbg/,/lmdbg/dir/,g' "$@"
+    sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
 }
 
 unify_paths_inplace (){

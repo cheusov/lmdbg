@@ -124,7 +124,7 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 	    diff -u test.out ${.OBJDIR}/_test.res > ${.OBJDIR}/_test2.res; \
 	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' \
 		${.OBJDIR}/_test2.res > ${.OBJDIR}/_test3.res; \
-	    grep '^[-+][^+-]' ${.OBJDIR}/_test3.res > /dev/null; \
+	    grep -E '^[-+]([^+-]|$$)' ${.OBJDIR}/_test3.res > /dev/null; \
 	    ); \
 	then \
 	    echo '   failed'; \
