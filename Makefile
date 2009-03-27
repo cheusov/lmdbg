@@ -3,7 +3,8 @@
 
 ##################################################
 
-MKC_COMMON_DEFINES=	-D_ALL_SOURCE -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
+MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
+MKC_COMMON_DEFINES+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 
 # Ex.: CFLAGS += -DHAVE_HEADER_EXECINFO_H=1 on GNU libc
 MKC_CHECK_HEADERS+=	execinfo.h
@@ -18,13 +19,6 @@ MKC_CHECK_VARS+=	__malloc_hook:malloc.h
 MKC_CHECK_FUNCLIBS+=	dlopen:dl
 
 ##################################################
-
-PREFIX?=		/usr/local
-BINDIR?=		${PREFIX}/bin
-LIBDIR?=		${PREFIX}/lib
-INCLUDEDIR?=		${PREFIX}/include
-MANDIR?=		${PREFIX}/man
-SYSCONFDIR?=		${PREFIX}/etc
 
 MKHTML=			no
 MKMAN=			no
@@ -50,6 +44,11 @@ CLEANFILES=	ChangeLog *.lo *.la *.o _* ${SCRIPTS} .libs _mkc_*
 
 .PHONY: all
 all : liblmdbg.la ${SCRIPTS}
+
+#LIB?=		lmdbg
+#SRCS=		lmdbg.c stacktrace.c
+#SHLIB_MAJOR=	0
+#SHLIB_MINOR=	0
 
 .PHONY: stacktrace
 stacktrace : libstacktrace.la
@@ -91,7 +90,7 @@ install.stacktrace : libstacktrace.la
 
 .PHONY: install-lmdbg
 install-lmdbg : all
-	$(INSTALL) -d $(DESTDIR)$(libdir)
+	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
 	libtool --mode=install $(INSTALL) -m 0755 liblmdbg.la $(DESTDIR)$(LIBDIR)
 
 .PHONY: install
@@ -111,8 +110,6 @@ install-dirs:
 .endif
 
 ###########################
-
-.include <bsd.own.mk>
 
 .PHONY: test
 test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
@@ -136,5 +133,6 @@ test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
 
 ###########################
 
-.include "configure.mk"
-.include <bsd.prog.mk>
+.include <mkc.configure.mk>
+#.include <mkc.lib.mk>
+.include <mkc.prog.mk>

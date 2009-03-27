@@ -34,7 +34,7 @@
 
 #include <dlfcn.h>
 
-#ifdef HAVE_FUNC2_MEMALIGN_MALLOC_H
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
 #include <malloc.h>
 #endif
 
@@ -66,7 +66,7 @@ static void construct(void) { lmdbg_startup(); }
 static void destruct(void) __attribute__((destructor));
 static void destruct(void) { lmdbg_finish(); }
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 #define WRAP(name) wrap_ ## name
 #else
 #define WRAP(name) name
@@ -154,7 +154,7 @@ static void init_log (void)
 	}
 }
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 #define EXTRA_ARG , const void *CALLER
 #else
 #define EXTRA_ARG
@@ -167,7 +167,7 @@ void WRAP(free) (void *p EXTRA_ARG);
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
 static void *(*realloc_hook_orig) (void *p, size_t s EXTRA_ARG);
 static void (*free_hook_orig) (void *p EXTRA_ARG);
@@ -180,7 +180,7 @@ static void enable_logging (void)
 {
 	log_enabled = 1;
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 	__malloc_hook   = WRAP(malloc);
 	__realloc_hook  = WRAP(realloc);
 	__free_hook     = WRAP(free);
@@ -194,7 +194,7 @@ static void disable_logging (void)
 {
 	log_enabled = 0;
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 	__malloc_hook   = malloc_hook_orig;
 	__realloc_hook  = realloc_hook_orig;
 	__free_hook     = free_hook_orig;
@@ -222,7 +222,7 @@ static void lmdbg_startup (void)
 	fprintf (stderr, "real_memalign=%p\n", real_memalign);
 	*/
 
-#ifdef HAVE_VAR___MALLOC_HOOK
+#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 	malloc_hook_orig   = __malloc_hook;
 	realloc_hook_orig  = __realloc_hook;
 	free_hook_orig     = __free_hook;
