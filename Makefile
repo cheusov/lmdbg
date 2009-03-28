@@ -10,8 +10,6 @@ INST_DIR?=		${INSTALL} -d
 
 ##################################################
 
-VERSION=	0.10.0
-
 PROJECTNAME=	lmdbg
 
 BIRTHDATE=	2008-04-28
@@ -19,9 +17,6 @@ BIRTHDATE=	2008-04-28
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 CLEANFILES=	ChangeLog *.lo *.la *.o _* .libs _mkc_*
-
-##################################################
-
 
 ##################################################
 
@@ -65,5 +60,7 @@ SUBDIR+=	libstacktrace
 SUBDIR+=	scripts
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
+
+.include "../Makefile.version"
 
 .include <mkc.subdir.mk>
