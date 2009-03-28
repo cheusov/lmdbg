@@ -5,8 +5,10 @@ MKC_CHECK_HEADERS+=	execinfo.h
 
 ######################################################################
 
-LIB=	stacktrace
-SRCS=	stacktrace.c
+CFLAGS=		-O0 # gcc's -O2 is not allowed for stacktrace.c!
+
+LIB=		stacktrace
+SRCS=		stacktrace.c
 
 MKPIC=	yes
 
