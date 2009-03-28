@@ -24,11 +24,14 @@ SRCS=		lmdbg.c
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
+# Unfortunately default bsd.*.mk rule doesn't work with construct((xxx))
+# used in lmdbg.c. This is why I define this rule here.
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	${CC} -shared -o ${.TARGET} lmdbg.o ${LDFLAGS} ${LDADD}; \
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
 	ln -s ${.TARGET} lib${LIB}.so
 
+#
 LDADD+=	-lstacktrace_pic
 
 .include "../libstacktrace/linkme.mk"
