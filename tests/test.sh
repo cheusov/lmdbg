@@ -4,7 +4,7 @@ export LC_ALL=C
 
 set -e
 
-export LMDBG_LIB="$OBJDIR"/.libs/liblmdbg.so
+export LMDBG_LIB="$OBJDIR"/liblmdbg.so
 export PATH=$OBJDIR:$PATH
 
 unify_paths (){

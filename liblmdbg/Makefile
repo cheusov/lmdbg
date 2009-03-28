@@ -1,35 +1,27 @@
-.PHONY: all
-all : liblmdbg.la
+# Autoconfiguration part. Stop GNU autoconf! :-)
 
-#LIB?=		lmdbg
-#SRCS=		lmdbg.c stacktrace.c
+MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
+MKC_COMMON_DEFINES+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
+
+# Ex.: CFLAGS += -DHAVE_FUNC2_MEMALIGN_MALLOC_H=1 on GNU libc
+MKC_CHECK_FUNCS2+=	memalign:malloc.h
+
+# Ex.: CFLAGS += -DHAVE_VAR___MALLOC_HOOK_MALLOC_H=1 on GNU libc
+MKC_CHECK_VARS+=	__malloc_hook:malloc.h
+
+# Ex.: CFLAGS += -DHAVE_FUNCLIB_DLOPEN_DL=1 on Linux and Solaris
+MKC_CHECK_FUNCLIBS+=	dlopen:dl
+
+##################################################
+
+LIB=		lmdbg
+
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
-.for f in lmdbg
-${f}.o: ${f}.c
-	libtool --tag=CC --mode=compile $(CC) -o ${.TARGET} -c -D_GNU_SOURCE \
-		$(CPPFLAGS) $(CFLAGS) -g -O0 $<
-.endfor
+MKCDPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
 
-liblmdbg.la : lmdbg.o
+CPPFLAGS+=	-I${.CURDIR}/../libstacktrace
 
-.for f in liblmdbg
-${f}.la:
-	libtool --tag=CC --mode=link $(CC) -o ${.TARGET} -rpath $(LIBDIR) \
-	   -version-info ${SHLIB_MAJOR}:${SHLIB_MINOR} \
-	   -g ${.ALLSRC:S/.o/.lo/g} $(LDFLAGS) $(LDADD)
-.endfor
-
-.PHONY: install-lmdbg
-install-lmdbg : all
-	$(INSTALL) -d $(DESTDIR)$(LIBDIR)
-	libtool --mode=install $(INSTALL) -m 0755 liblmdbg.la $(DESTDIR)$(LIBDIR)
-
-.PHONY: install
-install : install-lmdbg
-
-CLEANFILES+=	*.a *.lo *.la *.o #.libs
-
-.include "../libstacktrace/Makefile.inc"
-.include <mkc.prog.mk>
+.include <mkc.configure.mk>
+.include <mkc.lib.mk>

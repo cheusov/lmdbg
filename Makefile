@@ -3,23 +3,6 @@
 
 ##################################################
 
-MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
-MKC_COMMON_DEFINES+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
-
-# Ex.: CFLAGS += -DHAVE_HEADER_EXECINFO_H=1 on GNU libc
-MKC_CHECK_HEADERS+=	execinfo.h
-
-# Ex.: CFLAGS += -DHAVE_FUNC2_MEMALIGN_MALLOC_H=1 on GNU libc
-MKC_CHECK_FUNCS2+=	memalign:malloc.h
-
-# Ex.: CFLAGS += -DHAVE_VAR___MALLOC_HOOK_MALLOC_H=1 on GNU libc
-MKC_CHECK_VARS+=	__malloc_hook:malloc.h
-
-# Ex.: CFLAGS += -DHAVE_FUNCLIB_DLOPEN_DL=1 on Linux and Solaris
-MKC_CHECK_FUNCLIBS+=	dlopen:dl
-
-##################################################
-
 MKHTML=			no
 MKMAN=			no
 
@@ -56,7 +39,7 @@ install-dirs:
 ###########################
 
 .PHONY: test
-test: liblmdbg.la lmdbg-sym lmdbg-leaks lmdbg-run
+test: all
 	@echo 'running tests...'; \
 	OBJDIR=${.OBJDIR} SRCDIR=${.CURDIR} CC='${CC}'; \
 	export OBJDIR SRCDIR CC; \
@@ -82,5 +65,4 @@ SUBDIR+=	scripts
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 
-.include <mkc.configure.mk>
 .include <mkc.subdir.mk>
