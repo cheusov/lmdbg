@@ -1,3 +1,4 @@
+######################################################################
 # Autoconfiguration part. Stop GNU autoconf! :-)
 
 MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
@@ -12,7 +13,7 @@ MKC_CHECK_VARS+=	__malloc_hook:malloc.h
 # Ex.: CFLAGS += -DHAVE_FUNCLIB_DLOPEN_DL=1 on Linux and Solaris
 MKC_CHECK_FUNCLIBS+=	dlopen:dl
 
-##################################################
+######################################################################
 
 LIB=		lmdbg
 SRCS=		lmdbg.c
@@ -21,7 +22,7 @@ SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
-	${CC} -shared -soname liblmdbg.so.0.0 -o ${.TARGET} ${.ALLSRC} ${LDFLAGS} ${LDADD}
+	${CC} -shared -o ${.TARGET} lmdbg.po ${LDFLAGS} ${LDADD}
 
 MKCDPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
 
