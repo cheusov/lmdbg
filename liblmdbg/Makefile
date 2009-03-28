@@ -29,9 +29,9 @@ lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
 	ln -s ${.TARGET} lib${LIB}.so
 
-MKC_DPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
+LDADD+=	-lstacktrace_pic
 
-CPPFLAGS+=	-I${.CURDIR}/../libstacktrace
+.include "../libstacktrace/linkme.mk"
 
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
