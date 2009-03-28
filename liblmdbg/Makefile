@@ -1,7 +1,10 @@
 ######################################################################
 # Autoconfiguration part. Stop GNU autoconf! :-)
 
+# for Interix
 MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
+
+# For Linux
 MKC_COMMON_DEFINES+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 
 # Ex.: CFLAGS += -DHAVE_FUNC2_MEMALIGN_MALLOC_H=1 on GNU libc
@@ -22,7 +25,9 @@ SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
-	${CC} -shared -o ${.TARGET} lmdbg.po ${LDFLAGS} ${LDADD}
+	${CC} -shared -o ${.TARGET} lmdbg.o ${LDFLAGS} ${LDADD}; \
+	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
+	ln -s ${.TARGET} lib${LIB}.so
 
 MKCDPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
 
