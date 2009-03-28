@@ -1,4 +1,5 @@
-# Autoconfiguration part. Stop GNU autoconf! :-)
+######################################################################
+# Autoconfiguration part. Stop using GNU autoconf! :-)
 
 # Ex.: CFLAGS += -DHAVE_HEADER_EXECINFO_H=1 on GNU libc
 MKC_CHECK_HEADERS+=	execinfo.h
