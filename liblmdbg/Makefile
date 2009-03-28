@@ -15,9 +15,13 @@ MKC_CHECK_FUNCLIBS+=	dlopen:dl
 ##################################################
 
 LIB=		lmdbg
+SRCS=		lmdbg.c
 
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
+
+lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
+	${CC} -shared -soname liblmdbg.so.0.0 -o ${.TARGET} ${.ALLSRC} ${LDFLAGS} ${LDADD}
 
 MKCDPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
 
