@@ -10,7 +10,9 @@ CFLAGS=		-O0 # gcc's -O2 is not allowed for stacktrace.c!
 LIB=		stacktrace
 SRCS=		stacktrace.c
 
-MKPIC=	yes
+INCS=		stacktrace.h
+
+MKPIC=		yes
 
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
