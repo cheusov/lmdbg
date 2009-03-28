@@ -29,6 +29,7 @@ CLEANFILES=	ChangeLog *.lo *.la *.o _* .libs _mkc_*
 install-dirs:
 	$(INST_DIR) ${DESTDIR}${BINDIR}
 	$(INST_DIR) ${DESTDIR}${LIBDIR}
+	$(INST_DIR) ${DESTDIR}${INCSDIR}
 .if !defined(MKMAN) || empty(MKMAN:M[Nn][Oo])
 	$(INST_DIR) ${DESTDIR}${MANDIR}/man1
 .if !defined(MKCATPAGES) || empty(MKCATPAGES:M[Nn][Oo])
