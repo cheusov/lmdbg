@@ -29,7 +29,7 @@ lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
 	ln -s ${.TARGET} lib${LIB}.so
 
-MKCDPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
+MKC_DPLIBS=	stacktrace ${.CURDIR}/../libstacktrace
 
 CPPFLAGS+=	-I${.CURDIR}/../libstacktrace
 
