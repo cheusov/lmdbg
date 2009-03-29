@@ -1,4 +1,14 @@
 ======================================================================
+Version 0.10alpha1, by Aleksey Cheusov, Sun, 29 Mar 2009 17:13:04 +0300
+
+  Good bye GNU autotools aka autohell! Now lmdbg is built using
+  http://sf.net/projects/mk-configure and NetBSD bmake.
+
+  I'll describe other changes in 0.10.0 release.
+
+  This release is intermediate.
+
+======================================================================
 Version 0.9.0, by Aleksey Cheusov, Sun,  8 Mar 2009 12:59:45 +0200
 
   stacktrace.c + stacktrace.h = libstacktrace with API
