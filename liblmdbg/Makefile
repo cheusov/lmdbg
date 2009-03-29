@@ -36,10 +36,11 @@ lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
 	ln -s ${.TARGET} lib${LIB}.so
 
+.include <mkc.configure.mk>
+
 #
 LDADD+=	-lstacktrace_pic
 
 .include "../libstacktrace/linkme.mk"
 
-.include <mkc.configure.mk>
 .include <mkc.lib.mk>
