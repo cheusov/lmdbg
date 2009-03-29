@@ -61,6 +61,6 @@ SUBDIR+=	scripts
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 
-.include "../Makefile.version"
+.include "./Makefile.version"
 
 .include <mkc.subdir.mk>
