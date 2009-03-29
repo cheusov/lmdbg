@@ -24,6 +24,8 @@ SRCS=		lmdbg.c
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
+CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
+
 # Unfortunately default bsd.*.mk rule doesn't work with
 # __attribute__((constructor)) used in lmdbg.c.
 # This is why I define this rule here.
