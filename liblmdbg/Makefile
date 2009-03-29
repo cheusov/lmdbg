@@ -29,6 +29,8 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 # Unfortunately default bsd.*.mk rule doesn't work with
 # __attribute__((constructor)) used in lmdbg.c.
 # This is why I define this rule here.
+# USE_LIBTOOLS=yes|no is needed in bsd.*.mk
+# or full functional replacement.
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	${CC} -shared -o ${.TARGET} lmdbg.o ${LDFLAGS} ${LDADD}; \
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
