@@ -16,7 +16,7 @@ BIRTHDATE=	2008-04-28
 
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
-CLEANFILES=	ChangeLog *.lo *.la *.o _* .libs _mkc_*
+CLEANFILES=	ChangeLog _*
 
 ##################################################
 
