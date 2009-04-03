@@ -32,7 +32,7 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 # USE_LIBTOOLS=yes|no is needed in bsd.*.mk
 # or full functional replacement.
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
-	${CC} -shared -o ${.TARGET} lmdbg.o ${LDFLAGS} ${LDADD}; \
+	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}; \
 	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
 	ln -s ${.TARGET} lib${LIB}.so
 
