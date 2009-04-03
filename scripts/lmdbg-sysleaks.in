@@ -61,7 +61,8 @@ while test $# -ne 0; do
 	    conf_file=$2
 	    shift;;
 	-s|--skip-leaks)
-	    export skip_leaks=1;;
+	    skip_leaks=1
+	    export skip_leaks;;
 	--)
 	    shift
 	    break;;
