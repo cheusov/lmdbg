@@ -1,11 +1,13 @@
 #!/bin/sh
 
-export LC_ALL=C
+LC_ALL=C
+LMDBG_LIB="$OBJDIR"/liblmdbg.so
+PATH=$OBJDIR:$PATH
+
+export LC_ALL PATH LMDBG_LIB
 
 set -e
 
-export LMDBG_LIB="$OBJDIR"/liblmdbg.so
-export PATH=$OBJDIR:$PATH
 
 unify_paths (){
     sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
@@ -35,7 +37,14 @@ unify_text (){
 }
 
 unify_address (){
-    sed 's,0x[0-9a-fA-F][0-9a-fA-F]*,0xF00DBEAF,g' "$@"
+    awk '
+	$1 == "malloc"  {$6 = "0xF00DBEAF"}
+	$1 == "free"    {$3 = "0xF00DBEAF"}
+	$1 == "realloc" {$8 = "0xF00DBEAF"}
+	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
+	match($0, /^ [^ \t]+/) {$0 = " 0xF00DBEAF" substr($0, RSTART+RLENGTH)}
+	{print}
+    ' "$@"
 }
 
 hide_lmdbg_code (){
@@ -150,9 +159,9 @@ runtest lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"
 
 unify_paths_inplace "$logname"
 
-grep ^malloc  "$logname" | unify_address
-grep ^realloc "$logname" | unify_address
-grep ^free    "$logname" | unify_address
+grep '^malloc'  "$logname" | unify_address
+grep '^realloc' "$logname" | unify_address
+grep '^free'    "$logname" | unify_address
 
 # lmdbg-leaks with two leaks
 logname2="$OBJDIR"/_log2
@@ -160,9 +169,9 @@ runtest lmdbg-leaks "$logname" > "$logname2"
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname2" | unify_address
-grep ^realloc "$logname2" | unify_address
-grep ^free    "$logname2" | unify_address
+grep '^malloc'  "$logname2" | unify_address
+grep '^realloc' "$logname2" | unify_address
+grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak1.conf
 runtest lmdbg-sysleaks -c ./lmdbg1.conf -s \
@@ -170,9 +179,9 @@ runtest lmdbg-sysleaks -c ./lmdbg1.conf -s \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname2" | unify_address
-grep ^realloc "$logname2" | unify_address
-grep ^free    "$logname2" | unify_address
+grep '^malloc'  "$logname2" | unify_address
+grep '^realloc' "$logname2" | unify_address
+grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak2.conf
 runtest lmdbg-sysleaks -c ./lmdbg2.conf -s \
@@ -180,9 +189,9 @@ runtest lmdbg-sysleaks -c ./lmdbg2.conf -s \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname2" | unify_address
-grep ^realloc "$logname2" | unify_address
-grep ^free    "$logname2" | unify_address
+grep '^malloc'  "$logname2" | unify_address
+grep '^realloc' "$logname2" | unify_address
+grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak3.conf
 runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
@@ -190,9 +199,9 @@ runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname2" | unify_address
-grep ^realloc "$logname2" | unify_address
-grep ^free    "$logname2" | unify_address
+grep '^malloc'  "$logname2" | unify_address
+grep '^realloc' "$logname2" | unify_address
+grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak3.conf
 runtest lmdbg-sysleaks -c ./lmdbg3.conf \
@@ -200,9 +209,9 @@ runtest lmdbg-sysleaks -c ./lmdbg3.conf \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname2" | unify_address
-grep ^realloc "$logname2" | unify_address
-grep ^free    "$logname2" | unify_address
+grep '^malloc'  "$logname2" | unify_address
+grep '^realloc' "$logname2" | unify_address
+grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leak-check!
 runtest lmdbg-leak-check -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1 \
@@ -210,9 +219,9 @@ runtest lmdbg-leak-check -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1 \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname" | unify_address
-grep ^realloc "$logname" | unify_address
-grep ^free    "$logname" | unify_address
+grep '^malloc'  "$logname" | unify_address
+grep '^realloc' "$logname" | unify_address
+grep '^free'    "$logname" | unify_address
 
 # lmdbg-leak-check!
 runtest lmdbg-leak-check -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/_test1
@@ -223,6 +232,6 @@ runtest lmdbg-leak-check -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2 \
 
 grep -- --- "$logname2"
 
-grep ^malloc  "$logname" | unify_address
-grep ^realloc "$logname" | unify_address
-grep ^free    "$logname" | unify_address
+grep '^malloc'  "$logname" | unify_address
+grep '^realloc' "$logname" | unify_address
+grep '^free'    "$logname" | unify_address
