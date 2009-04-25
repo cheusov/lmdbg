@@ -42,7 +42,7 @@
 
 #define MAX_FRAMES_CNT 50
 
-static int log_enabled = 0;
+int log_enabled = 0;
 
 static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
