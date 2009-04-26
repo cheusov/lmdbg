@@ -38,26 +38,26 @@ See INSTALL file
      $ lmdbg-run -o _log ./_test2 
      $ cat _log
      malloc ( 555 ) --> 0xbb901400
-      0xbbbe6e12
-      0xbbbe716d
+      0xbbbe58e8
+      0xbbbe5b03
       0x8048738
       0x8048584
       0x80484e7
      realloc ( NULL , 666 ) --> 0xbb901800
-      0xbbbe6e12
-      0xbbbe7246
+      0xbbbe58e8
+      0xbbbe5a37
       0x804874e
       0x8048584
       0x80484e7
      realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
-      0xbbbe6e12
-      0xbbbe7246
+      0xbbbe58e8
+      0xbbbe5a37
       0x8048764
       0x8048584
       0x80484e7
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      0xbbbe6e12
-      0xbbbe7246
+      0xbbbe58e8
+      0xbbbe5a37
       0x804877a
       0x8048584
       0x80484e7
@@ -75,14 +75,14 @@ See INSTALL file
 
      $ lmdbg-leaks _log   
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      0xbbbe6e12
-      0xbbbe7246
+      0xbbbe58e8
+      0xbbbe5a37
       0x804877a
       0x8048584
       0x80484e7
      malloc ( 555 ) --> 0xbb901400
-      0xbbbe6e12
-      0xbbbe716d
+      0xbbbe58e8
+      0xbbbe5b03
       0x8048738
       0x8048584
       0x80484e7
@@ -94,27 +94,27 @@ See INSTALL file
 
      $ lmdbg-sym ./_test2 _log
      malloc ( 555 ) --> 0xbb901400
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe716d     lmdbg.c:253     malloc
-      0x8048738      ../tests/test2.c:8      main
+      0xbbbe58e8
+      0xbbbe5b03
+      0x8048738      tests/test2.c:8 main
       0x8048584
       0x80484e7
      realloc ( NULL , 666 ) --> 0xbb901800
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe7246     lmdbg.c:277     realloc
-      0x804874e      ../tests/test2.c:9      main
+      0xbbbe58e8
+      0xbbbe5a37
+      0x804874e      tests/test2.c:9 main
       0x8048584
       0x80484e7
      realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe7246     lmdbg.c:277     realloc
-      0x8048764      ../tests/test2.c:10     main
+      0xbbbe58e8
+      0xbbbe5a37
+      0x8048764      tests/test2.c:10        main
       0x8048584
       0x80484e7
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe7246     lmdbg.c:277     realloc
-      0x804877a      ../tests/test2.c:11     main
+      0xbbbe58e8
+      0xbbbe5a37
+      0x804877a      tests/test2.c:11        main
       0x8048584
       0x80484e7
      $
@@ -123,29 +123,29 @@ See INSTALL file
 
      $ lmdbg-sym -a ./_test2 _log
      malloc ( 555 ) --> 0xbb901400
-      ??:0
-      ??:0
-      ../tests/test2.c:8
-      ??:0
-      ??:0
+      0xbbbe58e8
+      0xbbbe5b03
+      0x8048738      tests/test2.c:8
+      0x8048584
+      0x80484e7
      realloc ( NULL , 666 ) --> 0xbb901800
-      ??:0
-      ??:0
-      ../tests/test2.c:9
-      ??:0
-      ??:0
+      0xbbbe58e8
+      0xbbbe5a37
+      0x804874e      tests/test2.c:9
+      0x8048584
+      0x80484e7
      realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
-      ??:0
-      ??:0
-      ../tests/test2.c:10
-      ??:0
-      ??:0
+      0xbbbe58e8
+      0xbbbe5a37
+      0x8048764      tests/test2.c:10
+      0x8048584
+      0x80484e7
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      ??:0
-      ??:0
-      ../tests/test2.c:11
-      ??:0
-      ??:0
+      0xbbbe58e8
+      0xbbbe5a37
+      0x804877a      tests/test2.c:11
+      0x8048584
+      0x80484e7
      $
 
 - lmdbg-sysleaks - greps or skips system memory leaks found in
@@ -159,18 +159,18 @@ See INSTALL file
    Example:
 
      $ lmdbg-leak-check -v -o _log ./_test2
-     Memory leaks were detected and saved to the file '_log'
-     10 $ cat _log
+     Memory leaks were detected and saved to file '_log'
+     $ cat _log
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe7246     lmdbg.c:277     realloc
-      0x804877a      ../tests/test2.c:11     main
+      0xbbbe58e8
+      0xbbbe5a37
+      0x804877a      tests/test2.c:11        main
       0x8048584
       0x80484e7
      malloc ( 555 ) --> 0xbb901400
-      0xbbbe6e12     lmdbg.c:87      do_traceback
-      0xbbbe716d     lmdbg.c:253     malloc
-      0x8048738      ../tests/test2.c:8      main
+      0xbbbe58e8
+      0xbbbe5b03
+      0x8048738      tests/test2.c:8 main
       0x8048584
       0x80484e7
      $
