@@ -8,7 +8,6 @@ export LC_ALL PATH LMDBG_LIB
 
 set -e
 
-
 unify_paths (){
     sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
 }
