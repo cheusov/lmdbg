@@ -159,13 +159,9 @@ if test "_$with_gdb" = "_1"; then
     }
     $1 == "Breakpoint" { # result of `b *<address>` command
 	for (i=1; i <= NF; ++i){
-	    if ($i == "at"){
-		gsub(/:$/, "", $(i+1))
-		printf "%s", $(i+1)
-	    }
 	    if ($i == "file"){
 		gsub(/[,.]$/, "", $(i+1))
-		printf "\t%s:", $(i+1)
+		printf "%s:", $(i+1)
 	    }
 	    if ($i == "line"){
 		gsub(/[,.]$/, "", $(i+1))
@@ -194,7 +190,7 @@ awk -v tmp1=$tmp_file1 -v tmp3=$tmp_file3 '
 BEGIN {
     while (0 < getline addr < tmp1 && 0 < getline src < tmp3){
 #	print addr " --> " "`" src "`"
-	if (src != ""){
+	if (src != "" && src != "??:0"){
 	    h [addr] = src
 #	    print addr, h [addr]
 	}
@@ -202,7 +198,7 @@ BEGIN {
 }
 NF == 1 && $0 ~ /^ / {
     if ($1 in h){
-	print " " h [$1]
+	print " " $1 "\t" h [$1]
     }else{
 	print " " $1
     }
