@@ -47,7 +47,7 @@ unify_address (){
 }
 
 hide_lmdbg_code (){
-    awk '/^ 0x/ && !/main/ {$0 = " " $1} {print}' "$@"
+    awk '/^ 0x/ && !/test/ {$0 = " " $1} {print}' "$@"
 }
 
 hide_foreign_code (){
