@@ -33,8 +33,8 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 # or full functional replacement.
 lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
 	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}; \
-	ln -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
-	ln -s ${.TARGET} lib${LIB}.so
+	ln -f -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
+	ln -f -s ${.TARGET} lib${LIB}.so
 
 .include <mkc.configure.mk>
 
