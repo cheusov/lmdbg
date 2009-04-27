@@ -244,12 +244,13 @@ static void lmdbg_finish (void)
 /* replacement functions */
 void * WRAP(malloc) (size_t s EXTRA_ARG)
 {
+	void *p;
 	assert (real_malloc);
 
 	if (log_enabled){
 		disable_logging ();
 
-		void *p = (*real_malloc) (s);
+		p = (*real_malloc) (s);
 		fprintf (log_fd, "malloc ( %u ) --> %p\n", (unsigned) s, p);
 		log_stacktrace ();
 
@@ -262,12 +263,13 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 
 void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 {
+	void *np;
 	assert (real_realloc);
 
 	if (log_enabled){
 		disable_logging ();
 
-		void *np = (*real_realloc) (p, s);
+		np = (*real_realloc) (p, s);
 		if (p){
 			fprintf (log_fd, "realloc ( %p , %u ) --> %p\n",
 					 p, (unsigned) s, np);
@@ -304,12 +306,13 @@ void WRAP(free) (void *p EXTRA_ARG)
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 {
+	void *p;
 	assert (real_memalign);
 
 	if (log_enabled){
 		disable_logging ();
 
-		void *p = (*real_memalign) (align, size);
+		p = (*real_memalign) (align, size);
 		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
 				 (unsigned) align, (unsigned) size, p);
 		log_stacktrace ();
