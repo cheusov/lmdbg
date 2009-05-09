@@ -82,7 +82,7 @@ lmdbg-sym -g --with-so /path/to/dll1.so RTLD_NOW ./my_app < _log
 .BR lmdbg-run(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
-.BR lmdbg-leak-check(1),
+.BR lmdbg(1),
 .BR gdb(1) ,
 .B addr2line(1)
 .SH AUTHOR

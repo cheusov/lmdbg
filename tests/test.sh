@@ -211,8 +211,8 @@ grep '^malloc'  "$logname2" | unify_address
 grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
-# lmdbg-leak-check!
-runtest lmdbg-leak-check -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1 \
+# lmdbg!
+runtest lmdbg -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1 \
     > "$logname2"
 
 grep -- --- "$logname2"
@@ -221,11 +221,11 @@ grep '^malloc'  "$logname" | unify_address
 grep '^realloc' "$logname" | unify_address
 grep '^free'    "$logname" | unify_address
 
-# lmdbg-leak-check!
-runtest lmdbg-leak-check -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/_test1
+# lmdbg!
+runtest lmdbg -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/_test1
 
-# lmdbg-leak-check!
-runtest lmdbg-leak-check -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2 \
+# lmdbg!
+runtest lmdbg -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2 \
     > "$logname2"
 
 grep -- --- "$logname2"

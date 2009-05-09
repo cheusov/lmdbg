@@ -14,18 +14,18 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-LEAK-CHECK 1 "May 9, 2009" "" ""
+.TH LMDBG 1 "May 9, 2009" "" ""
 .SH NAME
-lmdbg-leak-check \- all-in-one high-level LMDBG tool
+lmdbg \- all-in-one high-level LMDBG tool
 .SH SYNOPSIS
-.BI lmdbg-leak-check " [OPTIONS] <prog> [args...]"
+.BI lmdbg " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
-.B lmdbg-leak-check
+.B lmdbg
 runs an external program
 .I prog
 and collects its memory leaks and double
 frees in a specified log file. 
-.B lmdbg-leak-check
+.B lmdbg
 uses
 .BR lmdbg-run ", " lmdbg-leaks ", " lmdbg-sym ", and " lmdbg-sysleaks "."
 .SH OPTIONS
@@ -51,7 +51,7 @@ Enable verbose mode.
 configuration file
 .SH EXAMPLES
 .VB
-lmdbg-leak-check -o _log ./my-app
+lmdbg -o _log ./my-app
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,

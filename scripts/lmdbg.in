@@ -31,9 +31,9 @@ EOF
 
 usage (){
 	echo -n "\
-lmdbg-leak-check is a tiny program for detecting memory leaks in C programs
+lmdbg is a tiny program for detecting memory leaks in C programs
 
-usage: lmdbg-leak-check [OPTIONS] <prog> [args...]
+usage: lmdbg [OPTIONS] <prog> [args...]
 OPTIONS:
   -h --help                   display this screen
   -V --version                display version
@@ -73,12 +73,12 @@ while test $# -ne 0; do
 done
 
 if test $# = 0; then
-    echo "<prog> is missing. Run lmdbg-leak-check --help for more information" 1>&2
+    echo "<prog> is missing. Run lmdbg --help for more information" 1>&2
     exit 1
 fi
 
 if test "_$log_file" = "_"; then
-    echo "log file is not specified. Run lmdbg-leak-check --help for more information" 1>&2
+    echo "log file is not specified. Run lmdbg --help for more information" 1>&2
     exit 1
 fi
 

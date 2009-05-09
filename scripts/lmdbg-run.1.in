@@ -92,6 +92,6 @@ more memory than others and why.
 .BR lmdbg-sym(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
-.B lmdbg-leak-check(1)
+.B lmdbg(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

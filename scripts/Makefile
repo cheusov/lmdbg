@@ -1,8 +1,8 @@
 INSCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
-INSCRIPTS+=	lmdbg-sym lmdbg-leak-check
+INSCRIPTS+=	lmdbg-sym lmdbg
 
 INFILES+=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
-INFILES+=	lmdbg-sym.1 lmdbg-leak-check.1
+INFILES+=	lmdbg-sym.1 lmdbg.1
 
 MAN=		${INFILES}
 

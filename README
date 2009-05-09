@@ -152,13 +152,13 @@ See INSTALL file
   libc, libdl, C++ stl etc. See tests/lmdbg*.conf files.
   The default config files are: ~/.lmdbg.conf and /etc/lmdbg.conf
 
-- lmdbg-leak-check = lmdbg-run + lmdbg-leaks + lmdbg-sym + lmdbg-sysleaks
+- lmdbg = lmdbg-run + lmdbg-leaks + lmdbg-sym + lmdbg-sysleaks
 
-  That is lmdbg-leak-check is all-in-one higher level tool.
+  That is lmdbg is all-in-one higher level tool.
 
    Example:
 
-     $ lmdbg-leak-check -v -o _log ./_test2
+     $ lmdbg -v -o _log ./_test2
      Memory leaks were detected and saved to file '_log'
      $ cat _log
      realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
@@ -181,7 +181,7 @@ See INSTALL file
 lmdbg-run        --help
 lmdbg-leaks      --help
 lmdbg-sym        --help
-lmdbg-leak-check --help
+lmdbg            --help
 
 Sample of usage:
 

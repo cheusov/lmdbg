@@ -5,4 +5,4 @@
 - lmdbg-leaks: double free
 - libstacktrace?
 - -olog and -p'pipe'
-- lmdbg-leak-check -a|-g
+- lmdbg -a|-g
