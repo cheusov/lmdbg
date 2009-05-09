@@ -44,7 +44,6 @@ test: all
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
-	echo CC=$$CC SRCDIR=$$SRCDIR OBJDIR=$$OBJDIR PATH=$$PATH LMDBG_LIB=$$LMDBG_LIB; \
 	export PATH LMDBG_LIB OBJDIR SRCDIR CC; \
 	if ( cd ${.CURDIR}/tests || exit 0; \
 	    ./test.sh > ${.OBJDIR}/_test.res || exit 0; \
