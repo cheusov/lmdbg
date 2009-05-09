@@ -24,6 +24,7 @@ SRCS=		lmdbg.c
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
+CFLAGS+=	-O0 -g # gcc's -O2 is not allowed!
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 # Unfortunately default bsd.*.mk rule doesn't work with
