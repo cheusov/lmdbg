@@ -21,8 +21,8 @@ lmdbg-sysleaks \- extracts/skips the system-wide memory leaks
 .BI lmdbg-sysleaks " [OPTIONS] [logfile...]"
 .SH DESCRIPTION
 .B lmdbg-sysleaks
-analyses lmdbg-run's output and
-extracts (or skips) system-wide memory leaks.
+analyses lmdbg-sym's output and
+extracts (or skips) system-wide memory leaks listed in configuration file.
 .SH OPTIONS
 .TP
 .B "-h|--help"
@@ -39,18 +39,23 @@ Skip system-wide memory leaks
 .SH FILES
 .TP
 .IR ~/.lmdbg.conf " or " @sysconfdir@/lmdbg.conf
+default
 .B lmdbg
 configuration file
 .SH EXAMPLES
 .VB
-lmdbg-run -o _log ./my-app &&
-  lmdbg-sysleaks _log > _log_leaks &&
-  lmdbg-sym _log_leaks > _log_final
+lmdbg-sysleaks -h
+lmdbg-sysleaks -V
+lmdbg-sysleaks -o _log ./my_app &&
+  lmdbg-leaks _log > _log_leaks &&
+  lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
+  lmdbg-sysleaks -s _log_leaks2 > _log_final
+lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s _log_leaks2 > _log_final
 .VE
 .SH SEE ALSO
-.BR lmdbg-run(1) ,
-.B lmdbg-sym(1) ,
-.B lmdbg-leaks(1) ,
-.B lmdbg-leak-check(1) ,
+.BR lmdbg-run(1) ","
+.BR lmdbg-sym(1) ","
+.BR lmdbg-leaks(1) ","
+.BR lmdbg-leak-check(1) ","
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

@@ -21,7 +21,9 @@ lmdbg-leak-check \- all-in-one high-level LMDBG tool
 .BI lmdbg-leak-check " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
 .B lmdbg-leak-check
-runs an external application and collects its memory leaks and double
+runs an external program
+.I prog
+and collects its memory leaks and double
 frees in a specified log file. 
 .B lmdbg-leak-check
 uses
