@@ -1,0 +1,82 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-RUN 1 "May 9, 2009" "" ""
+.SH NAME
+lmdbg-run \- run program and traces the malloc/realloc/free calls
+.SH SYNOPSIS
+.BI lmdbg-run " [OPTIONS] <prog> [args...]"
+.SH DESCRIPTION
+.B lmdbg-run
+lmdbg-run runs an external application and creates a log file where
+all called malloc/realloc/free/memalign invocations are registered
+with the following information: FULL STACKTRACE (addresses), input
+argument(s) (requested size and/or address) and result value (returned
+address).  Alternatively all stacktraces are sent to a pipe. The
+stacktrace may look like this.
+.VB
+
+ realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
+  0xbbbe58e8
+  0xbbbe5a37
+  0x8048764
+  0x8048584
+  0x80484e7
+
+.VE
+This means that realloc function was given pointer 0xbb901800 and 777
+bytes was requested. As a result realloc reurned 0xbb901c00.
+0xbbbe58e8, 0xbbbe5a37 etc. are addresses from where realloc itself
+was called.
+.SH OPTIONS
+.TP
+.B "-h|--help"
+display help message
+.TP
+.BI "-V|--version"
+Display the lmdbg version
+.TP
+.BI "-o|--log" " filename"
+Specify the log file.
+.TP
+.BI "-p|--pipe" " pipe"
+Send all stacktraces to the pipe, but the log file.
+.TP
+.B "-v"
+Enable verbose mode.
+.SH ENVIRONMENT
+.TP
+.B LMDBG_LIB
+Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
+@PREFIX@/lib/liblmdbg.so
+.SH EXAMPLES
+.VB
+lmdbg-run -h
+lmdbg-run -V
+lmdbg-run -o _log ./my_app
+lmdbg-run -p 'analyse | logs > _log' ./a.out
+.VE
+.SH NOTE
+Full stacktrace allows you to analyse your application on per-module
+basis, i.e.  you can detect what blocks/components require more memory
+than others and why.
+.SH SEE ALSO
+.BR lmdbg-sym(1) ,
+.B lmdbg-leaks(1) ,
+.B lmdbg-sysleaks(1) ,
+.B lmdbg-leak-check(1)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
