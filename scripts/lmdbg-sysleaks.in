@@ -30,8 +30,8 @@ sysconfdir=@sysconfdir@
 
 usage (){
     echo -n "\
-This program analyses lmdbg-run's or lmdbg-sym's output and
-produces information about memory leaks.
+This program analyses lmdbg-run's output and
+extracts (or skips) system-wide memory leaks.
 
 usage:
     lmdbg-sysleaks [OPTIONS] [files...]

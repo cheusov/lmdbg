@@ -1,6 +1,11 @@
 INSCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
 INSCRIPTS+=	lmdbg-sym lmdbg-leak-check
 
+INFILES+=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
+INFILES+=	lmdbg-sym.1 lmdbg-leak-check.1
+
+MAN=		${INFILES}
+
 SCRIPTS=	${INSCRIPTS}
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'

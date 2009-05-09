@@ -38,7 +38,7 @@ Specify the config file
 Skip system-wide memory leaks
 .SH FILES
 .TP
-.IR ~/.lmdbg.conf " or " @SYSCONFDIR@/lmdbg.conf
+.IR ~/.lmdbg.conf " or " @sysconfdir@/lmdbg.conf
 .B lmdbg
 configuration file
 .SH EXAMPLES

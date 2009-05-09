@@ -61,7 +61,7 @@ Enable verbose mode.
 .TP
 .B LMDBG_LIB
 Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
-@PREFIX@/lib/liblmdbg.so
+@libdir@/liblmdbg.so
 .SH EXAMPLES
 .VB
 lmdbg-run -h
