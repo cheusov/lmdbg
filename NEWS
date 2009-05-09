@@ -1,4 +1,54 @@
 ======================================================================
+Version 0.10.0, by AlekseyCheusov, Sun, 10 May 2009 00:21:45 +0300
+
+  Completely NEW build system based on NetBSD make (aka bmake),
+  mk-configure and pkgsrc's mk-files.  It makes building LMDBG a bit
+  harder (user have to install new building tools, most probably from
+  sources :-/) but makes the code *much* simplier and makes
+  development and supporting *drammatically* easier. See INSTALL file
+  for the installation instruction.
+
+  This release of LMDBG was sucessfully tested under the following
+  platforms: NetBSD-5.0/x86/gcc, NetBSD-4.0/x86/gcc,
+  Linux/glibc-2.3/x86/gcc, FreeBSD-6.2/x86/gcc and Solaris-10/x86/gcc.
+  NetBSD-2/alpha/gcc also partially works (unfortunately gcc's
+  __builtin_return_address and __builtin_frame_address return NULL
+  with non-zero arguments on NetBSD-2/Alpha :-(, that is stacktrace
+  consists on single stack frame).
+
+  - Now all utilities have man pages!
+
+  - separation of libstacktrace library which is compatible (has a
+    similar API) with GNU libc's backtrace(3) but works just perfectly
+    under NetBSD, FreeBSD and Solaris.
+
+  - lmdbg-leak-check has been renamed to lmdbg.
+
+  - lmdbg-sysleaks:
+    - Two new keywords in config file: ignore_basefile, ignore_baseline.
+    - Support for shitty Solaris' /bin/sh.
+
+  - lmdbg-sym:
+    Fixes for -a mode. Now it outputs results in the same format as -g.
+
+  - lmdbg-run and lmdbg-sym:
+    LMDBG_ENV environment variable...
+
+  - LMDBG_LIBDYN variables has been renamed to LMDBG_LIB.
+
+  - tests/test.sh:
+  Diverse fixes for Solaris
+    - support for shitty shell :-/
+    - 0x vs sprintf('%p", ...)
+
+  - lmdbg.c:
+    fixed: log_enabled variable is set from gdb, so it should NOT be static.
+    fixed: lint(1) warnings.
+
+  - Both libstacktrace and liblmdbg libraries are built with '-O0 -g'
+    flags.
+
+======================================================================
 Version 0.10alpha1, by Aleksey Cheusov, Sun, 29 Mar 2009 17:13:04 +0300
 
   Good bye GNU autotools aka autohell! Now lmdbg is built using
