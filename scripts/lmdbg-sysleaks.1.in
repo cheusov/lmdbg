@@ -1,0 +1,56 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-SYSLEAKS 1 "May 9, 2009" "" ""
+.SH NAME
+lmdbg-sysleaks \- extracts/skips the system-wide memory leaks
+.SH SYNOPSIS
+.BI lmdbg-sysleaks " [OPTIONS] [logfile...]"
+.SH DESCRIPTION
+.B lmdbg-sysleaks
+analyses lmdbg-run's output and
+extracts (or skips) system-wide memory leaks.
+.SH OPTIONS
+.TP
+.B "-h|--help"
+display help message
+.TP
+.BI "-V|--version"
+Display the lmdbg version
+.TP
+.BI "-c|--config"
+Specify the config file
+.TP
+.BI "-s|--skip-leaks"
+Skip system-wide memory leaks
+.SH FILES
+.TP
+.IR ~/.lmdbg.conf " or " @SYSCONFDIR@/lmdbg.conf
+.B lmdbg
+configuration file
+.SH EXAMPLES
+.VB
+lmdbg-run -o _log ./my-app &&
+  lmdbg-sysleaks _log > _log_leaks &&
+  lmdbg-sym _log_leaks > _log_final
+.VE
+.SH SEE ALSO
+.BR lmdbg-run(1) ,
+.B lmdbg-sym(1) ,
+.B lmdbg-leaks(1) ,
+.B lmdbg-leak-check(1) ,
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
