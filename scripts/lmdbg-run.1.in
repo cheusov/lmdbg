@@ -21,12 +21,13 @@ lmdbg-run \- run program and traces the malloc/realloc/free calls
 .BI lmdbg-run " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
 .B lmdbg-run
-lmdbg-run runs an external application and creates a log file where
-all called malloc/realloc/free/memalign invocations are registered
-with the following information: FULL STACKTRACE (addresses), input
-argument(s) (requested size and/or address) and result value (returned
-address).  Alternatively all stacktraces are sent to a pipe. The
-stacktrace may look like this.
+lmdbg-run runs an external application
+.I prog
+and creates a log file where all called malloc/realloc/memalign/free
+invocations are registered with the following information: FULL
+STACKTRACE (addresses), input argument(s) (requested size and/or
+address) and result value (returned address).  All stacktraces can
+alternatively be sent to to a pipe. The stacktrace may look like this.
 .VB
 
  realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
@@ -41,19 +42,30 @@ This means that realloc function was given pointer 0xbb901800 and 777
 bytes was requested. As a result realloc reurned 0xbb901c00.
 0xbbbe58e8, 0xbbbe5a37 etc. are addresses from where realloc itself
 was called.
+Another example:
+.VB
+
+ malloc ( 555 ) --> 0xbb901400
+  0xbbbe58e8
+  0xbbbe5b03
+  0x8048738
+  0x8048584
+  0x80484e7
+
+.VE
 .SH OPTIONS
 .TP
 .B "-h|--help"
-display help message
+display help message.
 .TP
 .BI "-V|--version"
-Display the lmdbg version
+Display the lmdbg version.
 .TP
 .BI "-o|--log" " filename"
 Specify the log file.
 .TP
 .BI "-p|--pipe" " pipe"
-Send all stacktraces to the pipe, but the log file.
+Send all stacktraces to the pipe, not to the log file.
 .TP
 .B "-v"
 Enable verbose mode.
@@ -66,13 +78,16 @@ Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
 .VB
 lmdbg-run -h
 lmdbg-run -V
-lmdbg-run -o _log ./my_app
-lmdbg-run -p 'analyse | logs > _log' ./a.out
+lmdbg-run -o _log ./my_app &&
+  lmdbg-leaks _log > _log_leaks &&
+  lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
+  lmdbg-sysleaks -s _log_leaks2 > _log_final
+lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log_final' ./a.out
 .VE
-.SH NOTE
+.SH NOTES
 Full stacktrace allows you to analyse your application on per-module
-basis, i.e.  you can detect what blocks/components require more memory
-than others and why.
+basis, i.e.  you can determine what libraries and/or omponents require
+more memory than others and why.
 .SH SEE ALSO
 .BR lmdbg-sym(1) ,
 .B lmdbg-leaks(1) ,
