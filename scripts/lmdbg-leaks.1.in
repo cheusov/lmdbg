@@ -1,0 +1,45 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-LEAKS 1 "May 9, 2009" "" ""
+.SH NAME
+lmdbg-leaks \- extracts the memory leaks from lmdbg-run's output
+.SH SYNOPSIS
+.BI lmdbg-leaks " [OPTIONS] [logfile...]"
+.SH DESCRIPTION
+.B lmdbg-leaks
+analyses lmdbg-run's output and prints an information about
+memory leaks and double frees.
+.SH OPTIONS
+.TP
+.B "-h|--help"
+display help message
+.TP
+.BI "-V|--version"
+Display the lmdbg version
+.SH EXAMPLES
+.VB
+lmdbg-run -o _log ./my-app
+lmdbg-leaks _log > _log_leaks
+lmdbg-sym _log_leaks > _log_final
+.VE
+.SH SEE ALSO
+.BR lmdbg-run(1) ,
+.B lmdbg-sym(1) ,
+.B lmdbg-sysleaks(1) ,
+.B lmdbg-leak-check(1) ,
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
