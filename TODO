@@ -4,3 +4,4 @@
 - lmdbg-leaks written in Judy
 - lmdbg-leaks: double free
 - libstacktrace?
+- -olog and -p'pipe'
