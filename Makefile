@@ -37,8 +37,15 @@ install-dirs:
 .PHONY: test
 test: all
 	@echo 'running tests...'; \
-	OBJDIR=${.OBJDIR} SRCDIR=${.CURDIR} CC='${CC}'; \
-	export OBJDIR SRCDIR CC; \
+	cd ${.CURDIR}/liblmdbg; \
+	    LMDBG_LIB=`${MAKE} mkc_printobjdir`/liblmdbg.so; \
+	cd ${.CURDIR}/scripts; \
+	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
+	OBJDIR=${.OBJDIR}; \
+	SRCDIR=${.CURDIR}; \
+	CC='${CC}'; \
+	echo CC=$$CC SRCDIR=$$SRCDIR OBJDIR=$$OBJDIR PATH=$$PATH LMDBG_LIB=$$LMDBG_LIB; \
+	export PATH LMDBG_LIB OBJDIR SRCDIR CC; \
 	if ( cd ${.CURDIR}/tests || exit 0; \
 	    ./test.sh > ${.OBJDIR}/_test.res || exit 0; \
 	    diff -u test.out ${.OBJDIR}/_test.res > ${.OBJDIR}/_test2.res; \
@@ -48,7 +55,7 @@ test: all
 	    ); \
 	then \
 	    echo '   failed'; \
-	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' ./_test2.res; \
+	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' ${.OBJDIR}/_test2.res; \
 	    false; \
 	else \
 	    echo '   succeeded'; \

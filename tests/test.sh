@@ -1,12 +1,11 @@
 #!/bin/sh
 
-LC_ALL=C
-LMDBG_LIB="$OBJDIR"/liblmdbg.so
-PATH=$OBJDIR:$PATH
-
-export LC_ALL PATH LMDBG_LIB
-
 set -e
+
+test -n "$OBJDIR" -a -n "$SRCDIR" -a -n "$LMDBG_LIB" -a -n "$CC"
+
+LC_ALL=C
+export LC_ALL
 
 unify_paths (){
     sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
@@ -23,7 +22,7 @@ runtest (){
 
     echo '--------------------------------------------------'
     echo "------- args: $prog $@" | unify_paths
-    "$OBJDIR"/"$prog" "$@" 2>&1 | unify_paths
+    $prog "$@" 2>&1 | unify_paths
 }
 
 ####################
@@ -133,14 +132,14 @@ unify_address | hide_lmdbg_code | hide_line_numbers |
 hide_foreign_code | canonize_paths
 
 # lmdbg-run --pipe lmdbg-leaks
-runtest lmdbg-run -o "$logname" --pipe "$OBJDIR"/lmdbg-leaks "$execname"
+runtest lmdbg-run -o "$logname" --pipe lmdbg-leaks "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
 
 # lmdbg-run -p lmdbg-leaks
-runtest lmdbg-run -o "$logname" -p "$OBJDIR"/lmdbg-leaks "$execname"
+runtest lmdbg-run -o "$logname" -p lmdbg-leaks "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
