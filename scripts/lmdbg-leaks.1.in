@@ -42,8 +42,8 @@ lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log_final' ./a.out
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,
-.B lmdbg-sym(1) ,
-.B lmdbg-sysleaks(1) ,
-.B lmdbg-leak-check(1) ,
+.BR lmdbg-sym(1) ,
+.BR lmdbg-sysleaks(1) ,
+.B lmdbg-leak-check(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

@@ -90,8 +90,8 @@ basis, i.e.  you can determine what libraries and/or omponents require
 more memory than others and why.
 .SH SEE ALSO
 .BR lmdbg-sym(1) ,
-.B lmdbg-leaks(1) ,
-.B lmdbg-sysleaks(1) ,
+.BR lmdbg-leaks(1) ,
+.BR lmdbg-sysleaks(1) ,
 .B lmdbg-leak-check(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

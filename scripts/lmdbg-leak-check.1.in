@@ -55,8 +55,8 @@ lmdbg-leak-check -o _log ./my-app
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,
-.B lmdbg-sym(1) ,
-.B lmdbg-leaks(1) ,
-.B lmdbg-sysleak(1) ,
+.BR lmdbg-sym(1) ,
+.BR lmdbg-leaks(1) ,
+.B lmdbg-sysleak(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

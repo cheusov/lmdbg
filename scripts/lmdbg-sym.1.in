@@ -80,10 +80,10 @@ lmdbg-sym -g --with-so /path/to/dll1.so RTLD_NOW ./my_app < _log
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,
-.B lmdbg-leaks(1) ,
-.B lmdbg-sysleaks(1) ,
-.B lmdbg-leak-check(1) ,
-.B gdb(1) ,
+.BR lmdbg-leaks(1) ,
+.BR lmdbg-sysleaks(1) ,
+.BR lmdbg-leak-check(1),
+.BR gdb(1) ,
 .B addr2line(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

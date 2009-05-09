@@ -53,9 +53,9 @@ lmdbg-sysleaks -o _log ./my_app &&
 lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s _log_leaks2 > _log_final
 .VE
 .SH SEE ALSO
-.BR lmdbg-run(1) ","
-.BR lmdbg-sym(1) ","
-.BR lmdbg-leaks(1) ","
-.BR lmdbg-leak-check(1) ","
+.BR lmdbg-run(1) ,
+.BR lmdbg-sym(1) ,
+.BR lmdbg-leaks(1) ,
+.B lmdbg-leak-check(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>
