@@ -18,20 +18,6 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 CLEANFILES=	ChangeLog _*
 
-##################################################
-
-.PHONY: install-dirs
-install-dirs:
-	$(INST_DIR) ${DESTDIR}${BINDIR}
-	$(INST_DIR) ${DESTDIR}${LIBDIR}
-	$(INST_DIR) ${DESTDIR}${INCSDIR}
-.if !defined(MKMAN) || empty(MKMAN:M[Nn][Oo])
-	$(INST_DIR) ${DESTDIR}${MANDIR}/man1
-.if !defined(MKCATPAGES) || empty(MKCATPAGES:M[Nn][Oo])
-	$(INST_DIR) ${DESTDIR}${MANDIR}/cat1
-.endif
-.endif
-
 ###########################
 
 .PHONY: test
