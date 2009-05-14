@@ -1,11 +1,8 @@
 ######################################################################
 # Autoconfiguration part. Stop using GNU autoconf! :-)
 
-# for Interix
-MKC_COMMON_DEFINES+=	-D_ALL_SOURCE
-
-# For Linux
-MKC_COMMON_DEFINES+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
+MKC_COMMON_DEFINES.Interix+=	-D_ALL_SOURCE
+MKC_COMMON_DEFINES.Linux+=	-D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 
 # Ex.: CFLAGS += -DHAVE_FUNC2_MEMALIGN_MALLOC_H=1 on GNU libc
 MKC_CHECK_FUNCS2+=	memalign:malloc.h
