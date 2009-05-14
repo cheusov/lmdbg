@@ -21,27 +21,32 @@ MKC_CHECK_FUNCLIBS+=	dlopen:dl
 LIB=		lmdbg
 SRCS=		lmdbg.c
 
-SHLIB_MAJOR=	0
-SHLIB_MINOR=	0
-
 CFLAGS+=	-O0 -g # gcc's -O2 is not allowed!
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
+LMDBGFN=	liblmdbg.so.0.0
+
+FILES=		liblmdbg.so
+FILESNAME=	liblmdbg.so.0.0
+FILESDIR=	${LIBDIR}
+FILESOWN=	${LIBOWN}
+FILESGRP=	${LIBGRP}
+FILESMODE=	${LIBMODE}
+
+SYMLINKS=	liblmdbg.so.0.0 ${LIBDIR}/liblmdbg.so.0
+SYMLINKS+=	liblmdbg.so.0   ${LIBDIR}/liblmdbg.so
+
 # Unfortunately default bsd.*.mk rule doesn't work with
-# __attribute__((constructor)) used in lmdbg.c.
-# This is why I define this rule here.
-# USE_LIBTOOLS=yes|no is needed in bsd.*.mk
-# or full functional replacement.
-lib${LIB}.so.${SHLIB_MAJOR}.${SHLIB_MINOR}:
-	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}; \
-	ln -f -s ${.TARGET} lib${LIB}.so.${SHLIB_MAJOR}; \
-	ln -f -s ${.TARGET} lib${LIB}.so
+# __attribute__((constructor)) construct used in lmdbg.c.
+# This is why I define the following rule here.
+.PHONY: all
+all: liblmdbg.so
+liblmdbg.so: lmdbg.so
+	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
 
 .include <mkc.configure.mk>
 
-#
-LDADD+=	-lstacktrace_pic
-
 .include "../libstacktrace/linkme.mk"
+DPLIBS+=	-lstacktrace_pic
 
 .include <mkc.lib.mk>
