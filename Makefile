@@ -1,13 +1,5 @@
 # Makefile for lmdbg
 # Copyright 2003-2009 Aleksey Cheusov <vle@gmx.net>
-
-##################################################
-
-MKHTML=			no
-MKMAN=			no
-
-INST_DIR?=		${INSTALL} -d
-
 ##################################################
 
 PROJECTNAME=	lmdbg
