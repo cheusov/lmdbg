@@ -2,29 +2,32 @@
 
                              INSTALLATION
 
-0) As of version 0.10.0 autohell stuff was thrown out because I hate
-   it. It's extreamly ugly. In my view, now everything looks much
-   better and cleaner but the installation phase becomes a bit more
-   complex because additional software is needed.
+0) As of version 0.10.0 autohell stuff was thrown out because I
+   dislike it. In my view, LMDBG now looks much better and cleaner but
+   the installation phase becomes a bit more complex because
+   additional software is needed.
 
    a) NetBSD make also known as bmake is required for building and
    installing LMDBG.  It is already packaged for some Linux distros
-   (e.g. Fedora).  Some others (Debian) provide an ancient NetBSD make
-   under name pmake which is also good. If you are happy pkgsrc user
-   ;-) (http://www.pkgsrc.org) of course bmake is already installed
-   because it is a part pkgsrc bootstrap. DragonFlyBSD also have bmake
-   in its base system.
-   NOTE: FreeBSD and OpenBSD make-s are not good. Unfortunately
-   they are incompatible with NetBSD bmake.
+   (e.g. Fedora).  Some others distros (Debian) provide an ancient
+   NetBSD make under name pmake which may work too but I'd recomment
+   to use latest bmake. Only latest stable bmake is tested. If you are
+   happy pkgsrc user ;-) (http://www.pkgsrc.org) of course bmake is
+   already installed because it is a part pkgsrc
+   bootstrap. DragonFlyBSD also have bmake in its base system.  NOTE:
+   FreeBSD and OpenBSD make-s are not good. Unfortunately they are
+   incompatible with NetBSD bmake.
 
    b) BSD Mk files (bsd.*.mk) is also an essential software for
-   building and installing LMDBG. They are a part of Debian's pmake.
-   You can download bsd.*.mk files there
-   http://roga-i-kopita.example.com/path/to
+   building and installing LMDBG. Install pkgsrc's mk-file from here
+   http://mova.org/~cheusov/pub/netbsd-tools/pkgsrc-mk-files/.
+   Again, if you are a pkgsrc user mk-files are already installed.
 
    c) mk-configure is also needed. This is extension for bsd.*.mk files
-   and is a lightweight and very simple replacement for GNU autoconf.
-   http://mova.org/~cheusov/pub/mk-configure/
+   and is a lightweight and very simple replacement for GNU autoconf
+   and GNU automake.
+   Download it from
+   http://sourceforge.net/projects/mk-configure/
 
 1) After successfully installing bmake, Mk files and mk-configure you
    are ready for installing LMDBG.
@@ -32,9 +35,9 @@
    Uncompress LMDBG tarball you've downloaded like this
    gzip -dc lmdbg-X-Y-Z.tar.gz | tar -xf-
 
-   If you ready this text, this step is probably already done :-)
+   If you read this text, this step is probably already done :-)
 
-2) cd paexec-X-Y-Z
+2) cd lmdbg-X-Y-Z
 
 3) bmake
 
@@ -49,23 +52,11 @@
 If you need to change the default building options,
 run bmake like this
 
-     env [YOUR_ASSIGNMENTS] bmake <target>
+     env [INITIAL_ASSIGNMENTS] bmake <target> [YOUR_ASSIGNMENTS]
 
 There are a lot of Makefile variables that can be changed during
 building and installation.  See the Makefile for LMDBG's own variables
 (All they are in the begining of Makefile).
-
-BSD make's variables (most commonly used,
-for all others - see bmake's documentation and .mk files)
-
- BINDIR - where LMDBG executables itself are installed to
- MANDIR - where manual pages are installed to
-
- BINOWN - owner for LMDBG executables
- BINGRP - group for LMDBG executables
-
- MANOWN - man pages owner
- MANGRP - man pages group
 
 Examples of building and installing:
 

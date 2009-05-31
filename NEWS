@@ -4,19 +4,19 @@ Version 0.10.0, by AlekseyCheusov, Sun, 10 May 2009 00:21:45 +0300
   Completely NEW build system based on NetBSD make (aka bmake),
   mk-configure and pkgsrc's mk-files.  It makes building LMDBG a bit
   harder (user have to install new building tools, most probably from
-  sources :-/) but makes the code *much* simplier and makes
+  sources :-( ) but makes the code *much* simplier and makes
   development and supporting *drammatically* easier. See INSTALL file
-  for the installation instruction.
+  for the installation instructions.
 
   This release of LMDBG was sucessfully tested under the following
   platforms: NetBSD-5.0/x86/gcc, NetBSD-4.0/x86/gcc,
   Linux/glibc-2.3/x86/gcc, FreeBSD-6.2/x86/gcc and Solaris-10/x86/gcc.
   NetBSD-2/alpha/gcc also partially works (unfortunately gcc's
   __builtin_return_address and __builtin_frame_address return NULL
-  with non-zero arguments on NetBSD-2/Alpha :-(, that is stacktrace
+  with non-zero arguments on NetBSD-2/alpha :-(, that is stacktrace
   consists on single stack frame).
 
-  - Now all utilities have man pages!
+  - Now all utilities have man pages.
 
   - separation of libstacktrace library which is compatible (has a
     similar API) with GNU libc's backtrace(3) but works just perfectly
@@ -42,7 +42,7 @@ Version 0.10.0, by AlekseyCheusov, Sun, 10 May 2009 00:21:45 +0300
     - 0x vs sprintf('%p", ...)
 
   - lmdbg.c:
-    fixed: log_enabled variable is set from gdb, so it should NOT be static.
+    fixed: log_enabled variable is set from gdb, so it must not be static.
     fixed: lint(1) warnings.
 
   - Both libstacktrace and liblmdbg libraries are built with '-O0 -g'
