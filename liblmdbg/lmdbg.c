@@ -129,7 +129,7 @@ static void init_fun_ptrs (void)
 #endif
 }
 
-static void init_verbose_flag ()
+static void init_verbose_flag (void)
 {
 	const char *v = getenv ("LMDBG_VERBOSE");
 	log_verbose = v && v [0];
