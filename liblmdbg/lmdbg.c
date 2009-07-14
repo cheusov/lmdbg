@@ -31,6 +31,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <assert.h>
+#include <limits.h>
 
 #include <dlfcn.h>
 
@@ -71,8 +72,6 @@ static void destruct(void) { lmdbg_finish(); }
 #else
 #define WRAP(name) name
 #endif
-
-static void log_stacktrace (void);
 
 static void print_stacktrace (void **buffer, int size)
 {
@@ -204,6 +203,87 @@ static void disable_logging (void)
 #endif
 }
 
+void print_pid (void)
+{
+	FILE *pid_fd;
+	const char *pid_filename = getenv ("LMDBG_PIDFILE");
+	if (!pid_filename)
+		return;
+
+	pid_fd = fopen (pid_filename, "w");
+	if (!pid_fd)
+		return;
+
+	fprintf (pid_fd, "%li\n", (long) getpid ());
+	fclose (pid_fd);
+}
+
+static void print_sections_map (void)
+{
+	char map_fn [PATH_MAX];
+	FILE *fp;
+	char buf [LINE_MAX];
+	const char *addr_beg=NULL, *addr_end=NULL, *libname=NULL;
+	char *p;
+	size_t len;
+
+	snprintf (map_fn, sizeof (map_fn), "/proc/%li/maps", (long) getpid ());
+	fp = fopen (map_fn, "r");
+
+	if (!fp){
+		fprintf (stderr, "opening %s failed\n", map_fn);
+		return;
+	}
+
+	while (fgets (buf, sizeof (buf), fp)){
+		/* buf content has the follosing format 
+		   bbbd1000-bbbd9000 rw-p 000d7000 00:18 116162   /lib/libc.so.12.163
+		*/
+		len = strlen (buf);
+		if (buf [len-1])
+			buf [len-1] = 0;
+
+		/* obtaining addresses */
+		addr_beg = buf;
+		for (p=buf; *p; ++p){
+			if (*p == ' ')
+				break;
+			if (*p == '-'){
+				*p = 0;
+				addr_end = p + 1;
+			}
+		}
+		if (!*p || !addr_end){
+			/* badly formatted line? */
+			continue;
+		}
+
+		*p++ = '\0';
+
+		/* We need only executable sections (code) */
+		if (*p != 'r')
+			continue; /* not readable? */
+		if (p[1] == 0)
+			continue; /* bad input */
+		if (p[2] != 'x')
+			continue; /* not executable */
+
+		/* obtaining library name */
+		for (; *p; ++p){
+			if (*p == ' ')
+				libname = p+1;
+		}
+
+		if (!libname || *libname != '/')
+			continue;
+
+		/* printing */
+		fprintf (log_fd, "info section 0x%s 0x%s %s\n", addr_beg, addr_end, libname);
+	}
+
+	fclose (fp);
+}
+
 static void lmdbg_startup (void)
 {
 	if (real_malloc){
@@ -212,8 +292,9 @@ static void lmdbg_startup (void)
 	}
 
 	init_fun_ptrs ();
-	init_verbose_flag ();
 	init_log ();
+	print_sections_map ();
+	init_verbose_flag ();
 
 	/*
 	fprintf (stderr, "real_malloc=%p\n", real_malloc);
