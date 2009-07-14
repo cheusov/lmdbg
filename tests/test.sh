@@ -39,6 +39,7 @@ unify_text (){
 
 unify_address (){
     awk '
+	$1 == "info" {next}
 	$1 == "malloc"  {$6 = "0xF00DBEAF"}
 	$1 == "free"    {$3 = "0xF00DBEAF"}
 	$1 == "realloc" {$8 = "0xF00DBEAF"}
