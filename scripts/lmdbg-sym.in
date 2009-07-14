@@ -107,8 +107,9 @@ mkdir -m 700 "$tmp_dir"
 
 tmp_file=$tmp_dir/0
 tmp_file1=$tmp_dir/1
-tmp_file2=$tmp_dir/2
 tmp_file3=$tmp_dir/3
+pid_file=$tmp_dir/4
+gdb_cmds_file=$tmp_dir/5
 
 if test $# -ne 1; then
     cat "$@" > "$tmp_file"
@@ -119,7 +120,7 @@ fi
 test $? || exit 3
 
 awk '
-NF == 1 {
+$0 ~ /^ / && NF == 1 {
     hash [$1] = ""
 }
 END {
@@ -130,28 +131,34 @@ END {
 
 if test "_$with_gdb" = "_1"; then
     # command file for GDB
+    mkfifo "$pid_file"
+#    mkfifo "$gdb_cmds_file"
+
     {
 	echo 'set width 0'
 	echo 'break _init'
 	echo 'set print demangle on'
 	echo "set environment LD_PRELOAD=$LMDBG_LIB $LMDBG_ENV"
+	echo "set environment LMDBG_PIDFILE=$pid_file"
 	if test "$additional_libs"; then
 	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
 	fi
 	echo 'run'
-	echo 'set variable log_enabled=1'
+#	echo 'p print_pid()'
 #	echo 'p lmdbg_dlopen_add_libs()'
+	echo 'set variable log_enabled=1'
 	echo 'print/x 0x22552255'
+#	read pid < "$pid_file"
+#	echo "PID! $pid" > /dev/tty
 	awk '{
 	    if ($0 !~ /^0x/)
 		$0 = "0x" $0 # This is necessary for Solaris
 	    print "b *" $0 "\ninfo break " NR+1
 	}' "$tmp_file1"
 	echo 'quit'
-    } > "$tmp_file2"
+    } > "$gdb_cmds_file"
 
-    # GDB Solo!
-    gdb -nx -q -batch -x $tmp_file2 "$prog" | # tee log |
+    gdb -nx -q -batch -x "$gdb_cmds_file" "$prog" | # | tee log |
     awk '
     !flag {
 	flag = /22552255/
@@ -205,6 +212,7 @@ NF == 1 && $0 ~ /^ / {
 
     next
 }
+$1 == "info" && $2 == "section" { next }
 {
     print $0
 }' < "$tmp_file"
