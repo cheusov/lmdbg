@@ -81,7 +81,7 @@ multiline2singleline (){
 	next
     }
     NF > 0 {
-	if (calls){
+	if (last){
 	    print last " " calls
 	    calls = ""
 	}
@@ -121,6 +121,12 @@ leaks () {
 	    h [$8] = $0
 	    delete h [$3]
 	}
+	next
+    }
+
+    {
+	print $0
+	next
     }
 
     END {
@@ -141,16 +147,15 @@ singleline2multiline () {
     BEGIN {
 	FS = SUBSEP
     }
-    $1 ~ /^(malloc|realloc|memalign) / {
+    $1 == "free" {
+	print "this should not happen" > "/dev/stderr"
+	exit 1
+    }
+    $1 ~ /^[^ ]/ {
 	sub(/ $/, "", $1)
 	for (i=1; i <= NF; ++i){
 	    print $i
 	}
-    }
-
-    $1 == "free" {
-	print "this should not happen" > "/dev/stderr"
-	exit 1
     }' "$@"
 }
 
