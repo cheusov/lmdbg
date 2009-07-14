@@ -2,7 +2,10 @@
 
 set -e
 
-test -n "$OBJDIR" -a -n "$SRCDIR" -a -n "$LMDBG_LIB" -a -n "$CC"
+CC=${CC:=cc}
+SRCDIR=${SRCDIR:=.}
+
+test -n "$OBJDIR" -a -n "$LMDBG_LIB"
 
 LC_ALL=C
 export LC_ALL
@@ -61,8 +64,14 @@ canonize_paths (){
     awk '/^ / {sub(/[^ \t]*\//, "")} {print}' "$@"
 }
 
+progress (){
+    echo "$@" > /dev/tty
+}
+
 ####################
 # stupid tests
+progress "stupid tests..."
+
 runtest lmdbg-run --help        | head -3 | unify_text 3
 runtest lmdbg-sym --help        | head -3 | unify_text 3
 runtest lmdbg-leaks --help      | head -3 | unify_text 3
@@ -94,12 +103,16 @@ logname="$OBJDIR"/_log
 $CC -O0 -g -o "$execname" "$srcname"
 
 # -o
+progress "test lmdbg-run -o..."
+
 runtest lmdbg-run -o "$logname" "$execname"
 
 grep malloc  "$logname" | unify_address
 grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
 # --log
+progress "test lmdbg-run --log..."
+
 runtest lmdbg-run --log "$logname" "$execname"
 
 grep malloc  "$logname" | unify_address
@@ -107,6 +120,8 @@ grep realloc "$logname" | unify_address
 grep free    "$logname" | unify_address
 
 # lmdbg-leaks
+progress "test lmdbg-leaks ..."
+
 logname2="$OBJDIR"/_log2
 runtest lmdbg-leaks "$logname" > "$logname2"
 
@@ -117,16 +132,22 @@ grep realloc "$logname2" | unify_address
 grep free    "$logname2" | unify_address
 
 # lmdbg-sym --with-gdb
+progress "test lmdbg-sym --with-gdb..."
+
 runtest lmdbg-sym --with-gdb "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths
 
 # lmdbg-sym -g
+progress "test lmdbg-sym -g..."
+
 runtest lmdbg-sym -g "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths
 
 # lmdbg-sym -a
+progress "test lmdbg-sym -a..."
+
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 hide_foreign_code | canonize_paths
@@ -162,6 +183,8 @@ grep '^realloc' "$logname" | unify_address
 grep '^free'    "$logname" | unify_address
 
 # lmdbg-leaks with two leaks
+progress "test lmdbg-leaks..."
+
 logname2="$OBJDIR"/_log2
 runtest lmdbg-leaks "$logname" > "$logname2"
 
@@ -172,6 +195,8 @@ grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak1.conf
+progress "test lmdbg-sysleaks 1..."
+
 runtest lmdbg-sysleaks -c ./lmdbg1.conf -s \
     "$logname" > "$logname2"
 
@@ -182,6 +207,8 @@ grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak2.conf
+progress "test lmdbg-sysleaks 2..."
+
 runtest lmdbg-sysleaks -c ./lmdbg2.conf -s \
     "$logname" > "$logname2"
 
@@ -192,6 +219,8 @@ grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak3.conf
+progress "test lmdbg-sysleaks 3..."
+
 runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
     "$logname" > "$logname2"
 
@@ -202,6 +231,8 @@ grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
 # lmdbg-leaks with lmdbg-leak3.conf
+progress "test lmdbg-sysleaks 4..."
+
 runtest lmdbg-sysleaks -c ./lmdbg3.conf \
     "$logname" > "$logname2"
 
@@ -212,6 +243,8 @@ grep '^realloc' "$logname2" | unify_address
 grep '^free'    "$logname2" | unify_address
 
 # lmdbg!
+progress "test lmdbg 1..."
+
 runtest lmdbg -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1 \
     > "$logname2"
 
@@ -222,9 +255,12 @@ grep '^realloc' "$logname" | unify_address
 grep '^free'    "$logname" | unify_address
 
 # lmdbg!
+progress "test lmdbg 2..."
 runtest lmdbg -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/_test1
 
 # lmdbg!
+progress "test lmdbg 3..."
+
 runtest lmdbg -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2 \
     > "$logname2"
 
