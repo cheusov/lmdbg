@@ -1,5 +1,5 @@
 ======================================================================
-Version 0.10.0, by AlekseyCheusov, Sun, 10 May 2009 00:21:45 +0300
+Version 0.10.0, by AlekseyCheusov, Sun, 31 May 2009 15:17:20 +0300
 
   Completely NEW build system based on NetBSD make (aka bmake),
   mk-configure and pkgsrc's mk-files.  It makes building LMDBG a bit
