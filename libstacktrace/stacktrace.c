@@ -25,6 +25,8 @@
 #include "config.h"
 #endif
 
+#include "stacktrace.h"
+
 #if HAVE_HEADER_EXECINFO_H
 #include <execinfo.h>
 /* GNU libc ? */

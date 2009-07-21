@@ -15,5 +15,7 @@ INCS=		stacktrace.h
 
 MKPIC=		yes
 
+WARNS=		4
+
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
