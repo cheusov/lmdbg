@@ -196,7 +196,7 @@ address2position_gdb (){
     '
 }
 
-address2position_addr2line (){
+address2position_addr2line_nomaps (){
     # input: addresses, one per line
     # output: source code positions, one per line
 
@@ -213,15 +213,24 @@ address2position_addr2line (){
     '
 }
 
+#address2position_addr2line_maps (){
+#    # input: addresses, one per line
+#    # output: source code positions, one per line
+#    grep 'info section ' "$tmp_file"
+#}
+
 collect_address "$tmp_file" > "$tmp_file1"
 
 if test "_$with_gdb" = "_1"; then
     # command file for GDB
     address2position_gdb "$tmp_file1"
+#elif grep '^info section' "$tmp_file" > /dev/null; then
+#    address2position_addr2line_maps "$tmp_file1"
 else
     # ADDR2LINE 
-    address2position_addr2line "$tmp_file1"
+    address2position_addr2line_nomaps "$tmp_file1"
 fi > $tmp_file3
+
 #cat $tmp_file3
 #exit
 
