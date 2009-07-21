@@ -105,16 +105,17 @@ tmp_dir="/tmp/lmdbg-sym.$$"
 trap "rm -rf $tmp_dir" 0 1 2 15
 mkdir -m 700 "$tmp_dir"
 
-tmp_file=$tmp_dir/0
+input=$tmp_dir/0
 tmp_file1=$tmp_dir/1
 tmp_file3=$tmp_dir/3
 pid_file=$tmp_dir/4
 gdb_cmds_file=$tmp_dir/5
+info_sections_fn=$tmp_dir/6
 
 if test $# -ne 1; then
-    cat "$@" > "$tmp_file"
+    cat "$@" > "$input"
 else
-    tmp_file=$1
+    input=$1
 fi
 
 test $? || exit 3
@@ -153,11 +154,41 @@ generate_gdb_commands (){
     echo 'print/x 0x22552255'
 #   read pid < "$pid_file"
 #   echo "PID! $pid" > /dev/tty
-    awk '{
-	if ($0 !~ /^0x/)
-	    $0 = "0x" $0 # This is necessary for Solaris
-	print "b *" $0 "\ninfo break " NR+1
-    }' "$@"
+
+    if grep '^info section ' "$input" > "$info_sections_fn"; then
+	awk '
+	BEGIN {
+	    br_cnt = 2
+	}
+	$1 == "info" && $2 == "section" {
+	    sub(/^(0x)?0*/, "", $3)
+	    sub(/^(0x)?0*/, "", $4)
+	    beg [$5] = ($3 "")
+	    end [$5] = ($4 "")
+	    next
+	}
+	{
+	    sub(/^(0x)?0*/, "", $0)
+	    module = ""
+	    beg_addr = 0
+	    for (sect in beg){
+		if ($0 >= beg [sect] && $0 < end [sect]){
+		    module   = sect
+		    beg_addr = beg [sect]
+		    break
+		}
+	    }
+
+	    printf "break *lmdbg_get_addr(0x%s, 0x%s, \"%s\")\n", $0, beg_addr, module
+	    printf "info break %s\n", br_cnt++
+	}' "$info_sections_fn" "$@"
+    else
+	awk '{
+	    if ($0 !~ /^0x/)
+		$0 = "0x" $0 # This is necessary for Solaris
+	    print "b *" $0 "\ninfo break " NR+1
+	}' "$@"
+    fi
     echo 'quit'
 }
 
@@ -222,15 +253,15 @@ address2position_addr2line_nomaps (){
 #address2position_addr2line_maps (){
 #    # input: addresses, one per line
 #    # output: source code positions, one per line
-#    grep 'info section ' "$tmp_file"
+#    grep 'info section ' "$input"
 #}
 
-collect_address "$tmp_file" > "$tmp_file1"
+collect_address "$input" > "$tmp_file1"
 
 if test "_$with_gdb" = "_1"; then
     # command file for GDB
     address2position_gdb "$tmp_file1"
-#elif grep '^info section' "$tmp_file" > /dev/null; then
+#elif grep '^info section' "$input" > /dev/null; then
 #    address2position_addr2line_maps "$tmp_file1"
 else
     # ADDR2LINE 
@@ -264,4 +295,4 @@ NF == 1 && $0 ~ /^ / {
 $1 == "info" && $2 == "section" { next }
 {
     print $0
-}' < "$tmp_file"
+}' < "$input"
