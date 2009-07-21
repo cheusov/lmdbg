@@ -76,6 +76,9 @@ static void destruct(void) { lmdbg_finish(); }
 static void print_stacktrace (void **buffer, int size)
 {
 	int i;
+	if (!log_fd)
+		return;
+
 	for (i = 0; i < size; ++i) {
 		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
 	}
@@ -141,9 +144,7 @@ static void init_log (void)
 	if (log_verbose)
 		fprintf (stderr, "LMDBG_LOGFILE=%s\n", log_filename);
 
-	if (!log_filename || strcmp (log_filename, "-") == 0){
-		log_fd = stderr;
-	}else{
+	if (log_filename){
 		log_fd = fopen (log_filename, "w");
 
 		if (!log_fd){
@@ -226,6 +227,9 @@ static void print_sections_map (void)
 	const char *addr_beg=NULL, *addr_end=NULL, *libname=NULL;
 	char *p;
 	size_t len;
+
+	if (!log_fd)
+		return;
 
 	snprintf (map_fn, sizeof (map_fn), "/proc/%li/maps", (long) getpid ());
 	fp = fopen (map_fn, "r");
@@ -319,7 +323,9 @@ static void lmdbg_startup (void)
 static void lmdbg_finish (void)
 {
 	disable_logging ();
-	fclose (log_fd);
+	if (log_fd)
+		fclose (log_fd);
+	log_fd = NULL;
 }
 
 /* replacement functions */
@@ -327,6 +333,9 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 {
 	void *p;
 	assert (real_malloc);
+
+	if (!log_fd)
+		return;
 
 	if (log_enabled){
 		disable_logging ();
@@ -346,6 +355,9 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 {
 	void *np;
 	assert (real_realloc);
+
+	if (!log_fd)
+		return;
 
 	if (log_enabled){
 		disable_logging ();
@@ -371,6 +383,9 @@ void WRAP(free) (void *p EXTRA_ARG)
 {
 	assert (real_free);
 
+	if (!log_fd)
+		return;
+
 	if (log_enabled){
 		disable_logging ();
 
@@ -389,6 +404,9 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 {
 	void *p;
 	assert (real_memalign);
+
+	if (!log_fd)
+		return;
 
 	if (log_enabled){
 		disable_logging ();
