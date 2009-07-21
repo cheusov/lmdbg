@@ -288,7 +288,7 @@ static void print_sections_map (void)
 		/* We need only executable sections (code) */
 		if (*p != 'r')
 			continue; /* not readable? */
-		if (p[1] == 0)
+		if (p[1] != '-')
 			continue; /* bad input */
 		if (p[2] != 'x')
 			continue; /* not executable */
