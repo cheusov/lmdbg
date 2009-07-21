@@ -1,5 +1,5 @@
-
-/* Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+/*
+ * Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -44,6 +44,8 @@
 #define MAX_FRAMES_CNT 50
 
 int log_enabled = 0;
+void print_pid (void);
+void *lmdbg_get_addr (char *point, char *base_addr, const char *module);
 
 static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
@@ -219,17 +221,36 @@ void print_pid (void)
 	fclose (pid_fd);
 }
 
+struct section_t {
+	char *module;
+	char *addr_beg;
+	char *addr_end;
+};
+static struct section_t sections [1000];
+static int sections_count = 0;
+
+void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
+{
+	int i;
+
+	for (i=0; i < sections_count; ++i){
+		if (!strcmp (sections [i].module, module)){
+			return sections [i].addr_beg + (point - base_addr);
+		}
+	}
+
+	return NULL;
+}
+
 static void print_sections_map (void)
 {
 	char map_fn [PATH_MAX];
 	FILE *fp;
 	char buf [LINE_MAX];
-	const char *addr_beg=NULL, *addr_end=NULL, *libname=NULL;
+	const char *addr_beg=NULL, *addr_end=NULL;
+	char *module=NULL;
 	char *p;
 	size_t len;
-
-	if (!log_fd)
-		return;
 
 	snprintf (map_fn, sizeof (map_fn), "/proc/%li/maps", (long) getpid ());
 	fp = fopen (map_fn, "r");
@@ -275,14 +296,32 @@ static void print_sections_map (void)
 		/* obtaining library name */
 		for (; *p; ++p){
 			if (*p == ' ')
-				libname = p+1;
+				module = p+1;
 		}
 
-		if (!libname || *libname != '/')
+		if (!module || *module != '/')
 			continue;
 
+		/* fill in sections array */
+		if (1 != sscanf (addr_beg, POINTER_FORMAT,
+						 &sections [sections_count].addr_beg))
+		{
+			abort ();
+		}
+		if (1 != sscanf (addr_end, POINTER_FORMAT,
+						 &sections [sections_count].addr_end))
+		{
+			abort ();
+		}
+
+		sections [sections_count].module = strdup (module);
+
+		++sections_count;
+
 		/* printing */
-		fprintf (log_fd, "info section 0x%s 0x%s %s\n", addr_beg, addr_end, libname);
+		if (log_fd)
+			fprintf (log_fd, "info section 0x%s 0x%s %s\n",
+					 addr_beg, addr_end, module);
 	}
 
 	fclose (fp);
@@ -334,9 +373,6 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 	void *p;
 	assert (real_malloc);
 
-	if (!log_fd)
-		return;
-
 	if (log_enabled){
 		disable_logging ();
 
@@ -355,9 +391,6 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 {
 	void *np;
 	assert (real_realloc);
-
-	if (!log_fd)
-		return;
 
 	if (log_enabled){
 		disable_logging ();
@@ -383,9 +416,6 @@ void WRAP(free) (void *p EXTRA_ARG)
 {
 	assert (real_free);
 
-	if (!log_fd)
-		return;
-
 	if (log_enabled){
 		disable_logging ();
 
@@ -404,9 +434,6 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 {
 	void *p;
 	assert (real_memalign);
-
-	if (!log_fd)
-		return;
 
 	if (log_enabled){
 		disable_logging ();
