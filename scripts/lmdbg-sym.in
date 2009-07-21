@@ -122,6 +122,7 @@ test $? || exit 3
 collect_address (){
     # input: text files in lmdbg-run format
     # output: all addresses (uniqued) mensioned in input
+
     awk '
 $0 ~ /^ / && NF == 1 {
     hash [$1] = ""
@@ -133,33 +134,38 @@ END {
 }' "$@"
 }
 
+generate_gdb_commands (){
+    # input: addresses, one per line
+    # output: gdb command for converting addresses to source position
+
+    echo 'set width 0'
+    echo 'break _init'
+    echo 'set print demangle on'
+    echo "set environment LD_PRELOAD=$LMDBG_LIB $LMDBG_ENV"
+#   echo "set environment LMDBG_PIDFILE=$pid_file"
+    if test "$additional_libs"; then
+	echo "set environment LMDBG_ADD_LIBS=$additional_libs"
+    fi
+    echo 'run'
+#   echo 'p print_pid()'
+#   echo 'p lmdbg_dlopen_add_libs()'
+    echo 'set variable log_enabled=1'
+    echo 'print/x 0x22552255'
+#   read pid < "$pid_file"
+#   echo "PID! $pid" > /dev/tty
+    awk '{
+	if ($0 !~ /^0x/)
+	    $0 = "0x" $0 # This is necessary for Solaris
+	print "b *" $0 "\ninfo break " NR+1
+    }' "$@"
+    echo 'quit'
+}
+
 address2position_gdb (){
     # input: addresses, one per line
     # output: source code positions, one per line
 
-    {
-	echo 'set width 0'
-	echo 'break _init'
-	echo 'set print demangle on'
-	echo "set environment LD_PRELOAD=$LMDBG_LIB $LMDBG_ENV"
-#	echo "set environment LMDBG_PIDFILE=$pid_file"
-	if test "$additional_libs"; then
-	    echo "set environment LMDBG_ADD_LIBS=$additional_libs"
-	fi
-	echo 'run'
-#	echo 'p print_pid()'
-#	echo 'p lmdbg_dlopen_add_libs()'
-	echo 'set variable log_enabled=1'
-	echo 'print/x 0x22552255'
-#	read pid < "$pid_file"
-#	echo "PID! $pid" > /dev/tty
-	awk '{
-	    if ($0 !~ /^0x/)
-		$0 = "0x" $0 # This is necessary for Solaris
-	    print "b *" $0 "\ninfo break " NR+1
-	}' "$@"
-	echo 'quit'
-    } > "$gdb_cmds_file"
+    generate_gdb_commands "$@" > "$gdb_cmds_file"
 
     gdb -nx -q -batch -x "$gdb_cmds_file" "$prog" | # | tee log |
     awk '
