@@ -21,6 +21,8 @@ SRCS=		lmdbg.c
 CFLAGS+=	-O0 -g # gcc's -O2 is not allowed!
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
+WARNS=		4
+
 LMDBGFN=	liblmdbg.so.0.0
 
 FILES=		liblmdbg.so
