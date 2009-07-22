@@ -63,11 +63,11 @@ static void * (*real_memalign) (size_t align, size_t size);
 static void lmdbg_startup (void);
 static void lmdbg_finish (void);
 
-static void construct(void) __attribute__((constructor));
-static void construct(void) { lmdbg_startup(); }
+void construct(void) __attribute__((constructor));
+void construct(void) { lmdbg_startup(); }
 
-static void destruct(void) __attribute__((destructor));
-static void destruct(void) { lmdbg_finish(); }
+void destruct(void) __attribute__((destructor));
+void destruct(void) { lmdbg_finish(); }
 
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 #define WRAP(name) wrap_ ## name
@@ -256,7 +256,6 @@ static void print_sections_map (void)
 	fp = fopen (map_fn, "r");
 
 	if (!fp){
-		fprintf (stderr, "opening %s failed\n", map_fn);
 		return;
 	}
 
