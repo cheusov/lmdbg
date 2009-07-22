@@ -1,5 +1,5 @@
-.PHONY: test
-test: all
+.PHONY: check
+check: all
 	@echo 'running tests...'; \
 	cd ${.CURDIR}/liblmdbg; \
 	    LMDBG_LIB=`${MAKE} mkc_printobjdir`/liblmdbg.so; \
