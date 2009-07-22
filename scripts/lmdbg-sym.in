@@ -186,6 +186,7 @@ generate_gdb_commands (){
 
 	    if (sect in dup) next
 
+	    printf "print/x 0x%s\n", $0
 	    printf "break *lmdbg_get_addr(0x%s, 0x%s, \"%s\")\n", $0, beg_addr, module
 	    printf "info break %s\n", br_cnt++
 	}' "$info_sections_fn" "$@"
@@ -205,14 +206,16 @@ address2position_gdb (){
 
     generate_gdb_commands "$@" > "$gdb_cmds_file"
 
-    gdb -nx -q -batch -x "$gdb_cmds_file" "$prog" | # | tee log |
+    gdb -nx -q -batch -x "$gdb_cmds_file" "$prog" | #| tee log |
     awk '
     !flag {
 	flag = /22552255/
 	next
     }
+    $1 ~ /^[$]/ && $2 == "=" {
+	addr = $3
+    }
     $1 == "Breakpoint" { # result of `b *<address>` command
-	addr=$4
 	sub(/:+$/, "", addr)
 	printf "%s\t", addr
 	for (i=1; i <= NF; ++i){
