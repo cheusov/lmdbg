@@ -298,6 +298,9 @@ BEGIN {
     FS = " "
 }
 NF == 1 && $0 ~ /^ / {
+    if ($1 !~ /^0x/)
+	$1 = "0x" $1 # This is necessary for Solaris
+
     if ($1 in h){
 	print " " $1 "\t" h [$1]
     }else{
