@@ -95,6 +95,7 @@ runtest lmdbg-sysleaks -V          | head -3 | unify_text 3
 
 ####################
 # real tests
+progress "real tests..."
 
 # test1.c
 execname="$OBJDIR"/_test1
@@ -105,11 +106,14 @@ $CC -O0 -g -o "$execname" "$srcname"
 
 libsrcname="$SRCDIR"/tests/libtest.c
 libname="$OBJDIR"/libtest.so
-$CC -O0 -g -shared -o "$libname" "$libsrcname"
+$CC -O0 -g -shared -fPIC -DPIC -o "$libname" "$libsrcname"
 
 exec3name="$OBJDIR"/_test3
 src3name="$SRCDIR"/tests/test3.c
-$CC -O0 -g -o $exec3name -Wl,-rpath -Wl,${OBJDIR} -L${OBJDIR} -ltest "$src3name"
+$CC -O0 -g -o $exec3name -L${OBJDIR} -ltest "$src3name"
+
+LD_LIBRARY_PATH=$OBJDIR
+export LD_LIBRARY_PATH
 
 # -o
 progress "test lmdbg-run -o..."
