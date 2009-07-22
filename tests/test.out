@@ -230,3 +230,14 @@ No memory leaks detected
 --------------------------------------------------
 ------- args: lmdbg -c ./lmdbg6.conf -o /lmdbg/dir/_log /lmdbg/dir/_test2
 malloc ( 555 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-run -o /lmdbg/dir/_log /lmdbg/dir/_test3
+malloc ( 555 ) --> 0xF00DBEAF
+malloc ( 666 ) --> 0xF00DBEAF
+--------------------------------------------------
+------- args: lmdbg-sym --with-gdb /lmdbg/dir/_test3 /lmdbg/dir/_log
+malloc ( 555 ) --> 0xF00DBEAF
+ 0xF00DBEAF	libtest.c:NNN	allocate_memory
+ 0xF00DBEAF	test3.c:NNN	main
+malloc ( 666 ) --> 0xF00DBEAF
+ 0xF00DBEAF	test3.c:NNN	main

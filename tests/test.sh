@@ -103,6 +103,14 @@ logname="$OBJDIR"/_log
 
 $CC -O0 -g -o "$execname" "$srcname"
 
+libsrcname="$SRCDIR"/tests/libtest.c
+libname="$OBJDIR"/libtest.so
+$CC -O0 -g -shared -o "$libname" "$libsrcname"
+
+exec3name="$OBJDIR"/_test3
+src3name="$SRCDIR"/tests/test3.c
+$CC -O0 -g -o $exec3name -Wl,-rpath -Wl,${OBJDIR} -L${OBJDIR} -ltest "$src3name"
+
 # -o
 progress "test lmdbg-run -o..."
 
@@ -270,3 +278,19 @@ grep -- --- "$logname2"
 grep '^malloc'  "$logname" | unify_address
 grep '^realloc' "$logname" | unify_address
 grep '^free'    "$logname" | unify_address
+
+# lmdbg-run -o and shared libraries
+progress "test lmdbg-run -o $exec3name..."
+
+runtest lmdbg-run -o "$logname" "$exec3name"
+
+grep malloc  "$logname" | unify_address
+grep realloc "$logname" | unify_address
+grep free    "$logname" | unify_address
+
+# lmdbg-sym -g and shared libraries
+progress "test lmdbg-sym -g $exec3name..."
+
+runtest lmdbg-sym --with-gdb "$exec3name" "$logname" |
+unify_address | hide_lmdbg_code | hide_line_numbers |
+canonize_paths
