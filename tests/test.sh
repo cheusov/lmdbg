@@ -5,7 +5,8 @@ set -e
 CC=${CC:=cc}
 SRCDIR=${SRCDIR:=.}
 
-test -n "$OBJDIR" -a -n "$LMDBG_LIB"
+test -n "$OBJDIR"
+test -n "$LMDBG_LIB"
 
 LC_ALL=C
 export LC_ALL
@@ -70,7 +71,9 @@ canonize_paths (){
 }
 
 progress (){
-    test -t 1 && echo "$@" > /dev/tty
+    if test -t 1; then
+	echo "$@" > /dev/tty
+    fi
 }
 
 ####################
