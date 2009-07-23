@@ -66,7 +66,7 @@ canonize_paths (){
 }
 
 progress (){
-    echo "$@" > /dev/tty
+    test -t 1 && echo "$@" > /dev/tty
 }
 
 ####################
