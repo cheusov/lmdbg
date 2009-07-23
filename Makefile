@@ -19,7 +19,7 @@ SUBDIR+=	liblmdbg
 
 ###########################
 
-.include "./Makefile.version"
-.include "./Makefile.test"
+.include "version.mk"
+.include "test.mk"
 
 .include <mkc.subdir.mk>

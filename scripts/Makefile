@@ -10,7 +10,7 @@ SCRIPTS=	${INSCRIPTS}
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'
 
-.include "../Makefile.version"
+.include "../version.mk"
 
 .include <mkc.intexts.mk>
 .include <mkc.prog.mk>
