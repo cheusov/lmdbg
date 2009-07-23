@@ -12,8 +12,8 @@ LC_ALL=C
 export LC_ALL
 
 unify_paths (){
-    # /home/cheusov/prjs/lmdbg/ --->
-    sed 's,/[^ ]*lmdbg[^ ]*/,,g' "$@"
+    # /home/cheusov/prjs/lmdbg/ ---> /lmdbg/dir/
+    sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
 }
 
 unify_paths_inplace (){
