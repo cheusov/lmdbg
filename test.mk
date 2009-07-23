@@ -9,7 +9,7 @@ check: all
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
 	export PATH LMDBG_LIB OBJDIR SRCDIR CC; \
-	if ( cd ${.CURDIR}/tests || exit 0; \
+	if ( set -e; cd ${.CURDIR}/tests; \
 	    ./test.sh > ${.OBJDIR}/_test.res || exit 0; \
 	    diff -u test.out ${.OBJDIR}/_test.res > ${.OBJDIR}/_test2.res; \
 	    grep -Ev '^[-+] ([?][?]:NNN|0xF00DBEAF)$$' \
