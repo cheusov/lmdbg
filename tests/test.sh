@@ -11,7 +11,8 @@ LC_ALL=C
 export LC_ALL
 
 unify_paths (){
-    sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
+    # /home/cheusov/prjs/lmdbg/ --->
+    sed 's,/[^ ]*lmdbg[^ ]*/,,g' "$@"
 }
 
 unify_paths_inplace (){
@@ -31,6 +32,7 @@ runtest (){
 ####################
 
 unify_text (){
+    #
     num=$1
     shift
 
@@ -38,6 +40,8 @@ unify_text (){
 }
 
 unify_address (){
+    # input:  malloc ( <size> ) --> 0x81234567
+    # output: malloc ( <size> ) --> 0xF00DBEAF
     awk '
 	$1 == "info" {next}
 	$1 == "malloc"  {$6 = "0xF00DBEAF"}
@@ -50,18 +54,18 @@ unify_address (){
 }
 
 hide_lmdbg_code (){
+    # cut off line like the following
+    #   0xF00DBEAF  /GNU/libc/code/source.c     some_func
     awk '/^ 0x/ && !/test/ {$0 = " " $1} {print}' "$@"
 }
 
-hide_foreign_code (){
-    awk '/^ .*[.][cS]/ && !/test.[.]c/ {$0 = " ??:NNN"} {print}' "$@"
-}
-
 hide_line_numbers (){
+    # ....source.c:67     ---> source.c:NNN
     sed 's,:[0-9][0-9]*,:NNN,' "$@"
 }
 
 canonize_paths (){
+    # ..../dir/to/source.c:67     ---> source.c:67
     awk '/^ / {sub(/[^ \t]*\//, "")} {print}' "$@"
 }
 
@@ -163,7 +167,7 @@ progress "test lmdbg-sym -a..."
 
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
-hide_foreign_code | canonize_paths
+canonize_paths
 
 # lmdbg-run --pipe lmdbg-leaks
 runtest lmdbg-run -o "$logname" --pipe lmdbg-leaks "$execname"
