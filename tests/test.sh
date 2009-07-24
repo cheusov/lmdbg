@@ -111,6 +111,7 @@ logname="$OBJDIR"/_log
 
 $CC -O0 -g -o "$execname" "$srcname"
 
+# !FIX ME! Use mk-configure's mkc.lib.mk here!
 libsrcname="$SRCDIR"/tests/libtest.c
 libname="$OBJDIR"/libtest.so
 $CC -O0 -g -shared -fPIC -DPIC -o "$libname" "$libsrcname"
@@ -119,6 +120,7 @@ exec3name="$OBJDIR"/_test3
 src3name="$SRCDIR"/tests/test3.c
 $CC -O0 -g -o $exec3name -L${OBJDIR} "$src3name" -ltest
 
+#
 LD_LIBRARY_PATH=$OBJDIR
 export LD_LIBRARY_PATH
 
