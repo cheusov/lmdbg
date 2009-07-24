@@ -43,6 +43,8 @@ all: liblmdbg.so
 liblmdbg.so: lmdbg.so
 	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
 
+.include "../version.mk"
+
 .include <mkc.configure.mk>
 
 .include "../libstacktrace/linkme.mk"
