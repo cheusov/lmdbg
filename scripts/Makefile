@@ -1,16 +1,25 @@
 INSCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
 INSCRIPTS+=	lmdbg-sym lmdbg
+INSCRIPTS+=	lmdbg-multi2single lmdbg-single2multi
 
 INFILES+=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
 INFILES+=	lmdbg-sym.1 lmdbg.1
 
+.ifndef AWK
+.if exists(/usr/xpg4/bin/awk)
+# Under Solaris /usr/bin/awk is a dead body, we need POSIX awk!
+AWK?=		/usr/xpg4/bin/awk
+.else
+AWK?=		/usr/bin/awk
+.endif # /usr/xpg4/bin/awk
+.endif # AWK
+
 MAN=		${INFILES}
 
 SCRIPTS=	${INSCRIPTS}
-SCRIPTS+=	lmdbg-multi2single
-SCRIPTS+=	lmdbg-single2multi
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'
+INTEXTS_SED+=	-e 's,@AWK@,${AWK},g'
 
 .include "../version.mk"
 
