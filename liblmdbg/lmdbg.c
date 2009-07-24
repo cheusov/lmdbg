@@ -239,7 +239,10 @@ void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
 		}
 	}
 
-	return NULL;
+	/* If we don't find appropriate address range, return
+	 an original address
+	*/
+	return point;
 }
 
 static void print_sections_map (void)
@@ -260,11 +263,11 @@ static void print_sections_map (void)
 	}
 
 	while (fgets (buf, sizeof (buf), fp)){
-		/* buf content has the follosing format 
+		/* buf content has the following format 
 		   bbbd1000-bbbd9000 rw-p 000d7000 00:18 116162   /lib/libc.so.12.163
 		*/
 		len = strlen (buf);
-		if (buf [len-1])
+		if (buf [len-1] == '\n')
 			buf [len-1] = 0;
 
 		/* obtaining addresses */
