@@ -150,10 +150,7 @@ generate_gdb_commands (){
     echo 'run'
 #   echo 'p print_pid()'
 #   echo 'p lmdbg_dlopen_add_libs()'
-    echo 'set variable log_enabled=1'
     echo 'print/x 0x22552255'
-#   read pid < "$pid_file"
-#   echo "PID! $pid" > /dev/tty
 
     if grep '^info section ' "$input" > "$info_sections_fn"; then
 	awk '
