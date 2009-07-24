@@ -1,0 +1,26 @@
+#!/usr/bin/awk -f
+
+# LMDBG helper script
+#
+# Input:
+#   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
+# Output:
+#   malloc/realloc/free ...
+#    address1
+#    address2
+
+BEGIN {
+	FS = SUBSEP
+}
+
+$1 == "free" {
+	print "this should not happen" > "/dev/stderr"
+	exit 1
+}
+
+$1 ~ /^[^ ]/ {
+	sub(/ $/, "", $1)
+	for (i=1; i <= NF; ++i){
+		print $i
+	}
+}

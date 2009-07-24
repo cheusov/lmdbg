@@ -67,36 +67,6 @@ while test $# -ne 0; do
     shift
 done
 
-multiline2singleline (){
-    # Input:
-    #   malloc/realloc/free ...
-    #    address1
-    #    address2
-    #    address3
-    # Output:
-    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
-    awk '
-    NF > 0 && /^ / {
-	calls = calls SUBSEP $0
-	next
-    }
-    NF > 0 {
-	if (last){
-	    print last " " calls
-	    calls = ""
-	}
-
-	last = $0
-    }
-    END {
-	if (calls){
-	    print last " " calls
-	    calls = ""
-	}
-    }
-    ' "$@"
-}
-
 leaks () {
     awk '
     $1 == "malloc" {
@@ -136,29 +106,6 @@ leaks () {
     }' "$@"
 }
 
-singleline2multiline () {
-    # Input:
-    #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
-    # Output:
-    #   malloc/realloc/free ...
-    #    address1
-    #    address2
-    awk '
-    BEGIN {
-	FS = SUBSEP
-    }
-    $1 == "free" {
-	print "this should not happen" > "/dev/stderr"
-	exit 1
-    }
-    $1 ~ /^[^ ]/ {
-	sub(/ $/, "", $1)
-	for (i=1; i <= NF; ++i){
-	    print $i
-	}
-    }' "$@"
-}
-
-multiline2singleline "$@" |
+lmdbg-multi2single "$@" |
 leaks |
-singleline2multiline
+lmdbg-single2multi
