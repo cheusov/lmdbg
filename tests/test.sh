@@ -22,7 +22,7 @@ unify_paths_inplace (){
 }
 
 runtest (){
-    prog=$1
+    prog="$1"
     shift
 
     echo '--------------------------------------------------'
@@ -117,7 +117,7 @@ $CC -O0 -g -shared -fPIC -DPIC -o "$libname" "$libsrcname"
 
 exec3name="$OBJDIR"/_test3
 src3name="$SRCDIR"/tests/test3.c
-$CC -O0 -g -o $exec3name -L${OBJDIR} -ltest "$src3name"
+$CC -O0 -g -o $exec3name -L${OBJDIR} "$src3name" -ltest
 
 LD_LIBRARY_PATH=$OBJDIR
 export LD_LIBRARY_PATH
