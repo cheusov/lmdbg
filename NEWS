@@ -1,5 +1,31 @@
 ======================================================================
-Version 0.10.0, by AlekseyCheusov, Sun, 31 May 2009 15:17:20 +0300
+Version 0.11.0, by Aleksey Cheusov, Sat, 25 Jul 2009 01:48:15 +0300
+
+  Support for modern Linux/glibc where libraries are loaded
+  to different regions of the virtual memory
+  (See http://en.wikipedia.org/wiki/Address_space_layout_randomization).
+  To handle this lmdbg-run adds the special "info section" information
+  obtained from /proc/<pid>/maps available on NetBSD and Linux
+  to the log file, and lmdbg-sym uses this information.
+
+  fixed: enabling malloc logging in lmdbg-sym was an extreamly strange
+  idea.  This was just an oversight. Now it is disabled.
+
+  ***** A TARGET FOR TESTING LMDBG IS NOW "check", NOT "test"! *****
+
+  Additional regression test for lmdbg-sym and shared libraries.
+
+  WARNS=4 for libstacktrace library
+
+  WARNS=4 for liblmdbg library
+
+  Two internal helper scripts:
+  scripts/lmdbg-multi2single and scripts/lmdbg-single2multi.
+
+  Other minor improvements, clean-ups and fixes.
+
+======================================================================
+Version 0.10.0, by Aleksey Cheusov, Sun, 31 May 2009 15:17:20 +0300
 
   Completely NEW build system based on NetBSD make (aka bmake),
   mk-configure and pkgsrc's mk-files.  It makes building LMDBG a bit
