@@ -17,5 +17,7 @@ MKPIC=		yes
 
 WARNS=		4
 
+MKINSTALL?=	no # internal library, do install it
+
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
