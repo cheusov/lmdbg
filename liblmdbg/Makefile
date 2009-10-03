@@ -26,13 +26,15 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS=		4
 
+.include <mkc.own.mk>
+
 # Unfortunately default bsd.*.mk rule doesn't work with
 # __attribute__((constructor)) construct used in lmdbg.c.
 # The following rule overrides the default one..
 .PHONY: all
 all: liblmdbg${SHLIB_EXTFULL}
 liblmdbg${SHLIB_EXTFULL}: lmdbg.so
-	${CC} ${SHARED_SHARED} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
+	${CC} ${LDFLAGS_SHARED} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
 
 .include "../version.mk"
 
