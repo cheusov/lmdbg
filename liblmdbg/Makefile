@@ -18,28 +18,21 @@ MKC_CHECK_FUNCLIBS+=	dlopen:dl
 LIB=		lmdbg
 SRCS=		lmdbg.c
 
+SHLIB_MAJOR=	0
+SHLIB_MINOR=	0
+
 CFLAGS+=	-O0 -g # gcc`s -O2 is not allowed!
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS=		4
 
-FILES=		liblmdbg${SHLIB_EXT}
-#FILESNAME=	liblmdbg${SHLIB_EXTFULL}
-FILESDIR=	${LIBDIR}
-FILESOWN=	${LIBOWN}
-FILESGRP=	${LIBGRP}
-FILESMODE=	${LIBMODE}
-
-#SYMLINKS=	liblmdbg${SHLIB_EXTFULL} ${LIBDIR}/liblmdbg${SHLIB_EXT1}
-#SYMLINKS+=	liblmdbg${SHLIB_EXTFULL} ${LIBDIR}/liblmdbg${SHLIB_EXTFULL}
-
 # Unfortunately default bsd.*.mk rule doesn't work with
 # __attribute__((constructor)) construct used in lmdbg.c.
-# This is why I define the following rule here.
+# The following rule overrides the default one..
 .PHONY: all
-all: liblmdbg.so
-liblmdbg${SHLIB_EXT}: lmdbg.so
-	${CC} -shared -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
+all: liblmdbg${SHLIB_EXTFULL}
+liblmdbg${SHLIB_EXTFULL}: lmdbg.so
+	${CC} ${SHARED_SHARED} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
 
 .include "../version.mk"
 
