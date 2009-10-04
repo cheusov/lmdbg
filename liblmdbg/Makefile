@@ -34,7 +34,7 @@ WARNS=		4
 .PHONY: all
 all: liblmdbg${SHLIB_EXTFULL}
 liblmdbg${SHLIB_EXTFULL}: lmdbg.so
-	${CC} ${LDFLAGS_SHARED} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
+	${CC} ${LDFLAGS.shared} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
 	ln -sf liblmdbg${SHLIB_EXTFULL} liblmdbg${SHLIB_EXT1}
 	ln -sf liblmdbg${SHLIB_EXTFULL} liblmdbg${SHLIB_EXT}
 
