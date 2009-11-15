@@ -241,3 +241,14 @@ malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	test3.c:NNN	main
 malloc ( 666 ) --> 0xF00DBEAF
  0xF00DBEAF	test3.c:NNN	main
+--------------------------------------------------
+------- args: lmdbg-run -o /lmdbg/dir/_log /lmdbg/dir/_test4
+calloc ( 555 , 16 ) --> 0xF00DBEAF
+calloc ( 5 , 256 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+calloc ( 1 , 10240 ) --> 0xF00DBEAF
+free ( 0xF00DBEAF )
+--------------------------------------------------
+------- args: lmdbg-leaks /lmdbg/dir/_log
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+calloc ( 1 , 10240 ) --> 0xF00DBEAF

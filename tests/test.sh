@@ -46,6 +46,7 @@ unify_address (){
     awk '
 	$1 == "info" {next}
 	$1 == "malloc"  {$6 = "0xF00DBEAF"}
+	$1 == "calloc"  {$8 = "0xF00DBEAF"}
 	$1 == "free"    {$3 = "0xF00DBEAF"}
 	$1 == "realloc" {$8 = "0xF00DBEAF"}
 	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
@@ -307,3 +308,18 @@ progress "test lmdbg-sym -g $exec3name..."
 runtest lmdbg-sym --with-gdb "$exec3name" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths
+
+# lmdbg-run + test4.c
+progress "test lmdbg-run with calloc(3)"
+execname="$OBJDIR"/_test4
+srcname="$SRCDIR"/tests/test4.c
+logname="$OBJDIR"/_log
+
+$CC -O0 -g -o "$execname" "$srcname"
+runtest lmdbg-run -o "$logname" "$execname"
+grep -E '[cm]alloc|realloc|free'  "$logname" | unify_address
+
+# lmdbg-leaks + test4.c
+progress "test lmdbg-leak with calloc(3)"
+runtest lmdbg-leaks "$logname" |
+unify_address

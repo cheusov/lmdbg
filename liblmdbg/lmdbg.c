@@ -56,6 +56,7 @@ static int         log_verbose  = 0;
 static void * (*real_malloc)  (size_t s);
 static void * (*real_realloc) (void *p, size_t s);
 static void   (*real_free)    (void *p);
+static void * (*real_calloc)  (size_t number, size_t s);
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 static void * (*real_memalign) (size_t align, size_t size);
 #endif
@@ -126,10 +127,14 @@ static void init_fun_ptrs (void)
 	if (!real_free)
 		exit (43);
 
+	real_calloc  = dlsym (libc_so, "calloc");
+	if (!real_calloc)
+		exit (44);
+
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	real_memalign    = dlsym (libc_so, "memalign");
 	if (!real_memalign)
-		exit (44);
+		exit (45);
 #endif
 }
 
@@ -165,6 +170,7 @@ static void init_log (void)
 void * WRAP(malloc) (size_t s EXTRA_ARG);
 void * WRAP(realloc) (void *p, size_t s EXTRA_ARG);
 void WRAP(free) (void *p EXTRA_ARG);
+void * WRAP(calloc) (size_t number, size_t s); /* no EXTRA_ARG! */
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
@@ -428,6 +434,26 @@ void WRAP(free) (void *p EXTRA_ARG)
 		enable_logging ();
 	}else{
 		(*real_free) (p);
+	}
+}
+
+void * WRAP(calloc) (size_t number, size_t size)
+{
+	void *p;
+	assert (real_calloc);
+
+	if (log_enabled){
+		disable_logging ();
+
+		p = (*real_calloc) (number, size);
+		fprintf (log_fd, "calloc ( %u , %u ) --> %p\n",
+				 (unsigned) number, (unsigned) size, p);
+		log_stacktrace ();
+
+		enable_logging ();
+		return p;
+	}else{
+		return (*real_calloc) (number, size);
 	}
 }
 
