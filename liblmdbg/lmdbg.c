@@ -170,10 +170,10 @@ static void init_log (void)
 void * WRAP(malloc) (size_t s EXTRA_ARG);
 void * WRAP(realloc) (void *p, size_t s EXTRA_ARG);
 void WRAP(free) (void *p EXTRA_ARG);
-void * WRAP(calloc) (size_t number, size_t s); /* no EXTRA_ARG! */
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
+void * calloc (size_t number, size_t s); /* no WRAP and EXTRA_ARG! */
 
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
@@ -437,7 +437,7 @@ void WRAP(free) (void *p EXTRA_ARG)
 	}
 }
 
-void * WRAP(calloc) (size_t number, size_t size)
+void * calloc (size_t number, size_t size)
 {
 	void *p;
 	assert (real_calloc);
