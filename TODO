@@ -1,6 +1,4 @@
 - Manual pages, pod2man or plain man?
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
-- libstacktrace?
 - -olog and -p'pipe'
-- lmdbg -a|-g
