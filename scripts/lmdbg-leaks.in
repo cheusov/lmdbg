@@ -79,6 +79,11 @@ leaks () {
 	next
     }
 
+    $1 == "posix_memalign" {
+	h [$8] = $0
+	next
+    }
+
     $1 == "free" {
 	delete h [$3]
 	next

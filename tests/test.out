@@ -252,3 +252,14 @@ free ( 0xF00DBEAF )
 ------- args: lmdbg-leaks /lmdbg/dir/_log
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
 calloc ( 1 , 10240 ) --> 0xF00DBEAF
++--------------------------------------------------
++------- args: lmdbg-run -o /lmdbg/dir/_log /lmdbg/dir/_test5
+posix_memalign ( 16 , 200 ) --> 0xF00DBEAF
+posix_memalign ( 8 , 256 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF
+free ( 0xF00DBEAF )
+--------------------------------------------------
+------- args: lmdbg-leaks /lmdbg/dir/_log
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF

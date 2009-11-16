@@ -45,10 +45,11 @@ unify_address (){
     # output: malloc ( <size> ) --> 0xF00DBEAF
     awk '
 	$1 == "info" {next}
-	$1 == "malloc"  {$6 = "0xF00DBEAF"}
-	$1 == "calloc"  {$8 = "0xF00DBEAF"}
-	$1 == "free"    {$3 = "0xF00DBEAF"}
-	$1 == "realloc" {$8 = "0xF00DBEAF"}
+	$1 == "malloc"         {$6 = "0xF00DBEAF"}
+	$1 == "calloc"         {$8 = "0xF00DBEAF"}
+	$1 == "posix_memalign" && $8 != "NULL" {$8 = "0xF00DBEAF"}
+	$1 == "free"           {$3 = "0xF00DBEAF"}
+	$1 == "realloc"        {$8 = "0xF00DBEAF"}
 	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
 	match($0, /^ [^ \t]+/) {$0 = " 0xF00DBEAF" substr($0, RSTART+RLENGTH)}
 	{print}
@@ -317,9 +318,25 @@ logname="$OBJDIR"/_log
 
 $CC -O0 -g -o "$execname" "$srcname"
 runtest lmdbg-run -o "$logname" "$execname"
-grep -E '[cm]alloc|realloc|free'  "$logname" | unify_address
+grep -E '[cm]alloc|realloc|free|posix_memalign'  "$logname" | unify_address
 
 # lmdbg-leaks + test4.c
 progress "test lmdbg-leak with calloc(3)"
 runtest lmdbg-leaks "$logname" |
 unify_address
+
+# lmdbg-run + test5.c
+progress "test lmdbg-run with posix_memalign(3)"
+execname="$OBJDIR"/_test5
+srcname="$SRCDIR"/tests/test5.c
+logname="$OBJDIR"/_log
+
+$CC -O0 -g -o "$execname" "$srcname"
+runtest lmdbg-run -o "$logname" "$execname"
+grep -E '[cm]alloc|realloc|free|posix_memalign'  "$logname" | unify_address
+
+# lmdbg-leaks + test5.c
+progress "test lmdbg-leak with posix_memalign(3)"
+runtest lmdbg-leaks "$logname" |
+unify_address
+

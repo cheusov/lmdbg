@@ -57,6 +57,9 @@ static void * (*real_malloc)  (size_t s);
 static void * (*real_realloc) (void *p, size_t s);
 static void   (*real_free)    (void *p);
 static void * (*real_calloc)  (size_t number, size_t s);
+#if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
+static int (*real_posix_memalign)  (void **memptr, size_t align, size_t size);
+#endif
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 static void * (*real_memalign) (size_t align, size_t size);
 #endif
@@ -131,10 +134,16 @@ static void init_fun_ptrs (void)
 	if (!real_calloc)
 		exit (44);
 
+#if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
+	real_posix_memalign = dlsym (libc_so, "posix_memalign");
+	if (!real_posix_memalign)
+		exit (45);
+#endif
+
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 	real_memalign    = dlsym (libc_so, "memalign");
 	if (!real_memalign)
-		exit (45);
+		exit (46);
 #endif
 }
 
@@ -173,7 +182,12 @@ void WRAP(free) (void *p EXTRA_ARG);
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
-void * calloc (size_t number, size_t s); /* no WRAP and EXTRA_ARG! */
+
+/* no WRAP and EXTRA_ARG! for calloc(3) and posix_memalign(3) */
+void * calloc (size_t number, size_t s);
+#if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
+int posix_memalign (void **memptr, size_t align, size_t size);
+#endif
 
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
@@ -456,6 +470,28 @@ void * calloc (size_t number, size_t size)
 		return (*real_calloc) (number, size);
 	}
 }
+
+#if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
+int posix_memalign (void **memptr, size_t align, size_t size)
+{
+	int ret;
+	assert (real_posix_memalign);
+
+	if (log_enabled){
+		disable_logging ();
+
+		ret = (*real_posix_memalign) (memptr, align, size);
+		fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p\n",
+				 (unsigned) align, (unsigned) size, *memptr);
+		log_stacktrace ();
+
+		enable_logging ();
+		return ret;
+	}else{
+		return (*real_posix_memalign) (memptr, align, size);
+	}
+}
+#endif
 
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
