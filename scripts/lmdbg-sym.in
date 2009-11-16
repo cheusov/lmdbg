@@ -140,7 +140,7 @@ generate_gdb_commands (){
     # output: gdb command for converting addresses to source position
 
     echo 'set width 0'
-    echo 'break _init'
+    echo 'break main'
     echo 'set print demangle on'
     echo "set environment LD_PRELOAD=$LMDBG_LIB $LMDBG_ENV"
 #   echo "set environment LMDBG_PIDFILE=$pid_file"
