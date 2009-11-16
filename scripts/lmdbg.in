@@ -40,8 +40,12 @@ OPTIONS:
   -c --config <config_file>   configuration file for lmdbg-leaks
   -o --log <filename>         set a filename for logging
   -v --verbose                verbose loggin
+  -a                          pass -a to lmdbg-sym
+  -g|--with-gdb               pass -g to lmdbg-sym (default)
 "
 }
+
+lmdbg_sym_opts=''
 
 while test $# -ne 0; do
     case $1 in
@@ -59,6 +63,10 @@ while test $# -ne 0; do
         -c|--config)
 	    conf_opts="-c $2"
 	    shift;;
+	-g|--with-gdb)
+	    lmdbg_sym_opts="$lmdbg_sym_opts -g";;
+	-a)
+	    lmdbg_sym_opts="$lmdbg_sym_opts -a";;
 	--)
 	    shift
 	    break;;
@@ -91,7 +99,7 @@ type lmdbg-sym   > /dev/null || exit 2
 type lmdbg-leaks > /dev/null || exit 3
 type lmdbg-sysleaks > /dev/null || exit 3
 
-pipe="lmdbg-leaks | lmdbg-sym $1 | lmdbg-sysleaks $conf_opts -s"
+pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts $1 | lmdbg-sysleaks $conf_opts -s"
 
 lmdbg-run -p "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
