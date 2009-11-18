@@ -18,6 +18,7 @@ SUBDIR+=	libstacktrace
 SUBDIR+=	scripts
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
+SUBDIR+=	tests
 
 ###########################
 
