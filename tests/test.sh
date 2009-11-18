@@ -175,7 +175,11 @@ cmp "lmdbg-sysleaks -V" \
 "
 
 # test1.c
-execname="$OBJDIR"/tests/prog1/prog1
+execname1="$OBJDIR"/tests/prog1/prog1
+execname2="$OBJDIR"/tests/prog2/prog2
+execname4="$OBJDIR"/tests/prog4/prog4
+execname5="$OBJDIR"/tests/prog5/prog5
+
 logname="$OBJDIR"/_log
 
 libname="$OBJDIR"/libtest3/libtest3.so
@@ -187,7 +191,7 @@ LD_LIBRARY_PATH=$OBJDIR/tests/libtest3
 export LD_LIBRARY_PATH
 
 # -o
-lmdbg-run -o "$logname" "$execname"
+lmdbg-run -o "$logname" "$execname1"
 
 unify_address "$logname" | skip_useless_addr |
 cmp "prog1.c: lmdbg-run -o" \
@@ -199,7 +203,7 @@ free ( 0xF00DBEAF )
 "
 
 # --log
-lmdbg-run --log "$logname" "$execname"
+lmdbg-run --log "$logname" "$execname1"
 
 unify_address "$logname" | skip_useless_addr |
 cmp "prog1.c: lmdbg-run --log" \
@@ -220,7 +224,7 @@ cmp "prog1.c: lmdbg-leaks" \
 "
 
 # lmdbg-sym --with-gdb
-lmdbg-sym --with-gdb "$execname" "$logname" |
+lmdbg-sym --with-gdb "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym" \
@@ -237,7 +241,7 @@ free ( 0xF00DBEAF )
 "
 
 # lmdbg-sym -g
-lmdbg-sym -g "$execname" "$logname" |
+lmdbg-sym -g "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -g" \
@@ -254,7 +258,7 @@ free ( 0xF00DBEAF )
 "
 
 # lmdbg-sym -a
-lmdbg-sym -a "$execname" "$logname" |
+lmdbg-sym -a "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -a" \
@@ -271,7 +275,7 @@ free ( 0xF00DBEAF )
 "
 
 # lmdbg-run --pipe lmdbg-leaks
-lmdbg-run -o "$logname" --pipe lmdbg-leaks "$execname"
+lmdbg-run -o "$logname" --pipe lmdbg-leaks "$execname1"
 
 unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
@@ -281,7 +285,7 @@ cmp "prog1.c: lmdbg-run --pipe lmdbg-leaks" \
 "
 
 # lmdbg-run -p lmdbg-leaks
-lmdbg-run -o "$logname" -p lmdbg-leaks "$execname"
+lmdbg-run -o "$logname" -p lmdbg-leaks "$execname1"
 
 unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
@@ -291,11 +295,10 @@ cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 "
 
 # prog1.c
-execname="$OBJDIR"/tests/prog2/prog2
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with two leaks
-lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"
+lmdbg-run -o "$logname" -p "lmdbg-sym $execname2" "$execname2"
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |
@@ -461,10 +464,9 @@ malloc ( 666 ) --> 0xF00DBEAF
 '
 
 # lmdbg-run + prog4.c
-execname="$OBJDIR"/tests/prog4/prog4
 logname="$OBJDIR"/_log
 
-lmdbg-run -o "$logname" "$execname"
+lmdbg-run -o "$logname" "$execname4"
 
 unify_address "$logname" |
 skip_useless_addr |
@@ -485,10 +487,9 @@ realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
 '
 
 # lmdbg-run + prog5.c
-execname="$OBJDIR"/tests/prog5/prog5
 logname="$OBJDIR"/_log
 
-lmdbg-run -o "$logname" "$execname"
+lmdbg-run -o "$logname" "$execname5"
 
 unify_address "$logname" |
 skip_useless_addr |
@@ -501,7 +502,7 @@ free ( 0xF00DBEAF )
 '
 
 # lmdbg-leaks + prog5.c
-lmdbg-leaks "$logname" | lmdbg-sym "$execname" |
+lmdbg-leaks "$logname" | lmdbg-sym "$execname5" |
 unify_paths | hide_line_numbers |
 unify_address | skip_useless_addr |
 hide_foreign_code | sort |
