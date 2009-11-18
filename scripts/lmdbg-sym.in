@@ -54,7 +54,7 @@ OPTIONS:
 
 version (){
 cat <<EOF
-lmdbg-sym-@LMDBG_VERSION@
+lmdbg-sym @LMDBG_VERSION@
 EOF
 }
 
