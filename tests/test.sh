@@ -72,6 +72,13 @@ version2XXX (){
     awk '{$2 = "XXX"; print}'
 }
 
+hide_foreign_code (){
+    awk -F'\t' '
+	{ sub(/wrap_/, "") }
+	$0 ~ /^[^ ]/ || $2 ~ /lmdbg[.]c|test.[.]c/
+    ' "$@"
+}
+
 tmpfn1=/tmp/lmdbg.1.$$
 tmpfn2=/tmp/lmdbg.2.$$
 tmpfn3=/tmp/lmdbg.3.$$
@@ -312,7 +319,7 @@ runtest lmdbg-run -o "$logname" -p "lmdbg-sym $execname" "$execname"
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |
-canonize_paths | skip_useless_addr |
+canonize_paths | skip_useless_addr | hide_foreign_code |
 cmp "test2.c: lmdbg-run -p" \
 "malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -339,16 +346,16 @@ runtest lmdbg-leaks "$logname" > "$logname2"
 unify_paths_inplace "$logname"
 
 unify_address "$logname2" | skip_useless_addr |
-hide_line_numbers |
+hide_line_numbers | hide_foreign_code | sort |
 cmp "test2.c: lmdbg-run -p again" \
-"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
- 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
- 0xF00DBEAF	lmdbg.c:NNN	realloc
+" 0xF00DBEAF	/lmdbg/dir/test2.c:NNN	main
  0xF00DBEAF	/lmdbg/dir/test2.c:NNN	main
-malloc ( 555 ) --> 0xF00DBEAF
+ 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
- 0xF00DBEAF	/lmdbg/dir/test2.c:NNN	main
+ 0xF00DBEAF	lmdbg.c:NNN	realloc
+malloc ( 555 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 "
 
 # lmdbg-leaks with lmdbg-leak1.conf
@@ -356,7 +363,7 @@ runtest lmdbg-sysleaks -c ./lmdbg1.conf -s \
     "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_useless_addr |
-hide_line_numbers |
+hide_line_numbers | hide_foreign_code |
 cmp "test2.c: lmdbg-sysleaks -c ./lmdbg1.conf" \
 "malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -390,7 +397,7 @@ runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
     "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_useless_addr |
-hide_line_numbers |
+hide_line_numbers | hide_foreign_code |
 cmp "test2.c: lmdbg-sysleaks -c ./lmdbg3.conf -s" \
 'malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -411,7 +418,7 @@ runtest lmdbg-sysleaks -c ./lmdbg3.conf \
     "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_useless_addr |
-hide_line_numbers |
+hide_line_numbers | hide_foreign_code |
 cmp "test2.c: lmdbg-sysleaks -c ./lmdbg3.conf" \
 'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -423,7 +430,7 @@ cmp "test2.c: lmdbg-sysleaks -c ./lmdbg3.conf" \
 runtest lmdbg -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/_test1
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths |
+hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "test1.c: lmdbg -o" \
 'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -443,7 +450,7 @@ cmp "test1.c: lmdbg -v -c lmdbg5.conf" \
 runtest lmdbg -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths |
+hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "test1.c: lmdbg -o" \
 'malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -493,10 +500,10 @@ free ( 0xF00DBEAF )
 
 # lmdbg-leaks + test4.c
 runtest lmdbg-leaks "$logname" |
-unify_address | skip_useless_addr |
+unify_address | skip_useless_addr | sort |
 cmp "test4.c: lmdbg-leaks + calloc" \
-'realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
-calloc ( 1 , 10240 ) --> 0xF00DBEAF
+'calloc ( 1 , 10240 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
 '
 
 # lmdbg-run + test5.c
@@ -522,6 +529,7 @@ runtest lmdbg-leaks "$logname" |
 lmdbg-sym "$execname" |
 unify_paths | hide_line_numbers |
 unify_address | skip_useless_addr |
+hide_foreign_code |
 cmp "test5.c: lmdbg-leaks + lmdbg-sym" \
 'realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
