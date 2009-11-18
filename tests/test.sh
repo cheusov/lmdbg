@@ -68,12 +68,6 @@ canonize_paths (){
     awk '/^ / {sub(/[^ \t]*\//, "")} {print}' "$@"
 }
 
-progress (){
-    if test -t 1; then
-	echo "$@" > /dev/tty
-    fi
-}
-
 version2XXX (){
     awk '{$2 = "XXX"; print}'
 }
@@ -103,8 +97,6 @@ cmp (){
 
 ####################
 # stupid tests
-progress "stupid tests..."
-
 runtest lmdbg-run --help | head -1 |
 cmp "lmdbg-run --help" \
 'lmdbg-run is intended to run your program with
@@ -272,8 +264,6 @@ free ( 0xF00DBEAF )
 "
 
 # lmdbg-sym -a
-progress "test lmdbg-sym -a..."
-
 runtest lmdbg-sym -a "$execname" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
@@ -396,8 +386,6 @@ canonize_paths |
 cmp "test2.c: lmdbg-sysleaks -c ./lmdbg2.conf -s" ''
 
 # lmdbg-leaks with lmdbg-leak3.conf
-progress "test lmdbg-sysleaks 3..."
-
 runtest lmdbg-sysleaks -c ./lmdbg3.conf -s \
     "$logname" > "$logname2"
 
@@ -452,8 +440,6 @@ cmp "test1.c: lmdbg -v -c lmdbg5.conf" \
 '
 
 # lmdbg!
-progress "test lmdbg 3..."
-
 runtest lmdbg -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/_test2
 
 unify_address "$logname" | skip_useless_addr |
@@ -466,8 +452,6 @@ cmp "test1.c: lmdbg -o" \
 '
 
 # lmdbg-run -o and shared libraries
-progress "test lmdbg-run -o $exec3name..."
-
 runtest lmdbg-run -o "$logname" "$exec3name"
 
 unify_address "$logname" | skip_useless_addr |
@@ -478,8 +462,6 @@ malloc ( 666 ) --> 0xF00DBEAF
 '
 
 # lmdbg-sym -g and shared libraries
-progress "test lmdbg-sym -g $exec3name..."
-
 runtest lmdbg-sym --with-gdb "$exec3name" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr |
@@ -492,7 +474,6 @@ malloc ( 666 ) --> 0xF00DBEAF
 '
 
 # lmdbg-run + test4.c
-progress "test lmdbg-run with calloc(3)"
 execname="$OBJDIR"/_test4
 srcname="$SRCDIR"/tests/test4.c
 logname="$OBJDIR"/_log
@@ -519,7 +500,6 @@ calloc ( 1 , 10240 ) --> 0xF00DBEAF
 '
 
 # lmdbg-run + test5.c
-progress "test lmdbg-run with posix_memalign(3)"
 execname="$OBJDIR"/_test5
 srcname="$SRCDIR"/tests/test5.c
 logname="$OBJDIR"/_log
