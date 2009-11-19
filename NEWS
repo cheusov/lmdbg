@@ -1,4 +1,23 @@
 ======================================================================
+Version 0.12.0, by Aleksey Cheusov, Fri, 20 Nov 2009 00:17:28 +0200
+
+  ADDED: support for calloc(3) and posix_memalign(3).
+
+  Latest mk-configure is required for building.
+
+  A target for testing lmdbg is again "test"! :-)
+
+  Partial support for OpenBSD. Partial because I don't know how to
+  detect where shared lib's code begins, there are no /proc/$$/maps.
+
+  added: -a and -g options for "lmdbg" script.
+
+  cleanups:
+    - SHLIB_MAJOR/MINOR are used instead of dirty hacks.
+
+  More regression tests.
+
+======================================================================
 Version 0.11.0, by Aleksey Cheusov, Sat, 25 Jul 2009 01:48:15 +0300
 
   Support for modern Linux/glibc where libraries are loaded
