@@ -14,9 +14,9 @@ See INSTALL file
 
 - lmdbg-run is a main lmdbg utility. It runs an application and
   creates a log file (or fifo) where all called
-  malloc/realloc/free/memalign invocations are registered with their
-  input (bytes count, pointer), output (pointer) and
-  (!!!uniques feature!!!) FULL STACKTRACE (pointers).
+  malloc/calloc/realloc/free/memalign/posix_memalign invocations are
+  registered with their input (bytes count, pointer), output (pointer)
+  and (!!!uniques feature!!!) FULL STACKTRACE (pointers).
 
    Example:
      $ cat tests/test2.c
