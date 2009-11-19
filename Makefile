@@ -2,7 +2,7 @@
 # Copyright 2003-2009 Aleksey Cheusov <vle@gmx.net>
 ##################################################
 
-MKC_REQD=	0.11.5
+MKC_REQD=	0.12.0
 
 PROJECTNAME=	lmdbg
 
