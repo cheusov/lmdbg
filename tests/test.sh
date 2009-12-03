@@ -331,19 +331,45 @@ unify_paths_inplace "$logname"
 unify_paths "$logname2" | unify_address | skip_useless_addr |
 hide_line_numbers | hide_foreign_code | sort |
 cmp "prog2.c: lmdbg-run -p again" \
-" 0xF00DBEAF	/lmdbg/dir/prog2.c:NNN	main
- 0xF00DBEAF	/lmdbg/dir/prog2.c:NNN	main
- 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
+" 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
  0xF00DBEAF	lmdbg.c:NNN	realloc
+ 0xF00DBEAF	prog2.c:NNN	main
+ 0xF00DBEAF	prog2.c:NNN	main
 malloc ( 555 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
 "
 
 # lmdbg-leaks with lmdbg-leak1.conf
-lmdbg-sysleaks -c ./lmdbg1.conf -s \
-    "$logname" > "$logname2"
+cat > "$logname" <<EOF
+malloc ( 555 ) --> 0xbb907400
+ 0xbbbe2b38	lmdbg.c:98	log_stacktrace
+ 0xbbbe3258	lmdbg.c:405	malloc
+ 0x8048738	/lmdbg/dir/prog2.c:8	main
+ 0x8048584
+ 0x80484e7
+realloc ( NULL , 666 ) --> 0xbb907800
+ 0xbbbe2b38	lmdbg.c:98	log_stacktrace
+ 0xbbbe3333	lmdbg.c:430	realloc
+ 0x804874e	/lmdbg/dir/prog2.c:9	main
+ 0x8048584
+ 0x80484e7
+realloc ( 0xbb907800 , 777 ) --> 0xbb907c00
+ 0xbbbe2b38	lmdbg.c:98	log_stacktrace
+ 0xbbbe3333	lmdbg.c:430	realloc
+ 0x8048764	/lmdbg/dir/prog2.c:10	main
+ 0x8048584
+ 0x80484e7
+realloc ( 0xbb907c00 , 888 ) --> 0xbb907800
+ 0xbbbe2b38	lmdbg.c:98	log_stacktrace
+ 0xbbbe3333	lmdbg.c:430	realloc
+ 0x804877a	/lmdbg/dir/prog2.c:11	main
+ 0x8048584
+ 0x80484e7
+EOF
+
+lmdbg-sysleaks -c ./lmdbg1.conf -s > "$logname2" < "$logname"
 
 unify_address "$logname2" | skip_useless_addr |
 hide_line_numbers | hide_foreign_code |
@@ -418,7 +444,7 @@ cmp "prog1.c: lmdbg -c ./lmdbg3.conf" \
 'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	realloc
- 0xF00DBEAF	/lmdbg/dir/prog1.c:NNN	main
+ 0xF00DBEAF	prog1.c:NNN	main
 '
 
 # lmdbg!
@@ -438,7 +464,7 @@ cmp "prog1.c: lmdbg -o" \
 'malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
- 0xF00DBEAF	/lmdbg/dir/prog2.c:NNN	main
+ 0xF00DBEAF	prog2.c:NNN	main
 '
 
 # lmdbg-run -o and shared libraries
@@ -457,10 +483,10 @@ unify_paths | unify_address | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \
 'malloc ( 555 ) --> 0xF00DBEAF
- 0xF00DBEAF	/lmdbg/dir/test3.c:NNN	allocate_memory
- 0xF00DBEAF	/lmdbg/dir/prog3.c:NNN	main
+ 0xF00DBEAF	test3.c:NNN	allocate_memory
+ 0xF00DBEAF	prog3.c:NNN	main
 malloc ( 666 ) --> 0xF00DBEAF
- 0xF00DBEAF	/lmdbg/dir/prog3.c:NNN	main
+ 0xF00DBEAF	prog3.c:NNN	main
 '
 
 # lmdbg-run + prog4.c
@@ -507,12 +533,12 @@ unify_paths | hide_line_numbers |
 unify_address | skip_useless_addr |
 hide_foreign_code | sort |
 cmp "prog5.c: lmdbg-leaks + lmdbg-sym" \
-' 0xF00DBEAF	/lmdbg/dir/prog5.c:NNN	main
- 0xF00DBEAF	/lmdbg/dir/prog5.c:NNN	main
- 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
+' 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	posix_memalign
  0xF00DBEAF	lmdbg.c:NNN	realloc
+ 0xF00DBEAF	prog5.c:NNN	main
+ 0xF00DBEAF	prog5.c:NNN	main
 posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
 '
