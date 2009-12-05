@@ -175,19 +175,35 @@ cmp "lmdbg-sysleaks -V" \
 "
 
 # test1.c
-execname1="$OBJDIR"/tests/prog1/prog1
-execname2="$OBJDIR"/tests/prog2/prog2
-execname4="$OBJDIR"/tests/prog4/prog4
-execname5="$OBJDIR"/tests/prog5/prog5
+if test -d "$OBJDIR/tests"; then
+    execname1="$OBJDIR"/tests/prog1/prog1
+    execname2="$OBJDIR"/tests/prog2/prog2
+    execname4="$OBJDIR"/tests/prog4/prog4
+    execname5="$OBJDIR"/tests/prog5/prog5
 
-logname="$OBJDIR"/_log
+    logname="$OBJDIR"/_log
 
-libname="$OBJDIR"/libtest3/libtest3.so
+    libname="$OBJDIR"/libtest3/libtest3.so
 
-exec3name="$OBJDIR"/tests/prog3/prog3
+    exec3name="$OBJDIR"/tests/prog3/prog3
+
+    LD_LIBRARY_PATH=$OBJDIR/tests/libtest3
+else
+    execname1="$OBJDIR"/prog1
+    execname2="$OBJDIR"/prog2
+    execname4="$OBJDIR"/prog4
+    execname5="$OBJDIR"/prog5
+
+    logname="$OBJDIR"/_log
+
+    libname="$OBJDIR"/libtest3.so
+
+    exec3name="$OBJDIR"/prog3
+
+    LD_LIBRARY_PATH=$OBJDIR
+fi
 
 #
-LD_LIBRARY_PATH=$OBJDIR/tests/libtest3
 export LD_LIBRARY_PATH
 
 # -o
@@ -436,7 +452,7 @@ cmp "prog2.c: lmdbg-sysleaks -c ./lmdbg3.conf" \
 '
 
 # lmdbg!
-lmdbg -c ./lmdbg3.conf -o "$logname" "$OBJDIR"/tests/prog1/prog1 || true
+lmdbg -c ./lmdbg3.conf -o "$logname" "$execname1" || true
 
 unify_paths "$logname" | skip_useless_addr |
 hide_line_numbers | unify_address | hide_foreign_code |
@@ -448,7 +464,7 @@ cmp "prog1.c: lmdbg -c ./lmdbg3.conf" \
 '
 
 # lmdbg!
-lmdbg -v -c ./lmdbg5.conf -o "$logname" "$OBJDIR"/tests/prog1/prog1 2>"$logname2" || true
+lmdbg -v -c ./lmdbg5.conf -o "$logname" "$execname1" 2>"$logname2" || true
 
 cat "$logname2" |
 cmp "prog1.c: lmdbg -v -c lmdbg5.conf" \
@@ -456,7 +472,7 @@ cmp "prog1.c: lmdbg -v -c lmdbg5.conf" \
 '
 
 # lmdbg!
-lmdbg -c ./lmdbg6.conf -o "$logname" "$OBJDIR"/tests/prog2/prog2 || true
+lmdbg -c ./lmdbg6.conf -o "$logname" "$execname2" || true
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code |
