@@ -24,26 +24,18 @@ SRCS=		lmdbg.c
 SHLIB_MAJOR=	0
 SHLIB_MINOR=	0
 
+LDCOMPILER=	yes
+
 CFLAGS+=	-O0 -g # gcc`s -O2 is not allowed!
 CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS=		4
 
-.include <mkc.own.mk>
-
-# Unfortunately default bsd.*.mk rule doesn't work with
-# __attribute__((constructor)) construct used in lmdbg.c.
-# The following rule overrides the default one..
-.PHONY: all
-all: liblmdbg${SHLIB_EXTFULL}
-liblmdbg${SHLIB_EXTFULL}: lmdbg.so
-	${CC} ${LDFLAGS.shared} -o ${.TARGET} lmdbg.so ${LDFLAGS} ${LDADD}
-	ln -sf liblmdbg${SHLIB_EXTFULL} liblmdbg${SHLIB_EXT1}
-	ln -sf liblmdbg${SHLIB_EXTFULL} liblmdbg${SHLIB_EXT}
-
-.include "../version.mk"
+MKC_REQD=	0.12.9
 
 .include <mkc.configure.mk>
+
+.include "../version.mk"
 
 .include "../libstacktrace/linkme.mk"
 DPLIBS+=	-lstacktrace_pic
