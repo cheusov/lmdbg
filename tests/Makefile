@@ -8,7 +8,7 @@ SUBDIR+=	libtest3
 SUBDIR+=	prog3
 SUBDIR+=	prog4
 
-.if ${HAVE_FUNC3.memalign:U1}
+.if ${HAVE_FUNC3.posix_memalign.stdlib_h:U1}
 SUBDIR+=	prog5
 .endif
 
