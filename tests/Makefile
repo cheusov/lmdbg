@@ -1,4 +1,5 @@
-MKC_CHECK_FUNCS3+=	posix_memalign:stdlib.h
+MKC_COMMON_DEFINES.Linux=	-D_GNU_SOURCE
+MKC_CHECK_FUNCS3+=		posix_memalign:stdlib.h
 
 .include <mkc.configure.mk>
 
