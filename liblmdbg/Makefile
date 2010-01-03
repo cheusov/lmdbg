@@ -31,7 +31,7 @@ CFLAGS+=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS=		4
 
-MKC_REQD=	0.12.9
+MKC_REQD=	0.13.0
 
 .include <mkc.configure.mk>
 
