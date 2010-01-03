@@ -4,5 +4,6 @@ PROG=		prog5
 SRCS=		${.CURDIR}/prog5.c
 
 CFLAGS+=	-O0 -g
+CFLAGS+=	-D_GNU_SOURCE
 
 .include <mkc.prog.mk>
