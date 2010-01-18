@@ -1,4 +1,7 @@
-- Manual pages, pod2man or plain man?
+- lmdbg-sumalloc: a number of malloc/calloc calls
+  two variants for sorting, by sum allocated size and by number malloc/calloc ca
+lls
+
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
 - -olog and -p'pipe'
