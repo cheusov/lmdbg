@@ -14,8 +14,8 @@ sumcounts (){
     ptr2trace [$6]  = $7
     ptr2size  [$6]  = $3
     allocated [$7] += $3
-    sum_allocated  += $3
-    ++allocs_cnt
+    total_allocated  += $3
+    ++total_allocs_cnt
     next
 }
 
@@ -25,8 +25,8 @@ sumcounts (){
     ptr2trace [$8]  = $9
     ptr2size  [$8]  = bytes
     allocated [$9] += bytes
-    sum_allocated  += bytes
-    ++allocs_cnt
+    total_allocated  += bytes
+    ++total_allocs_cnt
     next
 }
 
@@ -35,8 +35,8 @@ sumcounts (){
     ptr2trace [$8]  = $9
     ptr2size  [$8]  = $9
     allocated [$9] += $5
-    sum_allocated  += $5
-    ++allocs_cnt
+    total_allocated  += $5
+    ++total_allocs_cnt
     next
 }
 
@@ -45,23 +45,25 @@ sumcounts (){
     ptr2trace [$8]  = $9
     ptr2size  [$8]  = $9
     allocated [$9] += $5
-    sum_allocated  += $5
+    total_allocated  += $5
+    total_allocated              -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
-    ++allocs_cnt
+    ++total_allocs_cnt
     next
 }
 
 /^free / {
     trace [$5] = 1
+    total_allocated              -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
-    ++free_cnt
+    ++total_free_cnt
     next
 }
 
 END {
-    print "info stat sum_allocated: " sum_allocated
-    print "info stat allocs_cnt: " allocs_cnt
-    print "info stat free_cnt: " free_cnt
+    print "info stat total_allocated: " total_allocated
+    print "info stat total_allocs_cnt: " total_allocs_cnt
+    print "info stat total_free_cnt: " total_free_cnt
 
     for (i in trace){
 	printf "malloc ( -1 ) --> -1"
@@ -75,5 +77,5 @@ END {
 
 runpipe0 \
     lmdbg-multi2single "$@" '|' \
-    sumcounts #'|' \
-#    lmdbg-single2multi
+    sumcounts '|' \
+    lmdbg-single2multi
