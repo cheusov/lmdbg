@@ -1,6 +1,4 @@
 - LMDBG_AWK - preferred AWK interpreter
-- lmdbg-sym: currently crashes of gdb are not seen at all.
-  Use pipestatus?
 - lmdbg-sumalloc: a number of malloc/calloc calls
   two variants for sorting, by sum allocated size and by number malloc/calloc calls
 - lmdbg-m2s and lmdbg-s2m --> C
