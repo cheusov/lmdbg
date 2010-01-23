@@ -3,7 +3,7 @@
 # LMDBG helper script
 #
 # Input:
-#   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2
+#   malloc/realloc/free ...<SPACE>address1<SUBSEP>address2
 # Output:
 #   malloc/realloc/free ...
 #    address1
