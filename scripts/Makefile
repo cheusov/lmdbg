@@ -14,12 +14,15 @@ AWK?=		/usr/bin/awk
 .endif # /usr/xpg4/bin/awk
 .endif # AWK
 
+GDB?=		gdb
+
 MAN=		${INFILES}
 
 SCRIPTS=	${INSCRIPTS}
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'
 INTEXTS_SED+=	-e 's,@AWK@,${AWK},g'
+INTEXTS_SED+=	-e 's,@GDB@,${GDB},g'
 
 .include "../version.mk"
 

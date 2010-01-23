@@ -67,6 +67,11 @@ Possible flags are: RTLD_LAZY, RTLD_NOW and RTLD_GLOBAL
 .B LMDBG_LIB
 Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
 @libdir@/liblmdbg.so
+.TP
+.B LMDBG_GDB
+Path to
+.B gdb
+program that defaults to @GDB@.
 .SH EXAMPLES
 .VB
 lmdbg-sym -h

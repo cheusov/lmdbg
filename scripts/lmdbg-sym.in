@@ -29,8 +29,9 @@ export LC_ALL
 libdir=@libdir@
 sysconfdir=@sysconfdir@
 
-LMDBG_SOEXT=${LMDBG_SOEXT:=so}
-LMDBG_LIB=${LMDBG_LIB:=$libdir/liblmdbg.$LMDBG_SOEXT}
+LMDBG_SOEXT=${LMDBG_SOEXT:-so}
+LMDBG_LIB=${LMDBG_LIB:-$libdir/liblmdbg.$LMDBG_SOEXT}
+LMDBG_GDB=${LMDBG_GDB:-gdb}
 
 usage (){
     echo -n "\
@@ -203,7 +204,7 @@ address2position_gdb (){
 
     generate_gdb_commands "$@" > "$gdb_cmds_file"
 
-    gdb -nx -q -batch -x "$gdb_cmds_file" "$prog" | #| tee log |
+    $LMDBG_GDB -nx -q -batch -x "$gdb_cmds_file" "$prog" | #| tee log |
     awk '
     !flag {
 	flag = /22552255/
