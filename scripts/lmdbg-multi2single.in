@@ -11,7 +11,7 @@
 #   malloc/realloc/free ...<SUBSEP>address1<SUBSEP>address2<SUBSEP>address3
 
 NF > 0 && /^ / {
-	calls = calls SUBSEP $0
+	calls = calls SUBSEP substr($0, 2)
 	next
 }
 

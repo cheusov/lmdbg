@@ -20,7 +20,8 @@ $1 == "free" {
 
 $1 ~ /^[^ ]/ {
 	sub(/ $/, "", $1)
-	for (i=1; i <= NF; ++i){
-		print $i
+	print $1
+	for (i=2; i <= NF; ++i){
+		print " " $i
 	}
 }
