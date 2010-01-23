@@ -5,62 +5,65 @@
 0) As of version 0.10.0 autohell stuff was thrown out because I
    dislike it. In my view, LMDBG now looks much better and cleaner but
    the installation phase becomes a bit more complex because
-   additional software is needed.
+   additional software is needed for building it.
 
    a) NetBSD make also known as bmake is required for building and
    installing LMDBG.  It is already packaged for some Linux distros
-   (e.g. Fedora).  Some others distros (Debian) provide an ancient
-   NetBSD make under name pmake which may work too but I'd recomment
-   to use latest bmake. Only latest stable bmake is tested. If you are
-   happy pkgsrc user ;-) (http://www.pkgsrc.org) of course bmake is
-   already installed because it is a part pkgsrc
+   (e.g. Fedora and Gentoo).  Some others distros (Debian) provide an
+   ancient NetBSD make under name 'pmake' which may work too but I'd
+   recomment to use latest bmake. Only latest stable bmake is
+   tested. If you are happy pkgsrc user ;-) (http://www.pkgsrc.org) of
+   course bmake is already installed because it is a part pkgsrc
    bootstrap. DragonFlyBSD also have bmake in its base system.  NOTE:
    FreeBSD and OpenBSD make-s are not good. Unfortunately they are
    incompatible with NetBSD bmake.
 
-   b) BSD Mk files (bsd.*.mk) is also an essential software for
-   building and installing LMDBG. Install pkgsrc's mk-file from here
-   http://mova.org/~cheusov/pub/netbsd-tools/pkgsrc-mk-files/.
-   Again, if you are a pkgsrc user mk-files are already installed.
+   http://www.crufty.net/ftp/pub/sjg/
+   http://www.crufty.net/help/sjg/bmake.html
 
-   c) mk-configure is also needed. This is extension for bsd.*.mk files
-   and is a lightweight and very simple replacement for GNU autoconf
-   and GNU automake.
-   Download it from
+   b) mk-configure is also needed. This is a lightweight and very
+   simple replacement for GNU autotools.
+
    http://sourceforge.net/projects/mk-configure/
 
-1) After successfully installing bmake, Mk files and mk-configure you
-   are ready for installing LMDBG.
+1) LMDBG also needs a pipestatus, a set of shell functions for checking an
+   exit status of ALL programs in a pipe.
+
+   http://sourceforge.net/projects/pipestatus/
+
+2) After successfully installing bmake, mk-configure and pipestatus you
+   are ready to install LMDBG.
 
    Uncompress LMDBG tarball you've downloaded like this
    gzip -dc lmdbg-X-Y-Z.tar.gz | tar -xf-
 
    If you read this text, this step is probably already done :-)
 
-2) cd lmdbg-X-Y-Z
+3) cd lmdbg-X-Y-Z
 
-3) bmake
+4) mkcmake
 
+   mkcmake is just a simple wrapper over bmake. It is a part of mk-configure.
    If you are unfamiliar with bmake see below for the samples of
    building and installation.
 
-4) (optional) bmake test
+5) (optional) mkcmake test
    If this command fails on your system, PLEASE LET ME NOW.
 
-5) bmake install-dirs install
+6) mkcmake installdirs install
 
-If you need to change the default building options,
-run bmake like this
+If you need to change the default build options,
+run mkcmake like this
 
-     env [INITIAL_ASSIGNMENTS] bmake <target> [YOUR_ASSIGNMENTS]
+     env [DEFAULT_ASSIGNMENTS] mkcmake <target> [YOUR_ASSIGNMENTS]
 
 There are a lot of Makefile variables that can be changed during
-building and installation.  See the Makefile for LMDBG's own variables
+build and installation.  See Makefiles for LMDBG's own variables
 (All they are in the begining of Makefile).
 
 Examples of building and installing:
 
- 1)  bmake all install-dirs install
+ 1)  mkcmake all installdirs install
 
  2)  env CC=gcc \
        PREFIX=/home/cheusov/local \
@@ -72,5 +75,6 @@ Examples of building and installing:
        BINGRP=users \
        MANOWN=cheusov \
        MANGRP=users \
+       GDB=/usr/pkg/bin/gdb \
        MKCATPAGES=no \
-          bmake -s all install-dirs install
+          mkcmake -s all installdirs install
