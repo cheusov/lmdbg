@@ -23,6 +23,8 @@
 
 set -e
 
+. pipestatus
+
 LC_ALL=C
 export LC_ALL
 
@@ -198,13 +200,7 @@ generate_gdb_commands (){
     echo 'quit'
 }
 
-address2position_gdb (){
-    # input: addresses, one per line
-    # output: source code positions, one per line
-
-    generate_gdb_commands "$@" > "$gdb_cmds_file"
-
-    $LMDBG_GDB -nx -q -batch -x "$gdb_cmds_file" "$prog" | #| tee log |
+gdb_output2position (){
     awk '
     !flag {
 	flag = /22552255/
@@ -242,7 +238,21 @@ address2position_gdb (){
 
 	next
     }
-    '
+    ' "$@"
+}
+
+address2position_gdb (){
+    # input: addresses, one per line
+    # output: source code positions, one per line
+
+    generate_gdb_commands "$@" > "$gdb_cmds_file"
+
+    runpipe $LMDBG_GDB -nx -q -batch -x "$gdb_cmds_file" "$prog" '|' gdb_output2position
+
+    if test $pipestatus_1 -ne 0; then
+	echo "WARNINGS: gdb exited with exit status $pipestatus_1" 1>&2
+	return $pipestatus_1
+    fi
 }
 
 address2position_addr2line_nomaps (){
