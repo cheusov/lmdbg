@@ -17,7 +17,7 @@ NF > 0 && /^ / {
 
 NF > 0 {
 	if (last){
-		print last " " calls
+		print last " " substr(calls, 2)
 		calls = ""
 	}
 
