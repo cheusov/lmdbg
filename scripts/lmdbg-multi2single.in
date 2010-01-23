@@ -11,6 +11,7 @@
 #   malloc/realloc/free ...<SPACE>address1<SUBSEP>address2<SUBSEP>address3
 
 NF > 0 && /^ / {
+    gsub(/\t/, "\033")
 	calls = calls SUBSEP substr($0, 2)
 	next
 }

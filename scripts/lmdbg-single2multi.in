@@ -9,17 +9,28 @@
 #    address1
 #    address2
 
-BEGIN {
-	FS = SUBSEP
+{
+    num = 0
+
+	if ($1 == "malloc")
+		num = 7
+	else if ($1 == "calloc" || $1 == "realloc")
+		num = 9
+	else if ($1 == "memalign" || $1 == "posix_memalign")
+		num = 9
+	else if ($1 == "free")
+		num = 5
 }
 
-$1 ~ /^(malloc|calloc|memalign|free|posix_memalign|realloc) / {
-	idx = match($1, / [^ ]*$/)
-#	print "idx=" idx
-	print substr($1, 1, idx-1)
-	print " " substr($1, idx+1)
-	for (i=2; i <= NF; ++i){
-		print " " $i
+num > 0 {
+	cnt = split($NF, arr, SUBSEP)
+
+	$NF = ""
+	print $0
+
+	for (i=1; i <= cnt; ++i){
+		gsub(/\033/, "\t", arr [i])
+		print " " arr [i]
 	}
 	next
 }
