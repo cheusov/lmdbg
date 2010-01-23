@@ -13,16 +13,17 @@ BEGIN {
 	FS = SUBSEP
 }
 
-$1 == "free" {
-	print "this should not happen" > "/dev/stderr"
-	exit 1
-}
-
-$1 ~ /^[^ ]/ {
+$1 ~ /^(malloc|calloc|memalign|free|posix_memalign|realloc) / {
 	idx = match($1, / [^ ]*$/)
+#	print "idx=" idx
 	print substr($1, 1, idx-1)
 	print " " substr($1, idx+1)
 	for (i=2; i <= NF; ++i){
 		print " " $i
 	}
+	next
+}
+
+{
+	print
 }
