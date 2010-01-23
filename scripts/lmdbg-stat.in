@@ -11,64 +11,73 @@ sumcounts (){
 
 /^malloc / {
     trace [$7] = 1
-    ptr2trace [$6]  = $7
-    ptr2size  [$6]  = $3
-    allocated [$7] += $3
-    total_allocated  += $3
+    ptr2trace [$6]   = $7
+    ptr2size  [$6]   = $3
+    allocated [$7]  += $3
+    total_allocated += $3
     ++total_allocs_cnt
+    if (allocated [$7] > peak_allocated [$7])
+	peak_allocated [$7] = allocated [$7]
     next
 }
 
 /^calloc / {
     trace [$9] = 1
     bytes = $3 * $5
-    ptr2trace [$8]  = $9
-    ptr2size  [$8]  = bytes
-    allocated [$9] += bytes
-    total_allocated  += bytes
+    ptr2trace [$8]   = $9
+    ptr2size  [$8]   = bytes
+    allocated [$9]  += bytes
+    total_allocated += bytes
     ++total_allocs_cnt
+    if (allocated [$9] > peak_allocated [$9])
+	peak_allocated [$9] = allocated [$9]
     next
 }
 
 /^(memalign|posix_memalign) / {
     trace [$9] = 1
-    ptr2trace [$8]  = $9
-    ptr2size  [$8]  = $9
-    allocated [$9] += $5
-    total_allocated  += $5
+    ptr2trace [$8]   = $9
+    ptr2size  [$8]   = $9
+    allocated [$9]  += $5
+    total_allocated += $5
     ++total_allocs_cnt
+    if (allocated [$9] > peak_allocated [$9])
+	peak_allocated [$9] = allocated [$9]
     next
 }
 
 /^realloc / {
     trace [$9] = 1
-    ptr2trace [$8]  = $9
-    ptr2size  [$8]  = $9
-    allocated [$9] += $5
-    total_allocated  += $5
-    total_allocated              -= ptr2size [$3]
+    ptr2trace [$8]   = $9
+    ptr2size  [$8]   = $9
+    allocated [$9]  += $5
+    total_allocated += $5
+    total_allocated            -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
     ++total_allocs_cnt
+    if (allocated [$9] > peak_allocated [$9])
+	peak_allocated [$9] = allocated [$9]
     next
 }
 
 /^free / {
-    trace [$5] = 1
-    total_allocated              -= ptr2size [$3]
+    total_allocated            -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
     ++total_free_cnt
     next
 }
 
 END {
-    print "info stat total_allocated: " total_allocated
+    print "info stat total_leaks: " total_allocated
     print "info stat total_allocs_cnt: " total_allocs_cnt
     print "info stat total_free_cnt: " total_free_cnt
 
     for (i in trace){
-	printf "malloc ( -1 ) --> -1"
-	if (i in allocated)
-	    printf " allocated: %s", allocated [i]
+	printf "stacktrace"
+	if ((i in allocated) && allocated [i])
+	    printf " leaks: %s", allocated [i]
+	if ((i in peak_allocated) && peak_allocated [i])
+	    printf " peak_allocated: %s", peak_allocated [i]
 	printf " %s\n", i
     }
 }
