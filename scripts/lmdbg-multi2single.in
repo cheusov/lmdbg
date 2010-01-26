@@ -10,24 +10,28 @@
 # Output:
 #   malloc/realloc/free ...<SPACE>address1<SUBSEP>address2<SUBSEP>address3
 
+BEGIN {
+	first = 1
+}
+
 NF > 0 && /^ / {
     gsub(/\t/, "\033")
-	calls = calls SUBSEP substr($0, 2)
+	if (!first)
+		printf SUBSEP
+	first = 0
+	printf "%s", substr($0, 2)
 	next
 }
 
 NF > 0 {
-	if (last){
-		print last " " substr(calls, 2)
-		calls = ""
-	}
+	if (NR > 1)
+		printf "\n"
 
-	last = $0
+	first = 1
+	printf "%s ", $0
 }
 
 END {
-	if (calls){
-		print last " " substr(calls, 2)
-		calls = ""
-	}
+	if (NR > 1)
+		printf "\n"
 }
