@@ -85,6 +85,6 @@ END {
 }
 
 runpipe0 \
-    lmdbg-multi2single "$@" '|' \
+    lmdbg-m2s "$@" '|' \
     sumcounts '|' \
     lmdbg-single2multi
