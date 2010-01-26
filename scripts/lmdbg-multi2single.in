@@ -14,7 +14,7 @@ BEGIN {
 	first = 1
 }
 
-NF > 0 && /^ / {
+/^ / {
     gsub(/\t/, "\033")
 	if (!first)
 		printf SUBSEP
@@ -23,7 +23,7 @@ NF > 0 && /^ / {
 	next
 }
 
-NF > 0 {
+{
 	if (NR > 1)
 		printf "\n"
 
@@ -32,6 +32,6 @@ NF > 0 {
 }
 
 END {
-	if (NR > 1)
+	if (NR >= 1)
 		printf "\n"
 }
