@@ -113,6 +113,4 @@ leaks () {
     }' "$@"
 }
 
-lmdbg-m2s "$@" |
-leaks |
-lmdbg-single2multi
+lmdbg-m2s "$@" | leaks | lmdbg-s2m
