@@ -1,3 +1,4 @@
+- lmdbg-s2m and lmdbg-m2s -> /usr/local/libexec/lmdbg/
 - CFLAGS='-O0 -g' COPTS=''
 - LMDBG_AWK - preferred AWK interpreter
 - lmdbg-sumalloc: a number of malloc/calloc calls
