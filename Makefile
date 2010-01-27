@@ -17,6 +17,7 @@ CLEANFILES=	ChangeLog _*
 SUBDIR+=	libstacktrace
 SUBDIR+=	scripts
 SUBDIR+=	m2s
+SUBDIR+=	s2m
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 SUBDIR+=	tests
