@@ -1,9 +1,7 @@
-- lmdbg-s2m and lmdbg-m2s -> /usr/local/libexec/lmdbg/
 - CFLAGS='-O0 -g' COPTS=''
 - LMDBG_AWK - preferred AWK interpreter
 - lmdbg-sumalloc: a number of malloc/calloc calls
   two variants for sorting, by sum allocated size and by number malloc/calloc calls
-- lmdbg-m2s and lmdbg-s2m --> C
 - lmdbg-m2s and lmdbg-s2m --> /usr/local/libexec/lmdbg/
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
