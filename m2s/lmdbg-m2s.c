@@ -90,9 +90,10 @@ static void process_stream (FILE *in)
 
 int main (int argc, char **argv)
 {
-	--argc, ++argv;
 	int i;
 	FILE *fd;
+
+	--argc, ++argv;
 
 	if (!argc){
 		process_stream (stdin);
