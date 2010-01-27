@@ -4,7 +4,8 @@ test: all
 	cd ${.CURDIR}/liblmdbg; \
 	    LMDBG_LIB=`${MAKE} mkc_printobjdir`/liblmdbg.so; \
 	cd ${.CURDIR}/scripts; \
-	    PATH=`${MAKE} mkc_printobjdir`:${.CURDIR}/m2s:$$PATH; \
+	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
+	    PATH=${.CURDIR}/m2s:${.CURDIR}/m2s:$$PATH; \
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
