@@ -127,7 +127,7 @@ collect_address (){
     # input: text files in lmdbg-run format
     # output: all addresses (uniqued) mensioned in input
 
-    awk '
+    @AWK@ '
 $0 ~ /^ / && NF == 1 {
     hash [$1] = ""
 }
@@ -156,7 +156,7 @@ generate_gdb_commands (){
     echo 'print/x 0x22552255'
 
     if grep '^info section ' "$input" > "$info_sections_fn"; then
-	awk '
+	@AWK@ '
 	BEGIN {
 	    br_cnt = 2
 	}
@@ -191,7 +191,7 @@ generate_gdb_commands (){
 	    printf "info break %s\n", br_cnt++
 	}' "$info_sections_fn" "$@"
     else
-	awk '{
+	@AWK@ '{
 	    if ($0 !~ /^0x/)
 		$0 = "0x" $0 # This is necessary for Solaris
 	    print "b *" $0 "\ninfo break " NR+1
@@ -201,7 +201,7 @@ generate_gdb_commands (){
 }
 
 gdb_output2position (){
-    awk '
+    @AWK@ '
     !flag {
 	flag = /22552255/
 	next
@@ -261,7 +261,7 @@ address2position_addr2line_nomaps (){
 
     info_fn=$tmp_dir/info
     xargs addr2line -e "$prog" < "$tmp_file1" > "$info_fn"
-    awk -v tmp_file1="$tmp_file1" -v info_fn="$info_fn" '
+    @AWK@ -v tmp_file1="$tmp_file1" -v info_fn="$info_fn" '
     BEGIN {
 	while ((getline addr < tmp_file1) > 0 &&
 	        (getline info < info_fn) > 0)\
@@ -293,7 +293,7 @@ fi > $tmp_file3
 #cat $tmp_file3
 #exit
 
-awk -v tmp3=$tmp_file3 '
+@AWK@ -v tmp3=$tmp_file3 '
 BEGIN {
     FS="\t"
     while (0 < (getline < tmp3)){

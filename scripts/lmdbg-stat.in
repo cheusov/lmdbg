@@ -3,7 +3,7 @@
 . pipestatus
 
 sumcounts (){
-    awk '
+    @AWK@ '
 /^info / {
     print
     next

@@ -88,7 +88,7 @@ if test -z "$conf_file"; then
 fi
 
 system_leaks () {
-    awk -v conf_file="$conf_file" '
+    @AWK@ -v conf_file="$conf_file" '
     BEGIN {
 	skip_leaks = ENVIRON ["skip_leaks"] + 0
 

@@ -68,7 +68,7 @@ while test $# -ne 0; do
 done
 
 leaks () {
-    awk '
+    @AWK@ '
     $1 == "malloc" || $1 == "calloc" {
 	h [$6] = $0
 	next
