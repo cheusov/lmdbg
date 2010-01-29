@@ -18,6 +18,7 @@ SUBDIR+=	libstacktrace
 SUBDIR+=	scripts
 SUBDIR+=	m2s
 SUBDIR+=	s2m
+SUBDIR+=	stat
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 SUBDIR+=	tests
