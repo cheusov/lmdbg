@@ -657,28 +657,28 @@ free ( 0x1239 )
  0x1
 EOF
 
-lmdbg-stat $test_fn |
+lmdbg-stat $test_fn | lmdbg-m2s | sort | lmdbg-s2m |
 cmp "lmdbg-stat:" \
 'info lalala
-info stat total_leaks: 673
 info stat total_allocs_cnt: 7
 info stat total_free_cnt: 2
-stacktrace leaks: 300 peak_allocated: 300
- 0x5
-stacktrace leaks: 123 peak_allocated: 423
- 0x1
- 0x2
-stacktrace peak_allocated: 248
- 0x2
- 0x3
- 0x4
+info stat total_leaks: 673
 stacktrace leaks: 120 peak_allocated: 120
  0x3
  0x4
  0x5
+stacktrace leaks: 123 peak_allocated: 423
+ 0x1
+ 0x2
 stacktrace leaks: 130 peak_allocated: 130
  0x2
  0x3
+stacktrace leaks: 300 peak_allocated: 300
+ 0x5
+stacktrace peak_allocated: 248
+ 0x2
+ 0x3
+ 0x4
 '
 
 #
