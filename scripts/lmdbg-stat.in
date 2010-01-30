@@ -29,6 +29,7 @@ function get_id (st){
 	peak_allocated [id] = allocated [id]
     if ($3+0 > max_allocated [id])
 	max_allocated [id] = $3
+    ++allocs_cnt [id]
     next
 }
 
@@ -44,6 +45,7 @@ function get_id (st){
 	peak_allocated [id] = allocated [id]
     if (bytes > max_allocated [id])
 	max_allocated [id] = bytes
+    ++allocs_cnt [id]
     next
 }
 
@@ -58,6 +60,7 @@ function get_id (st){
 	peak_allocated [id] = allocated [id]
     if ($5+0 > max_allocated [id])
 	max_allocated [id] = $5
+    ++allocs_cnt [id]
     next
 }
 
@@ -74,6 +77,7 @@ function get_id (st){
 	peak_allocated [id] = allocated [id]
     if ($5+0 > max_allocated [id])
 	max_allocated [id] = $5
+    ++allocs_cnt [id]
     next
 }
 
@@ -99,6 +103,8 @@ END {
 	    printf " peak_allocated: %s", peak_allocated [id]
 	if (id in max_allocated)
 	    printf " max_allocated: %s", max_allocated [id]
+	if (id in allocs_cnt)
+	    printf " allocs_cnt: %s", allocs_cnt [id]
 	printf " %s\n", i
     }
 }
