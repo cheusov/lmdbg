@@ -45,10 +45,14 @@ static void process_line (char *buf)
 	if (!buf [0])
 		return;
 
-	if (strncmp (buf, "malloc", 6) &&  strncmp (buf, "calloc", 6) &&
-		strncmp (buf, "realloc", 7) && strncmp (buf, "free", 4) &&
-		strncmp (buf, "stacktrace", 10) && strncmp (buf, "memalign", 8) &&
-		strncmp (buf, "posix_memalign", 14))
+	if (strncmp (buf, "malloc", 6) &&
+		strncmp (buf, "calloc", 6) &&
+		strncmp (buf, "realloc", 7) &&
+		strncmp (buf, "free", 4) &&
+		strncmp (buf, "stacktrace", 10) &&
+		strncmp (buf, "memalign", 8) &&
+		strncmp (buf, "posix_memalign", 14) &&
+		strncmp (buf, "stacktrace", 10))
 	{
 		puts (buf);
 		return;
@@ -70,6 +74,8 @@ static void process_line (char *buf)
 	for (p=last_token; *p; ++p){
 		if (*p == '\033'){
 			*p = '\t';
+		}else if (*p == '\032'){
+			*p = ' ';
 		}else if (*p == '\034'){
 			*p = 0;
 			xputc (' ', stdout);
