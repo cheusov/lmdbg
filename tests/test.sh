@@ -651,6 +651,8 @@ malloc ( 100 ) -> 0x1238
 malloc ( 200 ) -> 0x1239
  0x1
  0x2
+realloc ( 0x1238 , 300 ) -> 0x123A
+ 0x5
 free ( 0x1239 )
  0x1
 EOF
@@ -658,10 +660,12 @@ EOF
 lmdbg-stat $test_fn |
 cmp "lmdbg-stat:" \
 'info lalala
-info stat total_leaks: 473
-info stat total_allocs_cnt: 6
+info stat total_leaks: 673
+info stat total_allocs_cnt: 7
 info stat total_free_cnt: 2
-stacktrace leaks: 223 peak_allocated: 423
+stacktrace leaks: 300 peak_allocated: 300
+ 0x5
+stacktrace leaks: 123 peak_allocated: 423
  0x1
  0x2
 stacktrace peak_allocated: 248
