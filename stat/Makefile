@@ -1,8 +1,11 @@
 PROG=		lmdbg-stat
 
-LDADD_Judy?=	-lJudy
+LIB_Judy?=	Judy
 
-LDADD+=		${LDADD_Judy}
+MKC_REQUIRE_FUNCLIBS+=	JudyHSIns:${LIB_Judy}
+MKC_REQUIRE_HEADERS+=	Judy.h
+
+LDADD+=		-l${LIB_Judy}
 
 WARNS=		4
 
