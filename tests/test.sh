@@ -676,25 +676,25 @@ cmp "lmdbg-stat:" \
 info stat total_allocs_cnt: 13
 info stat total_free_cnt: 2
 info stat total_leaks: 793
-stacktrace leaks: 123 peak_allocated: 223 max_allocated: 123
+stacktrace leaks: 123 peak_allocated: 223 max_allocated: 123 allocs_cnt: 2
  0x1
  0x2
-stacktrace leaks: 130 peak_allocated: 130 max_allocated: 130
+stacktrace leaks: 130 peak_allocated: 130 max_allocated: 130 allocs_cnt: 1
  0x2
  0x3
-stacktrace leaks: 230 peak_allocated: 230 max_allocated: 120
+stacktrace leaks: 230 peak_allocated: 230 max_allocated: 120 allocs_cnt: 2
  0x3
  0x4
  0x5
-stacktrace leaks: 310 peak_allocated: 310 max_allocated: 180
+stacktrace leaks: 310 peak_allocated: 310 max_allocated: 180 allocs_cnt: 5
  0x6
-stacktrace peak_allocated: 200 max_allocated: 200
+stacktrace peak_allocated: 200 max_allocated: 200 allocs_cnt: 1
  0x7
-stacktrace peak_allocated: 248 max_allocated: 248
+stacktrace peak_allocated: 248 max_allocated: 248 allocs_cnt: 1
  0x2
  0x3
  0x4
-stacktrace peak_allocated: 300 max_allocated: 300
+stacktrace peak_allocated: 300 max_allocated: 300 allocs_cnt: 1
  0x5
 '
 
