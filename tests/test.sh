@@ -645,15 +645,23 @@ free ( 0x1235 )
 posix_memalign ( 16 , 130 ) -> 0x1237
  0x2
  0x3
+malloc ( 100 ) -> 0x1238
+ 0x1
+ 0x2
+malloc ( 200 ) -> 0x1239
+ 0x1
+ 0x2
+free ( 0x1239 )
+ 0x1
 EOF
 
 lmdbg-stat $test_fn |
 cmp "lmdbg-stat:" \
 'info lalala
-info stat total_leaks: 373
-info stat total_allocs_cnt: 4
-info stat total_free_cnt: 1
-stacktrace leaks: 123 peak_allocated: 123
+info stat total_leaks: 473
+info stat total_allocs_cnt: 6
+info stat total_free_cnt: 2
+stacktrace leaks: 223 peak_allocated: 423
  0x1
  0x2
 stacktrace peak_allocated: 248
