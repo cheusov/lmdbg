@@ -649,36 +649,53 @@ malloc ( 100 ) -> 0x1238
  0x1
  0x2
 malloc ( 200 ) -> 0x1239
- 0x1
- 0x2
+ 0x7
 realloc ( 0x1238 , 300 ) -> 0x123A
  0x5
 free ( 0x1239 )
  0x1
+realloc ( 0x123A , 110 ) -> 0x123B
+ 0x6
+realloc ( 0x123B , 120 ) -> 0x123C
+ 0x6
+realloc ( 0x123C , 140 ) -> 0x123D
+ 0x6
+realloc ( 0x123D , 130 ) -> 0x123E
+ 0x6
+memalign ( 16 , 110 ) -> 0x123F
+ 0x3
+ 0x4
+ 0x5
+realloc ( 0x0 , 180 ) -> 0x1240
+ 0x6
 EOF
 
 lmdbg-stat $test_fn | lmdbg-m2s | sort | lmdbg-s2m |
 cmp "lmdbg-stat:" \
 'info lalala
-info stat total_allocs_cnt: 7
+info stat total_allocs_cnt: 13
 info stat total_free_cnt: 2
-info stat total_leaks: 673
-stacktrace leaks: 120 peak_allocated: 120
- 0x3
- 0x4
- 0x5
-stacktrace leaks: 123 peak_allocated: 423
+info stat total_leaks: 793
+stacktrace leaks: 123 peak_allocated: 223
  0x1
  0x2
 stacktrace leaks: 130 peak_allocated: 130
  0x2
  0x3
-stacktrace leaks: 300 peak_allocated: 300
+stacktrace leaks: 230 peak_allocated: 230
+ 0x3
+ 0x4
  0x5
+stacktrace leaks: 310 peak_allocated: 310
+ 0x6
+stacktrace peak_allocated: 200
+ 0x7
 stacktrace peak_allocated: 248
  0x2
  0x3
  0x4
+stacktrace peak_allocated: 300
+ 0x5
 '
 
 #
