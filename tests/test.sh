@@ -626,5 +626,48 @@ else
     ex=1
 fi
 
+# lmdbg-stat: malloc
+cat > $test_fn <<EOF
+info lalala
+malloc ( 123 ) -> 0x1234
+ 0x1
+ 0x2
+calloc ( 2 , 124 ) -> 0x1235
+ 0x2
+ 0x3
+ 0x4
+memalign ( 16 , 120 ) -> 0x1236
+ 0x3
+ 0x4
+ 0x5
+free ( 0x1235 )
+ 0x1
+posix_memalign ( 16 , 130 ) -> 0x1237
+ 0x2
+ 0x3
+EOF
+
+lmdbg-stat $test_fn |
+cmp "lmdbg-stat:" \
+'info lalala
+info stat total_leaks: 373
+info stat total_allocs_cnt: 4
+info stat total_free_cnt: 1
+stacktrace leaks: 123 peak_allocated: 123
+ 0x1
+ 0x2
+stacktrace peak_allocated: 248
+ 0x2
+ 0x3
+ 0x4
+stacktrace leaks: 120 peak_allocated: 120
+ 0x3
+ 0x4
+ 0x5
+stacktrace leaks: 130 peak_allocated: 130
+ 0x2
+ 0x3
+'
+
 #
 exit "$ex"
