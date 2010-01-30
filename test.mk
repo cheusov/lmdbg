@@ -5,7 +5,7 @@ test: all
 	    LMDBG_LIB=`${MAKE} mkc_printobjdir`/liblmdbg.so; \
 	cd ${.CURDIR}/scripts; \
 	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
-	    PATH=${.CURDIR}/m2s:${.CURDIR}/m2s:$$PATH; \
+	    PATH=${.CURDIR}/m2s:${.CURDIR}/s2m:$$PATH; \
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
