@@ -27,6 +27,8 @@ function get_id (st){
     ++total_allocs_cnt
     if (allocated [id] > peak_allocated [id])
 	peak_allocated [id] = allocated [id]
+    if ($3+0 > max_allocated [id])
+	max_allocated [id] = $3
     next
 }
 
@@ -40,6 +42,8 @@ function get_id (st){
     ++total_allocs_cnt
     if (allocated [id] > peak_allocated [id])
 	peak_allocated [id] = allocated [id]
+    if (bytes > max_allocated [id])
+	max_allocated [id] = bytes
     next
 }
 
@@ -52,6 +56,8 @@ function get_id (st){
     ++total_allocs_cnt
     if (allocated [id] > peak_allocated [id])
 	peak_allocated [id] = allocated [id]
+    if ($5+0 > max_allocated [id])
+	max_allocated [id] = $5
     next
 }
 
@@ -66,6 +72,8 @@ function get_id (st){
     ++total_allocs_cnt
     if (allocated [id] > peak_allocated [id])
 	peak_allocated [id] = allocated [id]
+    if ($5+0 > max_allocated [id])
+	max_allocated [id] = $5
     next
 }
 
@@ -89,6 +97,8 @@ END {
 	    printf " leaks: %s", allocated [id]
 	if ((id in peak_allocated) && peak_allocated [id])
 	    printf " peak_allocated: %s", peak_allocated [id]
+	if (id in max_allocated)
+	    printf " max_allocated: %s", max_allocated [id]
 	printf " %s\n", i
     }
 }
