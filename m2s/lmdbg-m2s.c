@@ -48,6 +48,8 @@ static void process_line (char *buf)
 		for (p = buf; *p; ++p){
 			if (*p == '\t')
 				*p = '\033';
+			else if (*p == ' ')
+				*p = '\032';
 		}
 
 		if (first){
