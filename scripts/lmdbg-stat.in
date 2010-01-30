@@ -14,7 +14,7 @@ function get_id (st){
 	return ids [st]
     }else{
 	ids [st] = ++ids_count
-	return ids_count-1
+	return ids_count
     }
 }
 
@@ -33,7 +33,7 @@ function get_id (st){
 /^calloc / {
     id = get_id($9)
     bytes = $3 * $5
-    ptr2trace [$8]   = $9
+    ptr2trace [$8]   = id
     ptr2size  [$8]   = bytes
     allocated [id]  += bytes
     total_allocated += bytes
@@ -46,7 +46,7 @@ function get_id (st){
 /^(memalign|posix_memalign) / {
     id = get_id($9)
     ptr2trace [$8]   = id
-    ptr2size  [$8]   = $9
+    ptr2size  [$8]   = $5
     allocated [id]  += $5
     total_allocated += $5
     ++total_allocs_cnt
@@ -58,7 +58,7 @@ function get_id (st){
 /^realloc / {
     id = get_id($9)
     ptr2trace [$8]   = id
-    ptr2size  [$8]   = $9
+    ptr2size  [$8]   = $5
     allocated [id]  += $5
     total_allocated += $5
     total_allocated            -= ptr2size [$3]
@@ -72,6 +72,7 @@ function get_id (st){
 /^free / {
     total_allocated            -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
+    ptr2size [$3] = 0
     ++total_free_cnt
     next
 }
@@ -84,9 +85,9 @@ END {
     for (i in ids){
 	printf "stacktrace"
 	id = get_id(i)
-	if ((i in allocated) && allocated [id])
+	if ((id in allocated) && allocated [id])
 	    printf " leaks: %s", allocated [id]
-	if ((i in peak_allocated) && peak_allocated [id])
+	if ((id in peak_allocated) && peak_allocated [id])
 	    printf " peak_allocated: %s", peak_allocated [id]
 	printf " %s\n", i
     }
