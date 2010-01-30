@@ -13,6 +13,8 @@ SUBDIR+=	prog4
 SUBDIR+=	prog5
 .endif
 
+MKINSTALL=	no
+
 .PHONY: all test
 test : all
 	set -e; cd ${.CURDIR}; ./test.sh
