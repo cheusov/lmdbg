@@ -91,7 +91,7 @@ function get_id (st){
 
 END {
     print "info stat total_leaks: " total_allocated
-    print "info stat total_allocs_cnt: " total_allocs_cnt
+    print "info stat total_allocs: " total_allocs_cnt
     print "info stat total_free_cnt: " total_free_cnt
 
     for (i in ids){
@@ -100,11 +100,11 @@ END {
 	if ((id in allocated) && allocated [id])
 	    printf " leaks: %s", allocated [id]
 	if ((id in peak_allocated) && peak_allocated [id])
-	    printf " peak_allocated: %s", peak_allocated [id]
+	    printf " peak: %s", peak_allocated [id]
 	if (id in max_allocated)
-	    printf " max_allocated: %s", max_allocated [id]
+	    printf " max: %s", max_allocated [id]
 	if (id in allocs_cnt)
-	    printf " allocs_cnt: %s", allocs_cnt [id]
+	    printf " allocs: %s", allocs_cnt [id]
 	printf " %s\n", i
     }
 }

@@ -673,28 +673,28 @@ EOF
 lmdbg-stat $test_fn | lmdbg-m2s | sort | lmdbg-s2m |
 cmp "lmdbg-stat:" \
 'info lalala
-info stat total_allocs_cnt: 13
+info stat total_allocs: 13
 info stat total_free_cnt: 2
 info stat total_leaks: 793
-stacktrace leaks: 123 peak_allocated: 223 max_allocated: 123 allocs_cnt: 2
+stacktrace leaks: 123 peak: 223 max: 123 allocs: 2
  0x1
  0x2
-stacktrace leaks: 130 peak_allocated: 130 max_allocated: 130 allocs_cnt: 1
+stacktrace leaks: 130 peak: 130 max: 130 allocs: 1
  0x2
  0x3
-stacktrace leaks: 230 peak_allocated: 230 max_allocated: 120 allocs_cnt: 2
+stacktrace leaks: 230 peak: 230 max: 120 allocs: 2
  0x3
  0x4
  0x5
-stacktrace leaks: 310 peak_allocated: 310 max_allocated: 180 allocs_cnt: 5
+stacktrace leaks: 310 peak: 310 max: 180 allocs: 5
  0x6
-stacktrace peak_allocated: 200 max_allocated: 200 allocs_cnt: 1
+stacktrace peak: 200 max: 200 allocs: 1
  0x7
-stacktrace peak_allocated: 248 max_allocated: 248 allocs_cnt: 1
+stacktrace peak: 248 max: 248 allocs: 1
  0x2
  0x3
  0x4
-stacktrace peak_allocated: 300 max_allocated: 300 allocs_cnt: 1
+stacktrace peak: 300 max: 300 allocs: 1
  0x5
 '
 
