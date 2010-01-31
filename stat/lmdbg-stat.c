@@ -169,11 +169,13 @@ static void process_stacktrace (void)
 			}
 			break;
 		case ft_free:
-			ptrdata = *(ptrdata_t **) JudyLGet (ptr2data, (Word_t) op.oldaddr, 0);
-			total_allocated -= ptrdata->allocated;
-			++total_free_cnt;
-			statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
-			ptrdata->allocated = 0;
+			if (op.oldaddr){
+				ptrdata = *(ptrdata_t **) JudyLGet (ptr2data, (Word_t) op.oldaddr, 0);
+				total_allocated -= ptrdata->allocated;
+				++total_free_cnt;
+				statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
+				ptrdata->allocated = 0;
+			}
 			break;
 		default:
 			abort ();
@@ -248,6 +250,7 @@ static void process_line (char *buf)
 	char orig_buf [20480];
 
 	snprintf (orig_buf, sizeof (orig_buf), "%s", buf);
+//	fprintf (stderr, "%s\n", orig_buf);
 
 	if (!buf [0])
 		return;
