@@ -1,4 +1,30 @@
 ======================================================================
+Version 0.13.0, by Aleksey Cheusov, Sun, 31 Jan 2010 18:40:05 +0200
+
+  INSTALL: updated
+
+  mk-configure>=0.14.0 is needed to build lmdbg.
+
+  FIXED: 'make install' command installs test utilities from tests/
+  subdirectory. Thanks to Mikolaj Golub for bug report.
+
+  lmdbg-sym:
+    - LMDBG uses very tricky features of GDB. As a result GDB may
+      segfault on some platforms, e.g. gdb-6.4.90-debian fails on
+      Debian/Etch.  In order to show users that GDB is buggy and needs
+      to be fixed, an exit status of it is checked. For this purpose
+      http://sf.net/projects/pipestatus/ is needed.
+    - LMDBG_GDB environment variable sets the path to gdb program
+      overiding path defined at build time. See scripts/Makefile.
+
+  For better efficiency lmdbg-multi2single and lmdbg-single2multi
+  internal scripts have been reimplemented in C and renamed to
+  lmdbg-m2s and lmdbg-s2m respectively.
+
+  Built-time AWK variable sets an AWK interpreter for awk script.
+  See scripts/Makefile.
+
+======================================================================
 Version 0.12.0, by Aleksey Cheusov, Sun,  3 Jan 2010 14:05:15 +0200
 
   ADDED: support for calloc(3) and posix_memalign(3).
