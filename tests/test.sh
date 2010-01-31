@@ -629,44 +629,44 @@ fi
 # lmdbg-stat: malloc
 cat > $test_fn <<EOF
 info lalala
-malloc ( 123 ) -> 0x1234
+malloc ( 123 ) --> 0x1234
  0x1
  0x2
-calloc ( 2 , 124 ) -> 0x1235
+calloc ( 2 , 124 ) --> 0x1235
  0x2
  0x3
  0x4
-memalign ( 16 , 120 ) -> 0x1236
+memalign ( 16 , 120 ) --> 0x1236
  0x3
  0x4
  0x5
 free ( 0x1235 )
  0x1
-posix_memalign ( 16 , 130 ) -> 0x1237
+posix_memalign ( 16 , 130 ) --> 0x1237
  0x2
  0x3
-malloc ( 100 ) -> 0x1238
+malloc ( 100 ) --> 0x1238
  0x1
  0x2
-malloc ( 200 ) -> 0x1239
+malloc ( 200 ) --> 0x1239
  0x7
-realloc ( 0x1238 , 300 ) -> 0x123A
+realloc ( 0x1238 , 300 ) --> 0x123A
  0x5
 free ( 0x1239 )
  0x1
-realloc ( 0x123A , 110 ) -> 0x123B
+realloc ( 0x123A , 110 ) --> 0x123B
  0x6
-realloc ( 0x123B , 120 ) -> 0x123C
+realloc ( 0x123B , 120 ) --> 0x123C
  0x6
-realloc ( 0x123C , 140 ) -> 0x123D
+realloc ( 0x123C , 140 ) --> 0x123D
  0x6
-realloc ( 0x123D , 130 ) -> 0x123E
+realloc ( 0x123D , 130 ) --> 0x123E
  0x6
-memalign ( 16 , 110 ) -> 0x123F
+memalign ( 16 , 110 ) --> 0x123F
  0x3
  0x4
  0x5
-realloc ( 0x0 , 180 ) -> 0x1240
+realloc ( 0x0 , 180 ) --> 0x1240
  0x6
 EOF
 
@@ -676,26 +676,26 @@ cmp "lmdbg-stat:" \
 info stat total_allocs: 13
 info stat total_free_cnt: 2
 info stat total_leaks: 793
-stacktrace leaks: 123 peak: 223 max: 123 allocs: 2
- 0x1
- 0x2
-stacktrace leaks: 130 peak: 130 max: 130 allocs: 1
+stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
-stacktrace leaks: 230 peak: 230 max: 120 allocs: 2
+stacktrace peak: 200 max: 200 allocs: 1
+ 0x7
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
  0x3
  0x4
  0x5
-stacktrace leaks: 310 peak: 310 max: 180 allocs: 5
- 0x6
-stacktrace peak: 200 max: 200 allocs: 1
- 0x7
 stacktrace peak: 248 max: 248 allocs: 1
  0x2
  0x3
  0x4
 stacktrace peak: 300 max: 300 allocs: 1
  0x5
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
 '
 
 #
