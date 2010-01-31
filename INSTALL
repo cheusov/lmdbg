@@ -63,7 +63,7 @@ build and installation.  See Makefiles for LMDBG's own variables
 
 Examples of building and installing:
 
- 1)  mkcmake all installdirs install
+ 1)  env PREFIX=/usr mkcmake all installdirs install
 
  2)  env CC=gcc \
        PREFIX=/home/cheusov/local \
