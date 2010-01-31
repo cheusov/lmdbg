@@ -351,7 +351,12 @@ static void process_line (char *buf)
 			return;
 		}
 
-		puts (orig_buf);
+		if (token_count >= 1 && !strcmp (tokens [0], "info")){
+			puts (orig_buf);
+			return;
+		}
+
+		fprintf (stderr, "bad input line: %s\n", orig_buf);
 	}
 }
 
