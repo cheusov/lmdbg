@@ -626,9 +626,6 @@ else
     ex=1
 fi
 
-#
-exit "$ex"
-
 # lmdbg-stat: malloc
 cat > $test_fn <<EOF
 info lalala
