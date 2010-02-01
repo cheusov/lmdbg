@@ -121,7 +121,9 @@ static void process_stacktrace (void)
 		case ft_realloc:
 		case ft_memalign:
 		case ft_posix_memalign:
-			ret = (PWord_t) JudyHSIns (&hash, stacktrace, stacktrace_len * sizeof (stacktrace [0]), 0);
+			ret = (PWord_t) JudyHSIns (
+				&hash, stacktrace,
+				stacktrace_len * sizeof (stacktrace [0]), 0);
 			if (*ret == 0){
 				new = 1;
 				*ret = ++stacktrace_count;
@@ -148,6 +150,8 @@ static void process_stacktrace (void)
 			}
 			++total_allocs_cnt;
 			total_allocated += op.bytes;
+
+			/* pointer to associated data */
 			ret = (PWord_t) JudyLIns (&ptr2data, (Word_t) op.addr, 0);
 			*ret = (Word_t) malloc (sizeof (ptrdata_t));
 			ptrdata = (ptrdata_t*) *ret;
@@ -163,18 +167,26 @@ static void process_stacktrace (void)
 			break;
 		case ft_realloc:
 			if (op.oldaddr){
-				ptrdata = *(ptrdata_t **) JudyLGet (ptr2data, (Word_t) op.oldaddr, 0);
+				ptrdata = *(ptrdata_t **) JudyLGet (
+					ptr2data, (Word_t) op.oldaddr, 0);
 				total_allocated -= ptrdata->allocated;
 				statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
+
+				free (ptrdata);
+				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
 			}
 			break;
 		case ft_free:
 			if (op.oldaddr){
-				ptrdata = *(ptrdata_t **) JudyLGet (ptr2data, (Word_t) op.oldaddr, 0);
+				ptrdata = *(ptrdata_t **) JudyLGet (
+					ptr2data, (Word_t) op.oldaddr, 0);
 				total_allocated -= ptrdata->allocated;
-				++total_free_cnt;
 				statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
-				ptrdata->allocated = 0;
+
+				++total_free_cnt;
+
+				free (ptrdata);
+				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
 			}
 			break;
 		default:
@@ -193,6 +205,10 @@ void print_results (void)
 	printf ("info stat total_allocs: %i\n", total_allocs_cnt);
 	printf ("info stat total_free_cnt: %i\n", total_free_cnt);
 	printf ("info stat total_leaks: %lu\n", total_allocated);
+
+//	printf ("stacktrace_count=%i\n", stacktrace_count);
+
+//	return;
 
 	for (i=1; i <= stacktrace_count; ++i){
 		printf ("stacktrace peak: %lu max: %lu allocs: %i",
