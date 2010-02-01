@@ -66,12 +66,14 @@ function get_id (st){
 
 /^realloc / {
     id = get_id($9)
-    ptr2trace [$8]   = id
-    ptr2size  [$8]   = $5
     allocated [id]  += $5
     total_allocated += $5
     total_allocated            -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
+    delete ptr2size [$3]
+    delete ptr2trace [$3]
+    ptr2trace [$8]   = id
+    ptr2size  [$8]   = $5
     ++total_allocs_cnt
     if (allocated [id] > peak_allocated [id])
 	peak_allocated [id] = allocated [id]
@@ -84,7 +86,8 @@ function get_id (st){
 /^free / {
     total_allocated            -= ptr2size [$3]
     allocated [ptr2trace [$3]] -= ptr2size [$3]
-    ptr2size [$3] = 0
+    delete ptr2size [$3]
+    delete ptr2trace [$3]
     ++total_free_cnt
     next
 }
