@@ -18,7 +18,7 @@ posix_memalign ( 16 , 123 ) -> 0x3235000
  0x1	foo
  0x2	bar baz
  0x3	foobar
-stacktrace foo: 123 bar: 234 baz: 456
+stacktrace peak: 123 max: 234 allocs: 456
  0x111
  0x222
  0x333

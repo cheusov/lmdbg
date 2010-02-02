@@ -578,7 +578,7 @@ calloc ( 16 , 124 ) -> 0x1235 0x235\{034}0x457\{034}0x678
 memalign ( 16 , 123 ) -> 0x1235000 0x1\{034}0x2\{034}0x3
 realloc ( 0x1235000 , 12300 ) -> 0x2236000 0x2\{034}0x3\{034}0x4
 posix_memalign ( 16 , 123 ) -> 0x3235000 0x1\{033}foo\{034}0x2\{033}bar\{032}baz\{034}0x3\{033}foobar
-stacktrace foo: 123 bar: 234 baz: 456 0x111\{034}0x222\{034}0x333
+stacktrace peak: 123 max: 234 allocs: 456 0x111\{034}0x222\{034}0x333
 '
 
 # lmdbg-s2m: malloc
@@ -601,7 +601,9 @@ else
 fi
 
 # lmdbg-stat: malloc
-lmdbg-stat ./input1.txt | lmdbg-m2s | sort | lmdbg-s2m |
+stat_fn="$OBJDIR/_stat"
+
+lmdbg-stat ./input1.txt | lmdbg-m2s | sort | lmdbg-s2m | tee "$stat_fn" |
 cmp "lmdbg-stat:" \
 'info lalala
 info stat total_allocs: 13
@@ -610,6 +612,97 @@ info stat total_leaks: 793
 stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
+stacktrace peak: 200 max: 200 allocs: 1
+ 0x7
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+ 0x3
+ 0x4
+ 0x5
+stacktrace peak: 248 max: 248 allocs: 1
+ 0x2
+ 0x3
+ 0x4
+stacktrace peak: 300 max: 300 allocs: 1
+ 0x5
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+'
+
+# lmdbg-grep
+lmdbg-grep 'addrline ~ /bar/' ./input2.txt |
+cmp 'lmdbg-grep + addrline' \
+'info lalala
+posix_memalign ( 16 , 123 ) -> 0x3235000
+ 0x1	foo
+ 0x2	bar baz
+ 0x3	foobar
+'
+
+lmdbg-grep -v 'addrline ~ /bar/' ./input2.txt |
+cmp 'lmdbg-grep -v + addrline' \
+'info lalala
+malloc ( 123 ) -> 0x1234
+ 0x234
+ 0x456
+calloc ( 16 , 124 ) -> 0x1235
+ 0x235
+ 0x457
+ 0x678
+memalign ( 16 , 123 ) -> 0x1235000
+ 0x1
+ 0x2
+ 0x3
+realloc ( 0x1235000 , 12300 ) -> 0x2236000
+ 0x2
+ 0x3
+ 0x4
+stacktrace peak: 123 max: 234 allocs: 456
+ 0x111
+ 0x222
+ 0x333
+'
+
+# lmdbg-grep
+lmdbg-grep 'allocs > 400' ./input2.txt |
+cmp 'lmdbg-grep + allocs' \
+'info lalala
+stacktrace peak: 123 max: 234 allocs: 456
+ 0x111
+ 0x222
+ 0x333
+'
+
+# lmdbg-grep
+lmdbg-grep 'max > 100 && max < 200' "$stat_fn" |
+cmp 'lmdbg-grep + max' \
+'info lalala
+info stat total_allocs: 13
+info stat total_free_cnt: 2
+info stat total_leaks: 793
+stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
+ 0x2
+ 0x3
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+ 0x3
+ 0x4
+ 0x5
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+'
+
+# lmdbg-grep
+lmdbg-grep -v 'peak < 200' "$stat_fn" |
+cmp 'lmdbg-grep -v + peak' \
+'info lalala
+info stat total_allocs: 13
+info stat total_free_cnt: 2
+info stat total_leaks: 793
 stacktrace peak: 200 max: 200 allocs: 1
  0x7
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
