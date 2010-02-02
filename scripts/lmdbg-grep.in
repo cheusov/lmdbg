@@ -77,7 +77,7 @@ $0 ~ /^ / {
     peak = max = allocs = leaks = 0
 }
 
-/^stacktrace / {
+/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
     for (i=1; i <= NF; ++i){
 	if ($i == "peak:"){
 	    peak = $(i+1)
