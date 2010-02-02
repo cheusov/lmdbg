@@ -1,24 +1,50 @@
 #!/bin/sh
 
-awk '
+set -e
+
+if test $# -lt 1; then
+    cat <<EOF
+usage: lmdbg-grep <awk_expr> [files...]
+EOF
+    exit 1
+fi
+
+expr="$1"
+shift
+
+if printf "%s\n" "$expr" | grep addrline > /dev/null; then
+    addrline_mode=1
+else
+    addrline_mode=0
+fi
+
+echo "expr=$expr"
+
+@AWK@ -v addrline_mode="$addrline_mode" '
 BEGIN {
     ok = -1 # -1 - unknown, 0 - false, 1 - true
     count = 0
 }
 
 function condition (){
-    if (peak > 10000000)
-	return 1
-    else
-	return 0
-
-    return -1;
+#    print "$0=" $0
+    return '"$expr"'
 }
 
 function update_skip (){
-    ok = condition()
+    if (addrline_mode){
+	if (!/^ /)
+	    return
+	addrline = $0
+    }else{
+	if (/^ /)
+	    return
+    }
 
-    if (ok == 1){
+    ok = condition()
+    if (addrline_mode && ok == 0)
+	ok = -1
+    else if (ok == 1){
 	for (i=0; i < count; ++i){
 	    print accu [i]
 	}
@@ -69,4 +95,4 @@ $0 ~ /^ / {
     ok = -1
     update_skip()
 }
-'
+' "$@"
