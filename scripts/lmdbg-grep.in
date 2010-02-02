@@ -110,4 +110,10 @@ $0 ~ /^ / {
     ok = -1
     update_skip()
 }
+
+END {
+    if (ok != 1 && invert){
+	print_accu()
+    }
+}
 ' "$@"
