@@ -569,34 +569,8 @@ ctrl2norm (){
 }
 
 test_fn="$OBJDIR/_tst"
-cat > $test_fn <<EOF
-info lalala
-malloc ( 123 ) -> 0x1234
- 0x234
- 0x456
-calloc ( 16 , 124 ) -> 0x1235
- 0x235
- 0x457
- 0x678
-memalign ( 16 , 123 ) -> 0x1235000
- 0x1
- 0x2
- 0x3
-realloc ( 0x1235000 , 12300 ) -> 0x2236000
- 0x2
- 0x3
- 0x4
-posix_memalign ( 16 , 123 ) -> 0x3235000
- 0x1	foo
- 0x2	bar baz
- 0x3	foobar
-stacktrace foo: 123 bar: 234 baz: 456
- 0x111
- 0x222
- 0x333
-EOF
 
-lmdbg-m2s $test_fn | ctrl2norm |
+lmdbg-m2s ./input2.txt | ctrl2norm |
 cmp "lmdbg-m2s:" \
 'info lalala
 malloc ( 123 ) -> 0x1234 0x234\{034}0x456
@@ -616,9 +590,9 @@ ctrl2norm (){
 	print}' "$@"
 }
 
-lmdbg-m2s $test_fn | lmdbg-s2m > $test_fn.tmp
+lmdbg-m2s ./input2.txt | lmdbg-s2m > $test_fn.tmp
 printf 'lmdbg-s2m:... ' "$1" 1>&2
-if diff "$test_fn" "$test_fn.tmp" > "$test_fn.tmp2"; then
+if diff ./input2.txt "$test_fn.tmp" > "$test_fn.tmp2"; then
     echo ok
 else
     echo FAILED
