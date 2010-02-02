@@ -194,4 +194,15 @@ user@host$ lmdbg-sym PROG \
                 AUTHOR: Aleksey Cheusov <vle@gmx.net>
 
 ====================================================================
-                LICENSE: MIT License
+                LICENSE: MIT
+
+====================================================================
+                      ACKNOWLEDGEMENTS
+
+Idea to use full stacktraces was stolen from YAMD
+  by Nate Eldredge
+
+Idea to use gdb(1) for resolving symbols was stolen from ccmalloc
+  by Armin Biere
+
+stacktrace(3) API is compatible with glib's backtrace(3)
