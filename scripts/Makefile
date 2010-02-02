@@ -1,5 +1,5 @@
 INSCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
-INSCRIPTS+=	lmdbg-sym lmdbg lmdbg-stat lmdbg-grep
+INSCRIPTS+=	lmdbg-sym lmdbg lmdbg-stat lmdbg-grep lmdbg-sort
 
 INFILES+=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
 INFILES+=	lmdbg-sym.1 lmdbg.1
