@@ -19,7 +19,7 @@ SUBDIR+=	scripts
 SUBDIR+=	m2s
 SUBDIR+=	s2m
 # lmdbg-stat is not finished yet
-SUBDIR+=	stat
+#SUBDIR+=	stat
 SUBDIR+=	.WAIT
 SUBDIR+=	liblmdbg
 SUBDIR+=	tests
