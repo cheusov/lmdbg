@@ -100,14 +100,14 @@ END {
     for (i in ids){
 	printf "stacktrace"
 	id = get_id(i)
-	if ((id in allocated) && allocated [id])
-	    printf " leaks: %s", allocated [id]
 	if ((id in peak_allocated) && peak_allocated [id])
 	    printf " peak: %s", peak_allocated [id]
 	if (id in max_allocated)
 	    printf " max: %s", max_allocated [id]
 	if (id in allocs_cnt)
 	    printf " allocs: %s", allocs_cnt [id]
+	if ((id in allocated) && allocated [id])
+	    printf " leaks: %s", allocated [id]
 	printf " %s\n", i
     }
 }
