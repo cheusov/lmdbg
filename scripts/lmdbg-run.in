@@ -45,6 +45,8 @@ OPTIONS:
   -o --log <filename>         set a filename for logging
   -p --pipe <pipe>            save pipe's output to log file
   -v --verbose                verbose loggin
+  -S <stacktrace-skip>        a number of items to skip in a stacktrace
+  -M <stacktrace-max>         limit for a number of addresses in a stacktrace
 "
 }
 
@@ -71,6 +73,16 @@ while test $# -ne 0; do
         -p|--pipe)
 	    pipe=$2
 	    shift;;
+        -S)
+	    LMDBG_ST_SKIP="$2"
+	    shift;;
+        -S*)
+	    LMDBG_ST_SKIP=`echo $1 | cut -b 3-`;;
+        -M)
+	    LMDBG_ST_COUNT="$2"
+	    shift;;
+        -M*)
+	    LMDBG_ST_COUNT=`echo $1 | cut -b 3-`;;
 	--)
 	    shift
 	    break;;
@@ -83,6 +95,8 @@ while test $# -ne 0; do
 
     shift
 done
+
+export LMDBG_ST_SKIP LMDBG_ST_COUNT
 
 TMPDIR=${TMPDIR:=/tmp}
 

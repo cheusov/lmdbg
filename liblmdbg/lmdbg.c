@@ -51,6 +51,9 @@ static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
 static int         log_verbose  = 0;
 
+static int st_skip  = 0;
+static int st_count = INT_MAX;
+
 #define POINTER_FORMAT "%p"
 
 static void * (*real_malloc)  (size_t s);
@@ -85,7 +88,7 @@ static void print_stacktrace (void **buffer, int size)
 	if (!log_fd)
 		return;
 
-	for (i = 0; i < size; ++i) {
+	for (i = st_skip; i < size && i-st_skip < st_count; ++i) {
 		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
 	}
 }
@@ -155,6 +158,8 @@ static void init_verbose_flag (void)
 
 static void init_log (void)
 {
+	char err_msg [200];
+
 	log_filename = getenv ("LMDBG_LOGFILE");
 
 	if (log_verbose)
@@ -164,9 +169,29 @@ static void init_log (void)
 		log_fd = fopen (log_filename, "w");
 
 		if (!log_fd){
-			perror (log_filename);
+			snprintf (err_msg, sizeof (err_msg),
+					  "fopen(\"%s\", \"w\") failed", log_filename);
+			perror (err_msg);
 			exit (50);
 		}
+	}
+}
+
+void init_st_range (void)
+{
+	const char *s_st_skip = getenv ("LMDBG_ST_SKIP");
+	const char *s_st_count = getenv ("LMDBG_ST_COUNT");
+
+	if (s_st_skip && s_st_skip [0]){
+		st_skip = atoi (s_st_skip);
+		if (st_skip < 0)
+			st_skip = 0;
+	}
+
+	if (s_st_count && s_st_count [0]){
+		st_count = atoi (s_st_count);
+		if (st_count < 0)
+			st_count = INT_MAX;
 	}
 }
 
@@ -358,6 +383,7 @@ static void lmdbg_startup (void)
 
 	init_fun_ptrs ();
 	init_log ();
+	init_st_range ();
 	print_sections_map ();
 	init_verbose_flag ();
 
