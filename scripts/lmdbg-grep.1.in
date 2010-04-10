@@ -20,14 +20,17 @@ lmdbg-grep \- output stacktraces that match the specified condition
 .SH SYNOPSIS
 .BI lmdbg-grep " [OPTIONS] <awk_expr> [files...]"
 .SH DESCRIPTION
-Given an output of
+Given output of
 .B lmdbg-stat
 on input
 .B lmdbg-grep
-outputs global information and those stacktraces that match the
+outputs global information and stacktraces that match the
 specified AWK expression.  Available AWK variables:
 .IR allocs ", " max ", " peak ", " leaks ", " address ", " source ", "
 .IR funcname " and " addrline .
+The following variables are numeric:
+.IR allocs ", " max ", " peak ", " leaks ;
+others are string values.
 .SH OPTIONS
 .TP
 .B "-h|--help"
@@ -37,7 +40,7 @@ display help message.
 Display the lmdbg version.
 .SH EXAMPLE
 .VB
-% cat log                    
+$ cat log                    
 stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
  0xbbbe2bc3     lmdbg.c:101     log_stacktrace
  0xbbbe3498     lmdbg.c:456     realloc
@@ -52,7 +55,7 @@ stacktrace peak: 100 max: 100 allocs: 1
  0x8048757      testme.c:7      main
  0x80485b4      
  0x8048517      
-% lmdbg-grep 'leaks > 0' log 
+$ lmdbg-grep 'leaks > 0' log 
 stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
  0xbbbe2bc3     lmdbg.c:101     log_stacktrace
  0xbbbe3498     lmdbg.c:456     realloc
@@ -60,7 +63,7 @@ stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
  0x8048788      testme.c:9      main
  0x80485b4      
  0x8048517      
-% lmdbg-grep '!leaks' log    
+$ lmdbg-grep '!leaks' log    
 stacktrace peak: 100 max: 100 allocs: 1
  0xbbbe2bc3     lmdbg.c:101     log_stacktrace
  0xbbbe33bd     lmdbg.c:431     malloc
@@ -68,7 +71,7 @@ stacktrace peak: 100 max: 100 allocs: 1
  0x8048757      testme.c:7      main
  0x80485b4      
  0x8048517      
-% lmdbg-grep 'addrline ~ /\tfunc2/' log  
+$ lmdbg-grep 'addrline ~ /\tfunc2/' log  
 stacktrace peak: 100 max: 100 allocs: 1
  0xbbbe2bc3     lmdbg.c:101     log_stacktrace
  0xbbbe33bd     lmdbg.c:431     malloc
@@ -76,13 +79,16 @@ stacktrace peak: 100 max: 100 allocs: 1
  0x8048757      testme.c:7      main
  0x80485b4      
  0x8048517      
-% lmdbg-grep 'allocs > 1000 || peak > 1000000' log   
-%
+$ lmdbg-grep 'allocs > 1000 || peak > 1000000' log   
+$
 .VE
 .SH SEE ALSO
+.BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-sort(1) ,
 .B lmdbg(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

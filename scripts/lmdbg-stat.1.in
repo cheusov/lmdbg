@@ -20,13 +20,13 @@ lmdbg-stat \- outputs statistical information for lmdbg-run output
 .SH SYNOPSIS
 .BI lmdbg-stat " [OPTIONS] [files...]"
 .SH DESCRIPTION
-Given an output of
+Given output of
 .B lmdbg-run
 or other
 .B lmdbg-*
 utilities on input
 .B lmdbg-stat
-outputs a total and per-stacktrace statistical information about
+outputs total and per-stacktrace statistical information about
 memory alocations.
 The following statistics is output:
 .RS
@@ -38,10 +38,10 @@ Per-stacktrace or total number of memory allocations
 Per-stacktrace or total maximum of requested bytes
 .TP
 .BR peak " or " total_peak
-Per-stacktrace or total maximum of allocated but not freed bytes
+Per-stacktrace or total peak of allocated memory
 .TP
 .BR leaks " or " total_leaks
-Per-stacktrace or total amount of bytes that were allocated but not freed
+Per-stacktrace or total amount of bytes that were allocated but not freed/
 .RE
 .SH OPTIONS
 .TP
@@ -52,7 +52,7 @@ display help message.
 Display the lmdbg version.
 .SH EXAMPLE
 .VB
-% cat -n testme.c
+$ cat -n testme.c
      1  #include <stdlib.h>
      2  
      3  int main ()
@@ -68,9 +68,9 @@ Display the lmdbg version.
     13  
     14          return 0;
     15  }
-% cc -O0 -g -o testme testme.c
-% lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym ./testme' ./testme     
-% cat log
+$ cc -O0 -g -o testme testme.c
+$ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym ./testme' ./testme     
+$ cat log
 info stat total_leaks: 50
 info stat total_allocs: 4
 info stat total_free_cnt: 2
@@ -86,12 +86,15 @@ stacktrace peak: 100 max: 100 allocs: 1
  0x8048757      testme.c:7      main
  0x80485b4      
  0x8048517      
-% 
+$ 
 .VE
 .SH SEE ALSO
+.BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
+.BR lmdbg-grep(1) ,
+.BR lmdbg-sort(1) ,
 .B lmdbg(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>
