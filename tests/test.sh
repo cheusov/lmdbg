@@ -122,6 +122,11 @@ cmp "lmdbg-stat --help" \
 'Given an output of lmdbg-run or other lmdbg-* utilities on input
 '
 
+lmdbg-grep --help | head -1 |
+cmp "lmdbg-grep --help" \
+'Given an output of lmdbg-stat on input lmdbg-grep outputs global
+'
+
 lmdbg-run -h            | head -1 |
 cmp "lmdbg-run --help" \
 'lmdbg-run is intended to run your program with
@@ -145,6 +150,11 @@ cmp "lmdbg-sysleaks --help" \
 lmdbg-stat -h | head -1 |
 cmp "lmdbg-stat -h" \
 'Given an output of lmdbg-run or other lmdbg-* utilities on input
+'
+
+lmdbg-grep -h | head -1 |
+cmp "lmdbg-grep -h" \
+'Given an output of lmdbg-stat on input lmdbg-grep outputs global
 '
 
 lmdbg-run --version        | head -1 | version2XXX |
@@ -171,6 +181,11 @@ cmp 'lmdbg-stat --version' \
 'lmdbg-stat XXX
 '
 
+lmdbg-grep --version       | head -1 | version2XXX |
+cmp "lmdbg-grep --version" \
+"lmdbg-grep XXX
+"
+
 lmdbg-run -V               | head -1 | version2XXX |
 cmp "lmdbg-run -V" \
 "lmdbg-run XXX
@@ -194,6 +209,11 @@ cmp "lmdbg-sysleaks -V" \
 lmdbg-stat -V              | head -1 | version2XXX |
 cmp 'lmdbg-stat -V' \
 'lmdbg-stat XXX
+'
+
+lmdbg-grep -V              | head -1 | version2XXX |
+cmp 'lmdbg-grep -V' \
+'lmdbg-grep XXX
 '
 
 ####################

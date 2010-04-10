@@ -23,16 +23,51 @@
 
 set -e
 
+usage () {
+    cat <<'EOF'
+Given an output of lmdbg-stat on input lmdbg-grep outputs global
+information and those stacktraces that match the specified AWK expression.
+
+usage: lmdbg-grep [OPTIONS] [files...]
+OPTIONS:
+  -h --help                   display this screen
+  -V --version                display version
+  -v                          invert match
+EOF
+}
+
+version (){
+cat <<'EOF'
+lmdbg-grep @LMDBG_VERSION@
+EOF
+}
+
 invert=0
-if test "_$1" = '_-v'; then
-    invert=1
+while test $# -ne 0; do
+    case $1 in
+	-h|--help)
+	    usage
+	    exit 0;;
+	-V|--version)
+	    version
+	    exit 0;;
+	-v)
+	    invert=1;;
+	--)
+	    shift
+	    break;;
+	-*)
+	    echo "unknown option '$1'" 1>&2
+	    exit 1;;
+	*)
+	    break;;
+    esac
+
     shift
-fi
+done
 
 if test $# -lt 1; then
-    cat <<EOF
-usage: lmdbg-grep <awk_expr> [files...]
-EOF
+    usage
     exit 1
 fi
 
