@@ -676,8 +676,38 @@ stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
 '
 
 # lmdbg-grep
-lmdbg-grep 'funcname == "testfunc1"' ./input4.txt |
+lmdbg-grep 'address >= "0x8049600" && address <= "0x8049770"' ./input4.txt |
 cmp 'lmdbg-grep + address' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3	lmdbg.c:101	log_stacktrace
+ 0xbbbe3498	lmdbg.c:431	malloc
+ 0x8049700	testme2.c:987	testfunc21
+ 0x8049634	testme2.c:87	testfunc22
+ 0x8048788	testme.c:7	main
+ 0x80485b4
+ 0x8048517
+'
+
+lmdbg-grep 'source ~ /^testme2.c:/' ./input4.txt |
+cmp 'lmdbg-grep + source' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3	lmdbg.c:101	log_stacktrace
+ 0xbbbe3498	lmdbg.c:431	malloc
+ 0x8049700	testme2.c:987	testfunc21
+ 0x8049634	testme2.c:87	testfunc22
+ 0x8048788	testme.c:7	main
+ 0x80485b4
+ 0x8048517
+'
+
+lmdbg-grep 'funcname == "testfunc1"' ./input4.txt |
+cmp 'lmdbg-grep + funcname' \
 'info stat total_leaks: 50
 info stat total_allocs: 4
 info stat total_free_cnt: 2
