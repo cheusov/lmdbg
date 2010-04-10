@@ -2,7 +2,7 @@ INSCRIPTS+=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
 INSCRIPTS+=	lmdbg-sym lmdbg lmdbg-stat lmdbg-grep lmdbg-sort
 
 INFILES+=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
-INFILES+=	lmdbg-sym.1 lmdbg.1
+INFILES+=	lmdbg-sym.1 lmdbg.1 lmdbg-stat.1
 
 .ifndef AWK
 .if exists(/usr/xpg4/bin/awk)
@@ -18,6 +18,9 @@ GDB?=		gdb
 MAN=		${INFILES}
 
 SCRIPTS=	${INSCRIPTS}
+SCRIPTS+=	lmdbg-sort.awk
+
+#FILESDIR_lmdbg-sort.awk=	${DATADIR}/runawk
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'
 INTEXTS_SED+=	-e 's,@AWK@,${AWK},g'
