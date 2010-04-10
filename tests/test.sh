@@ -115,6 +115,11 @@ cmp "lmdbg-sysleaks --help" \
 "This program analyses lmdbg-run's output and
 "
 
+lmdbg-stat --help | head -1 |
+cmp "lmdbg-stat --help" \
+'Given an output of lmdbg-run or other lmdbg-* utilities on input
+'
+
 lmdbg-run -h            | head -1 |
 cmp "lmdbg-run --help" \
 'lmdbg-run is intended to run your program with
@@ -134,6 +139,11 @@ lmdbg-sysleaks -h       | head -1 |
 cmp "lmdbg-sysleaks --help" \
 "This program analyses lmdbg-run's output and
 "
+
+lmdbg-stat -h | head -1 |
+cmp "lmdbg-stat -h" \
+'Given an output of lmdbg-run or other lmdbg-* utilities on input
+'
 
 lmdbg-run --version        | head -1 | version2XXX |
 cmp "lmdbg-run --version" \
