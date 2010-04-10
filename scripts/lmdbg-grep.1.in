@@ -26,7 +26,8 @@ on input
 .B lmdbg-grep
 outputs global information and those stacktraces that match the
 specified AWK expression.  Available AWK variables:
-.IR allocs ", " max ", " peak ", " leaks " and " addrline .
+.IR allocs ", " max ", " peak ", " leaks ", " address ", " source ", "
+.IR funcname " and " addrline .
 .SH OPTIONS
 .TP
 .B "-h|--help"
