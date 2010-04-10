@@ -74,6 +74,8 @@ tmpfn1=/tmp/lmdbg.1.$$
 tmpfn2=/tmp/lmdbg.2.$$
 tmpfn3=/tmp/lmdbg.3.$$
 
+trap "rm -rf $tmpfn1 $tmpfn2 $tmpfn3" 0 INT QUIT TERM HUP
+
 ex=0
 
 cmp (){
@@ -674,6 +676,20 @@ stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
 '
 
 # lmdbg-grep
+lmdbg-grep 'funcname == "testfunc1"' ./input4.txt |
+cmp 'lmdbg-grep + address' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3	lmdbg.c:101	log_stacktrace
+ 0xbbbe33bd	lmdbg.c:456	realloc
+ 0x8049900	testme.c:987	testfunc1
+ 0x8048757	testme.c:9	main
+ 0x80485b4
+ 0x8048517
+'
+
 lmdbg-grep 'addrline ~ /bar/' ./input2.txt |
 cmp 'lmdbg-grep + addrline' \
 'info lalala
