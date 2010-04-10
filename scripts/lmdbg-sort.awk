@@ -19,9 +19,9 @@ BEGIN {
 		print_help()
 		exitnow(12)
 	}
- 
+
 	field = field ":"
- 
+
 	count = 1
 }
 
