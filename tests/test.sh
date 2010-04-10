@@ -614,7 +614,7 @@ ctrl2norm (){
 }
 
 lmdbg-m2s ./input2.txt | lmdbg-s2m > $test_fn.tmp
-printf 'lmdbg-s2m:... ' "$1" 1>&2
+printf 'lmdbg-s2m:... ' 1>&2
 if diff ./input2.txt "$test_fn.tmp" > "$test_fn.tmp2"; then
     echo ok
 else
