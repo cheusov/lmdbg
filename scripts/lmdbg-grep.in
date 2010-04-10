@@ -88,13 +88,13 @@ $0 ~ /^ / {
 /^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
     for (i=1; i <= NF; ++i){
 	if ($i == "peak:"){
-	    peak = $(i+1)
+	    peak = $(i+1) + 0
 	}else if ($i == "max:"){
-	    max = $(i+1)
+	    max = $(i+1) + 0
 	}else if ($i == "allocs:"){
-	    allocs = $(i+1)
+	    allocs = $(i+1) + 0
 	}else if ($i == "leaks:"){
-	    leaks = $(i+1)
+	    leaks = $(i+1) + 0
 	}
     }
 }
