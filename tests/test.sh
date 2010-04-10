@@ -94,7 +94,7 @@ cmp (){
 }
 
 ####################
-# stupid tests
+# completely stupid tests
 lmdbg-run --help | head -1 |
 cmp "lmdbg-run --help" \
 'lmdbg-run is intended to run your program with
@@ -164,6 +164,11 @@ cmp "lmdbg-sysleaks --version" \
 "lmdbg-sysleaks XXX
 "
 
+lmdbg-stat --version       | head -1 | version2XXX |
+cmp 'lmdbg-stat --version' \
+'lmdbg-stat XXX
+'
+
 lmdbg-run -V               | head -1 | version2XXX |
 cmp "lmdbg-run -V" \
 "lmdbg-run XXX
@@ -183,6 +188,14 @@ lmdbg-sysleaks -V          | head -1 | version2XXX |
 cmp "lmdbg-sysleaks -V" \
 "lmdbg-sysleaks XXX
 "
+
+lmdbg-stat -V              | head -1 | version2XXX |
+cmp 'lmdbg-stat -V' \
+'lmdbg-stat XXX
+'
+
+####################
+# normal tests
 
 # test1.c
 if test -d "$OBJDIR/tests"; then
@@ -611,10 +624,29 @@ else
 fi
 
 # lmdbg-stat: malloc
+lmdbg-stat ./input3.txt | lmdbg-m2s | sort | lmdbg-s2m |
+cmp "lmdbg-stat (input3.txt):" \
+'info stat total_allocs: 4
+info stat total_free_cnt: 2
+info stat total_leaks: 50
+stacktrace peak: 100 max: 100 allocs: 1
+ 0xbbbe2bc3
+ 0xbbbe33bd
+ 0x8048757
+ 0x80485b4
+ 0x8048517
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3
+ 0xbbbe3498
+ 0x8048788
+ 0x80485b4
+ 0x8048517
+'
+
 stat_fn="$OBJDIR/_stat"
 
 lmdbg-stat ./input1.txt | lmdbg-m2s | sort | lmdbg-s2m | tee "$stat_fn" |
-cmp "lmdbg-stat:" \
+cmp "lmdbg-stat (input1.txt):" \
 'info lalala
 info stat total_allocs: 13
 info stat total_free_cnt: 2
