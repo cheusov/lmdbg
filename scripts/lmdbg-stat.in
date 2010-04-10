@@ -38,7 +38,7 @@ EOF
 
 version (){
 cat <<'EOF'
-lmdbg-run @LMDBG_VERSION@
+lmdbg-stat @LMDBG_VERSION@
 EOF
 }
 
