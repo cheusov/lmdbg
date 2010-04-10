@@ -1,0 +1,87 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2010 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-GREP 1 "Apr 10, 2010" "" ""
+.SH NAME
+lmdbg-grep \- output stacktraces that match the specified condition
+.SH SYNOPSIS
+.BI lmdbg-grep " [OPTIONS] <awk_expr> [files...]"
+.SH DESCRIPTION
+Given an output of
+.B lmdbg-stat
+on input
+.B lmdbg-grep
+outputs global information and those stacktraces that match the
+specified AWK expression.  Available AWK variables:
+.IR allocs ", " max ", " peak ", " leaks " and " addrline .
+.SH OPTIONS
+.TP
+.B "-h|--help"
+display help message.
+.TP
+.BI "-V|--version"
+Display the lmdbg version.
+.SH EXAMPLE
+.VB
+% cat log                    
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+ 0xbbbe3498     lmdbg.c:456     realloc
+ 0x8049700      testme.c:902    func1
+ 0x8048788      testme.c:9      main
+ 0x80485b4      
+ 0x8048517      
+stacktrace peak: 100 max: 100 allocs: 1
+ 0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+ 0xbbbe33bd     lmdbg.c:431     malloc
+ 0x8049654      testme.c:450    func2
+ 0x8048757      testme.c:7      main
+ 0x80485b4      
+ 0x8048517      
+% lmdbg-grep 'leaks > 0' log 
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+ 0xbbbe3498     lmdbg.c:456     realloc
+ 0x8049700      testme.c:902    func1
+ 0x8048788      testme.c:9      main
+ 0x80485b4      
+ 0x8048517      
+% lmdbg-grep '!leaks' log    
+stacktrace peak: 100 max: 100 allocs: 1
+ 0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+ 0xbbbe33bd     lmdbg.c:431     malloc
+ 0x8049654      testme.c:450    func2
+ 0x8048757      testme.c:7      main
+ 0x80485b4      
+ 0x8048517      
+% lmdbg-grep 'addrline ~ /\tfunc2/' log  
+stacktrace peak: 100 max: 100 allocs: 1
+ 0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+ 0xbbbe33bd     lmdbg.c:431     malloc
+ 0x8049654      testme.c:450    func2
+ 0x8048757      testme.c:7      main
+ 0x80485b4      
+ 0x8048517      
+% lmdbg-grep 'allocs > 1000 || peak > 1000000' log   
+%
+.VE
+.SH SEE ALSO
+.BR lmdbg-sym(1) ,
+.BR lmdbg-leaks(1) ,
+.BR lmdbg-sysleaks(1) ,
+.B lmdbg(1)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
