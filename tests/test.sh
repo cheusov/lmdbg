@@ -830,5 +830,90 @@ stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
  0x6
 '
 
+# lmdbg-sort
+lmdbg-sort -f peak < "$stat_fn" |
+cmp 'lmdbg-sort -f peak' \
+'info lalala
+info stat total_allocs: 13
+info stat total_free_cnt: 2
+info stat total_leaks: 793
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+stacktrace peak: 300 max: 300 allocs: 1
+ 0x5
+stacktrace peak: 248 max: 248 allocs: 1
+ 0x2
+ 0x3
+ 0x4
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+ 0x3
+ 0x4
+ 0x5
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 200 max: 200 allocs: 1
+ 0x7
+stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
+ 0x2
+ 0x3
+'
+
+lmdbg-sort -f leaks < "$stat_fn" |
+cmp 'lmdbg-sort -f leaks' \
+'info lalala
+info stat total_allocs: 13
+info stat total_free_cnt: 2
+info stat total_leaks: 793
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+ 0x3
+ 0x4
+ 0x5
+stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
+ 0x2
+ 0x3
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 200 max: 200 allocs: 1
+ 0x7
+stacktrace peak: 248 max: 248 allocs: 1
+ 0x2
+ 0x3
+ 0x4
+stacktrace peak: 300 max: 300 allocs: 1
+ 0x5
+'
+
+lmdbg-sort -f max < "$stat_fn" |
+cmp 'lmdbg-sort -f max' \
+'info lalala
+info stat total_allocs: 13
+info stat total_free_cnt: 2
+info stat total_leaks: 793
+stacktrace peak: 300 max: 300 allocs: 1
+ 0x5
+stacktrace peak: 248 max: 248 allocs: 1
+ 0x2
+ 0x3
+ 0x4
+stacktrace peak: 200 max: 200 allocs: 1
+ 0x7
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
+ 0x2
+ 0x3
+stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
+ 0x1
+ 0x2
+stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+ 0x3
+ 0x4
+ 0x5
+'
+
 #
 exit "$ex"
