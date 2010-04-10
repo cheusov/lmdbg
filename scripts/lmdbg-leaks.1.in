@@ -16,13 +16,15 @@
 .\" ------------------------------------------------------------------
 .TH LMDBG-LEAKS 1 "May 9, 2009" "" ""
 .SH NAME
-lmdbg-leaks \- extracts the memory leaks from lmdbg-run's output
+lmdbg-leaks \- extracts memory leaks from lmdbg-run's output
 .SH SYNOPSIS
-.BI lmdbg-leaks " [OPTIONS] [logfile...]"
+.BI lmdbg-leaks " [OPTIONS] [files...]"
 .SH DESCRIPTION
 .B lmdbg-leaks
-analyses lmdbg-run's output and prints an information about
-memory leaks and double frees.
+analyses
+.BR lmdbg-run "'s"
+output and prints stacktraces with
+memory leaks.
 .SH OPTIONS
 .TP
 .B "-h|--help"
@@ -44,6 +46,8 @@ lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
 .BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
 .BR lmdbg-sysleaks(1) ,
+.BR lmdbg-grep(1) ,
+.BR lmdbg-sort(1) ,
 .B lmdbg(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>
