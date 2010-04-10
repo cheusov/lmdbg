@@ -701,7 +701,7 @@ cmp 'lmdbg-grep + address' \
 'info stat total_leaks: 50
 info stat total_allocs: 4
 info stat total_free_cnt: 2
-stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+stacktrace peak: 90 max: 90 allocs: 1
  0xbbbe2bc3	lmdbg.c:101	log_stacktrace
  0xbbbe3498	lmdbg.c:431	malloc
  0x8049700	testme2.c:987	testfunc21
@@ -716,7 +716,7 @@ cmp 'lmdbg-grep + source' \
 'info stat total_leaks: 50
 info stat total_allocs: 4
 info stat total_free_cnt: 2
-stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+stacktrace peak: 90 max: 90 allocs: 1
  0xbbbe2bc3	lmdbg.c:101	log_stacktrace
  0xbbbe3498	lmdbg.c:431	malloc
  0x8049700	testme2.c:987	testfunc21
