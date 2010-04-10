@@ -30,7 +30,7 @@ LMDBG_SOEXT=${LMDBG_SOEXT:=so}
 LMDBG_LIB=${LMDBG_LIB:=$libdir/liblmdbg.$LMDBG_SOEXT}
 
 usage () {
-    echo -n "\
+    cat <<'EOF'
 lmdbg-run is intended to run your program with
 liblmdbg.$LMDBG_SOEXT LD_PRELOAD-ed in order to log
 the calls of the following functions:
@@ -47,11 +47,12 @@ OPTIONS:
   -v --verbose                verbose loggin
   -S <stacktrace-skip>        a number of items to skip in a stacktrace
   -M <stacktrace-max>         limit for a number of addresses in a stacktrace
-"
+
+EOF
 }
 
 version (){
-cat <<EOF
+cat <<'EOF'
 lmdbg-run @LMDBG_VERSION@
 EOF
 }
