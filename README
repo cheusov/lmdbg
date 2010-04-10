@@ -8,15 +8,22 @@ See INSTALL file
 ====================================================================
                       DOCUMENTATION/TUTORIAL
 
+- LMDBG is a lightweight malloc debugger for UNIX-like OSes that
+  follows so called "UNIX way", traditional principles of programming
+  under UNIX. Instead of providing single program that can do
+  everything LMDBG provides a set of standalone programs that work
+  together: lmdbg-run, lmdbg-sym, lmdbg-leaks, lmdbg-sysleaks,
+  lmdbg-stat, lmdbg-grep and lmdbg-sort.
+
 - Unlike many other malloc debuggers (electric-fence, dmalloc,
   valgrind etc.) LMDBG does *NOT* protect your memory in any way.
-  It is just not a goal of LMDBG.
+  This is just not a goal of it.
 
-- lmdbg-run is a main lmdbg utility. It runs an application and
-  creates a log file (or fifo) where all called
+- lmdbg-run is a main lmdbg utility. It runs application and creates a
+  log file (or fifo) where all
   malloc/calloc/realloc/free/memalign/posix_memalign invocations are
-  registered with their input (bytes count, pointer), output (pointer)
-  and (!!!uniques feature!!!) FULL STACKTRACE (pointers).
+  registered with their input (bytes count and/or pointer), output
+  (pointer) and FULL STACKTRACE (pointers).
 
    Example:
      $ cat tests/test2.c
@@ -88,21 +95,22 @@ See INSTALL file
       0x80484e7
      $
 
-- lmdbg-sym converts addresses to source.c:999 if it is possible
+- lmdbg-sym converts addresses to symbols and position in the source
+  code if it is possible
 
-  Example (gdb(1) is in action):
+  Example:
 
      $ lmdbg-sym ./_test2 _log
      malloc ( 555 ) --> 0xbb901400
       0xbbbe58e8
       0xbbbe5b03
-      0x8048738      tests/test2.c:8 main
+      0x8048738      tests/test2.c:8    main
       0x8048584
       0x80484e7
      realloc ( NULL , 666 ) --> 0xbb901800
       0xbbbe58e8
       0xbbbe5a37
-      0x804874e      tests/test2.c:9 main
+      0x804874e      tests/test2.c:9    main
       0x8048584
       0x80484e7
      realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
@@ -115,35 +123,6 @@ See INSTALL file
       0xbbbe58e8
       0xbbbe5a37
       0x804877a      tests/test2.c:11        main
-      0x8048584
-      0x80484e7
-     $
-
-  Example (addr2line(1) works here):
-
-     $ lmdbg-sym -a ./_test2 _log
-     malloc ( 555 ) --> 0xbb901400
-      0xbbbe58e8
-      0xbbbe5b03
-      0x8048738      tests/test2.c:8
-      0x8048584
-      0x80484e7
-     realloc ( NULL , 666 ) --> 0xbb901800
-      0xbbbe58e8
-      0xbbbe5a37
-      0x804874e      tests/test2.c:9
-      0x8048584
-      0x80484e7
-     realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
-      0xbbbe58e8
-      0xbbbe5a37
-      0x8048764      tests/test2.c:10
-      0x8048584
-      0x80484e7
-     realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
-      0xbbbe58e8
-      0xbbbe5a37
-      0x804877a      tests/test2.c:11
       0x8048584
       0x80484e7
      $
@@ -175,6 +154,92 @@ See INSTALL file
       0x80484e7
      $
 
+- lmdbg-stat - given output of lmdbg-run or other lmdbg-* utilities
+  on input lmdbg-stat outputs a total and per-stacktrace statistical
+  information about memory alocations.
+
+     $ cat -n testme.c
+          1  #include <stdlib.h>
+          2  
+          3  int main ()
+          4  {
+          5          int i;
+          6          void *p1, *p2;
+          7          p1 = malloc (100);
+          8          for (i=0; i < 3; ++i){
+          9                  p2 = realloc (NULL, 10+30*i);
+          10          }
+          11          free (p1);
+          12          free (p2);
+          13  
+          14          return 0;
+          15  }
+     $ cc -O0 -g -o testme testme.c
+     $ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym ./testme' ./testme     
+     $ cat log
+     info stat total_leaks: 50
+     info stat total_allocs: 4
+     info stat total_free_cnt: 2
+     stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe3498     lmdbg.c:456     realloc
+      0x8048788      testme.c:9      main
+      0x80485b4      
+      0x8048517      
+     stacktrace peak: 100 max: 100 allocs: 1
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe33bd     lmdbg.c:431     malloc
+      0x8048757      testme.c:7      main
+      0x80485b4      
+      0x8048517      
+     $ 
+
+- lmdbg-grep - given an output of lmdbg-stat on input lmdbg-grep
+  outputs global information and those stacktraces that match the
+  specified AWK expression.
+
+     $ cat log                    
+     stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe3498     lmdbg.c:456     realloc
+      0x8049700      testme.c:902    func1
+      0x8048788      testme.c:9      main
+      0x80485b4      
+      0x8048517      
+     stacktrace peak: 100 max: 100 allocs: 1
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe33bd     lmdbg.c:431     malloc
+      0x8049654      testme.c:450    func2
+      0x8048757      testme.c:7      main
+      0x80485b4      
+      0x8048517      
+     $ lmdbg-grep 'leaks > 0' log 
+     stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe3498     lmdbg.c:456     realloc
+      0x8049700      testme.c:902    func1
+      0x8048788      testme.c:9      main
+      0x80485b4      
+      0x8048517      
+     $ lmdbg-grep '!leaks' log    
+     stacktrace peak: 100 max: 100 allocs: 1
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe33bd     lmdbg.c:431     malloc
+      0x8049654      testme.c:450    func2
+      0x8048757      testme.c:7      main
+      0x80485b4      
+      0x8048517      
+     $ lmdbg-grep 'addrline ~ /\tfunc2/' log  
+     stacktrace peak: 100 max: 100 allocs: 1
+      0xbbbe2bc3     lmdbg.c:101     log_stacktrace
+      0xbbbe33bd     lmdbg.c:431     malloc
+      0x8049654      testme.c:450    func2
+      0x8048757      testme.c:7      main
+      0x80485b4      
+      0x8048517      
+     $ lmdbg-grep 'allocs > 1000 || peak > 1000000' log   
+     $
+
 ====================================================================
                           QUICK GUIDE
 
@@ -182,6 +247,8 @@ lmdbg-run        --help
 lmdbg-leaks      --help
 lmdbg-sym        --help
 lmdbg            --help
+lmdbg-stat       --help
+lmdbg-grep       --help
 
 Sample of usage:
 
@@ -205,4 +272,4 @@ Idea to use full stacktraces was stolen from YAMD
 Idea to use gdb(1) for resolving symbols was stolen from ccmalloc
   by Armin Biere
 
-stacktrace(3) API is compatible with glibc's backtrace(3)
+stacktrace(3) API is compatible with GNU libc's backtrace(3)
