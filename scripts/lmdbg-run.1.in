@@ -21,13 +21,18 @@ lmdbg-run \- run program and traces the malloc/realloc/free calls
 .BI lmdbg-run " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
 .B lmdbg-run
-lmdbg-run runs an external application
-.I prog
-and creates a log file where all called malloc/realloc/memalign/free
-invocations are registered with the following information: FULL
-STACKTRACE (addresses), input argument(s) (requested size and/or
-address) and result value (returned address).  All stacktraces can
-alternatively be sent to to a pipe. The stacktrace may look like this.
+lmdbg-run runs an external command
+.I prog args
+and creates a log file where all
+invocations of
+.IR malloc ", " calloc ", " realloc ", " memalign ", "
+.IR posix_memalign " and " free
+are registered with the following information: full stacktrace
+(addresses), input argument(s) (requested size and/or address) and
+result value (returned address, if any).  All stacktraces may
+alternatively be sent to a pipe. Example for
+.B lmdbg-run
+output:
 .VB
 
  realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
@@ -38,19 +43,58 @@ alternatively be sent to to a pipe. The stacktrace may look like this.
   0x80484e7
 
 .VE
-This means that realloc function was given pointer 0xbb901800 and 777
-bytes was requested. As a result realloc reurned 0xbb901c00.
-0xbbbe58e8, 0xbbbe5a37 etc. are addresses from where realloc itself
-was called.
-Another example:
+This output means that
+.I realloc
+function was given pointer 0xbb901800 and 777
+bytes was requested. As a result
+.I realloc
+returned address 0xbb901c00.
+Addresses 0xbbbe58e8, 0xbbbe5a37 etc. are a part of stacktrace.  Another example:
 .VB
 
- malloc ( 555 ) --> 0xbb901400
-  0xbbbe58e8
-  0xbbbe5b03
-  0x8048738
-  0x8048584
-  0x80484e7
+$ cat tests/test2.c
+#include <stdlib.h>
+
+int main ()
+{
+   void *p1 = NULL;
+   void *p2 = NULL;
+
+   p1 = malloc (555);
+   p2 = realloc (p2, 666);
+   p2 = realloc (p2, 777);
+   p2 = realloc (p2, 888);
+
+   return 0;
+}
+$ cc -O0 -g -o _test2 tests/test2.c
+$ lmdbg-run -o _log ./_test2 
+$ cat _log
+malloc ( 555 ) --> 0xbb901400
+ 0xbbbe58e8
+ 0xbbbe5b03
+ 0x8048738
+ 0x8048584
+ 0x80484e7
+realloc ( NULL , 666 ) --> 0xbb901800
+ 0xbbbe58e8
+ 0xbbbe5a37
+ 0x804874e
+ 0x8048584
+ 0x80484e7
+realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
+ 0xbbbe58e8
+ 0xbbbe5a37
+ 0x8048764
+ 0x8048584
+ 0x80484e7
+realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
+ 0xbbbe58e8
+ 0xbbbe5a37
+ 0x804877a
+ 0x8048584
+ 0x80484e7
+$
 
 .VE
 .SH OPTIONS
@@ -67,6 +111,12 @@ Specify the log file.
 .BI "-p|--pipe" " pipe"
 Send all stacktraces to the pipe, not to the log file.
 .TP
+.BI "-S" " skip"
+A number of addresses to skip in stacktrace.
+.TP
+.BI "-M" " maximum"
+Limit for a number of addresses in a stacktrace.
+.TP
 .B "-v"
 Enable verbose mode.
 .SH ENVIRONMENT
@@ -82,16 +132,29 @@ lmdbg-run -o _log ./my_app &&
   lmdbg-leaks _log > _log_leaks &&
   lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
+lmdbg-run -B2 -M6 -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
 .VE
 .SH NOTES
 Full stacktrace allows you to analyse your application on per-module
-basis, i.e.  you can determine what libraries and/or omponents require
-more memory than others and why.
+basis, i.e.  you can determine what libraries and/or components require
+more memory than others and why. See
+.B lmdbg-stat
+and
+.BR lmdbg-sort .
+.SH BUGS
+At the moment
+.B lmdbg-run
+relies on several GCC's extension including __builtin_return_address,
+__builtin_frame_address, __attribute__((constructor)) and
+__attribute__((destructor)). Besides GCC these extensions are
+supported by Intel C compiler. If you have a solution that works for
+other compilers let me now ;-)
 .SH SEE ALSO
 .BR lmdbg-sym(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-sort(1) ,
 .B lmdbg(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>
