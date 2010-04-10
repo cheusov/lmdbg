@@ -205,4 +205,4 @@ Idea to use full stacktraces was stolen from YAMD
 Idea to use gdb(1) for resolving symbols was stolen from ccmalloc
   by Armin Biere
 
-stacktrace(3) API is compatible with glib's backtrace(3)
+stacktrace(3) API is compatible with glibc's backtrace(3)
