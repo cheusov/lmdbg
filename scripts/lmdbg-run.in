@@ -45,7 +45,7 @@ OPTIONS:
   -o --log <filename>         set a filename for logging
   -p --pipe <pipe>            save pipe's output to log file
   -v --verbose                verbose loggin
-  -S <stacktrace-skip>        a number of items to skip in a stacktrace
+  -S <stacktrace-skip>        a number of addresses to skip in a stacktrace
   -M <stacktrace-max>         limit for a number of addresses in a stacktrace
 
 EOF
