@@ -18,9 +18,6 @@ GDB?=		gdb
 MAN=		${INFILES}
 
 SCRIPTS=	${INSCRIPTS}
-SCRIPTS+=	lmdbg-sort.awk
-
-#FILESDIR_lmdbg-sort.awk=	${DATADIR}/runawk
 
 INTEXTS_SED+=	-e 's,@LMDBG_VERSION@,${VERSION},g'
 INTEXTS_SED+=	-e 's,@AWK@,${AWK},g'
