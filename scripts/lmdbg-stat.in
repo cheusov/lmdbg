@@ -65,6 +65,10 @@ done
 
 sumcounts (){
     @AWK@ '
+BEGIN {
+    total_allocated = total_allocs_cnt = total_free_cnt = 0
+}
+
 /^info / {
     print
     next
