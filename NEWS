@@ -1,4 +1,18 @@
 ======================================================================
+Version 0.14.0, by Aleksey Cheusov, Tue, 13 Apr 2010 17:06:26 +0300
+
+  New tools: lmdbg-stat, lmdbg-grep and lmdbg-sort for collecting and
+  analysing statistical information about memory allocations.
+
+  lmdbg-run: new options for lmdbg-run: -S and -M for generating
+  shortened stacktraces.
+
+  lmdbg-sym: new option -p for obtaining program name from lmdbg-run's
+  output.
+
+  fix: 'mkcmake test' remove its temporary files.
+
+======================================================================
 Version 0.13.0, by Aleksey Cheusov, Sun, 31 Jan 2010 18:40:05 +0200
 
   INSTALL: updated
