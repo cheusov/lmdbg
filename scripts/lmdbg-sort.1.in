@@ -1,0 +1,53 @@
+.\"	$NetBSD$
+.\"
+.\" Copyright (c) 2010 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-SORT 1 "Apr 10, 2010" "" ""
+.SH NAME
+lmdbg-sort \- sort stacktraces given on input
+.SH SYNOPSIS
+.BI lmdbg-sort " [OPTIONS] [files...]"
+.SH DESCRIPTION
+Given output of
+.B lmdbg-stat
+on input
+.B lmdbg-sort
+resort stacktraces using values of
+.IR allocs ", " max ", " peak " or " leaks .
+.SH OPTIONS
+.TP
+.B "-h|--help"
+display help message.
+.TP
+.BI "-V|--version"
+Display the lmdbg version.
+.TP
+.BI "-f" " field"
+Specify the sorting field. Valid values are:
+.IR allocs ", " max ", " peak " or " leaks .
+This option is mandatory.
+.SH EXAMPLE
+.VB
+.VE
+.SH SEE ALSO
+.BR lmdbg-run(1) ,
+.BR lmdbg-sym(1) ,
+.BR lmdbg-leaks(1) ,
+.BR lmdbg-sysleaks(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-grep(1) ,
+.B lmdbg(1)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>
