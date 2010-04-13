@@ -88,8 +88,8 @@ lmdbg-run -o _log ./my_app &&
   lmdbg-leaks _log > _log_leaks &&
   lmdbg-sym -a ./my_app _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
-lmdbg-sym -g --with-so /path/to/dll1.so RTLD_NOW ./my_app < _log
+lmdbg-run -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
+lmdbg-sym -g --with-so /path/to/dll1.so RTLD_NOW -p < _log
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,

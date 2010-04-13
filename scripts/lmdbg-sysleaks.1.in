@@ -50,7 +50,7 @@ lmdbg-sysleaks -h
 lmdbg-sysleaks -V
 lmdbg-sysleaks -o _log ./my_app &&
   lmdbg-leaks _log > _log_leaks &&
-  lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
+  lmdbg-sym -p _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
 lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s _log_leaks2 > _log_final
 .VE

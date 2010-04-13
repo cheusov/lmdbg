@@ -40,7 +40,7 @@ lmdbg-run -o _log ./my_app &&
   lmdbg-leaks _log > _log_leaks &&
   lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-run -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
+lmdbg-run -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,

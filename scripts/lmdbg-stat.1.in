@@ -69,7 +69,7 @@ $ cat -n testme.c
     14          return 0;
     15  }
 $ cc -O0 -g -o testme testme.c
-$ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym ./testme' ./testme     
+$ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym -p' ./testme     
 $ cat log
 info stat total_leaks: 50
 info stat total_allocs: 4

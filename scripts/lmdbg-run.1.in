@@ -132,7 +132,7 @@ lmdbg-run -o _log ./my_app &&
   lmdbg-leaks _log > _log_leaks &&
   lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-run -B2 -M6 -p 'lmdbg-leaks | lmdbg-sym ./my_app > _log' ./my_app <args>
+lmdbg-run -B2 -M6 -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
 .VE
 .SH NOTES
 Full stacktrace allows you to analyse your application on per-module
