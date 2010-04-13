@@ -99,7 +99,7 @@ type lmdbg-sym   > /dev/null || exit 2
 type lmdbg-leaks > /dev/null || exit 3
 type lmdbg-sysleaks > /dev/null || exit 3
 
-pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts $1 | lmdbg-sysleaks $conf_opts -s"
+pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts -p | lmdbg-sysleaks $conf_opts -s | grep -v '^info '"
 
 lmdbg-run -p "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then

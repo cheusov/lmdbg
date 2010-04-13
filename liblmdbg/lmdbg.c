@@ -290,6 +290,18 @@ void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
 	return point;
 }
 
+static void print_progname (void)
+{
+	const char *progname = getenv ("LMDBG_PROGNAME");
+	if (!progname || !progname [0])
+		return;
+
+	if (!log_fd)
+		return;
+
+	fprintf (log_fd, "info progname %s\n", progname);
+}
+
 static void print_sections_map (void)
 {
 	char map_fn [PATH_MAX];
@@ -385,6 +397,7 @@ static void lmdbg_startup (void)
 	init_log ();
 	init_st_range ();
 	print_sections_map ();
+	print_progname ();
 	init_verbose_flag ();
 
 	/*

@@ -285,7 +285,7 @@ cmp "prog1.c: lmdbg-leaks" \
 "
 
 # lmdbg-sym --with-gdb
-lmdbg-sym --with-gdb "$execname1" "$logname" |
+lmdbg-sym --with-gdb -p "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym" \
@@ -359,7 +359,7 @@ cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with two leaks
-lmdbg-run -o "$logname" -p "lmdbg-sym $execname2" "$execname2"
+lmdbg-run -o "$logname" -p "lmdbg-sym -p" "$execname2"
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |
@@ -589,7 +589,7 @@ free ( 0xF00DBEAF )
 '
 
 # lmdbg-leaks + prog5.c
-lmdbg-leaks "$logname" | lmdbg-sym "$execname5" |
+lmdbg-leaks "$logname" | lmdbg-sym -p |
 unify_paths | hide_line_numbers |
 unify_address | skip_useless_addr |
 hide_foreign_code | sort |
