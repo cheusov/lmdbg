@@ -274,4 +274,7 @@ Idea to use full stacktraces was stolen from YAMD
 Idea to use gdb(1) for resolving symbols was stolen from ccmalloc
   by Armin Biere
 
+Idea to use /proc/<pid>/maps was stolen from google-perftools
+  by Google Inc. <opensource@google.com>
+
 stacktrace(3) API is compatible with GNU libc's backtrace(3)
