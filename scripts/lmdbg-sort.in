@@ -79,12 +79,12 @@ fi
 number_first (){
     awk -v field="$field:" '
 $1 == "info" {
-   print 4000000000, $0
+   print "4000000000", $0
    next
 }
 {
    value = 0
-   for (i=1; i<= NF; ++i){
+   for (i=1; i <= NF; ++i){
       if ($i == field){
          value = $(i+1)
          break
