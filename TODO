@@ -1,3 +1,4 @@
+- lmdbg-leaks: take into account "leaks:" in output of lmdbg-stat
 - usahe message: -h|--help bt not -h --help
 - lmdbg-leaks: should process lmdbg-stat output
 - LMDBG_AWK - preferred AWK interpreter
