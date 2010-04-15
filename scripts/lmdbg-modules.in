@@ -56,10 +56,13 @@ BEGIN {
 		}
 	}
 
-#	print rules_substr_count
-#	print rules_match_count
-
 	SUBSEP = "/"
+
+	fields [1] = "peak"
+	fields [2] = "max"
+	fields [3] = "allocs"
+	fields [4] = "leaks"
+	fields [5] = "modules"
 
 	module = "unknown"
 }
