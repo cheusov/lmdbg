@@ -1,4 +1,7 @@
+- usahe message: -h|--help bt not -h --help
+- lmdbg-leaks: should process lmdbg-stat output
 - LMDBG_AWK - preferred AWK interpreter
+- 'info time <minutes>'
 - SIGUSR1 (LMDBG_SIG_LOG) for starting logging, lmdbg-run -d
 - lmdbg-grep
 - lmdbg-stat - 
