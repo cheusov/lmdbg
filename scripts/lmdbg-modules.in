@@ -25,6 +25,7 @@
 #
 
 BEGIN {
+	# processing arguments
 	sum = getarg("s")
 
 	config_file = getarg("c")
@@ -33,10 +34,12 @@ BEGIN {
 		exitnow(1)
 	}
 
+	# reading a config file
 	rules_match_count  = 0
 	rules_substr_count = 0
 	while (xgetline0(config_file)){
 		$0=trim_lrc($0)
+
 		if (NF == 0){
 		}else if ($1 ~ /^\[.*\]$/){
 			module = substr($1, 2, length($1)-2)
@@ -55,6 +58,7 @@ BEGIN {
 		}
 	}
 
+	# initialization
 	fields [1] = "peak:"
 	fields [2] = "max:"
 	fields [3] = "allocs:"
@@ -68,7 +72,7 @@ function printout (                i){
 	if (!cnt)
 		return
 
-#	printf "%s module: %s\n", lines [1], module
+	printf "%s module: %s\n", lines [1], module
 
 	for (i=2; i <= cnt; ++i){
 		print lines [i]
