@@ -1,0 +1,159 @@
+#!/usr/bin/env runawk
+
+#use "power_getopt.awk"
+#use "xgetline.awk"
+#use "trim.awk"
+#use "has_prefix.awk"
+
+#.begin-str help
+# lmdbg-module - detects module by analysing stacktrace with a help of rules
+#                specified by user.
+# usage: lmdbg-module [OPTIONS] [files...]
+# OPTIONS:
+#   -h|--help                     display this screen
+#   =c|--config <config_file>     configuration file
+#   -s                            calculate and output sum of counters
+# Option -c is mandatory.
+#.end-str help
+
+#
+# config file format:
+# [modulename]
+# <op> <field> <string>
+# Ex.:
+# substr source   ENWBDTools.cpp
+# match  funcname ENWBDTools::Load
+#
+
+BEGIN {
+	sum = getarg("s")
+
+	config_file = getarg("c")
+	if (!config_file){
+		print_help()
+		exitnow(1)
+	}
+
+	rules_match_count  = 0
+	rules_substr_count = 0
+	while (xgetline0(config_file)){
+		$0=trim_lrc($0)
+		if (NF == 0){
+		}else if ($1 ~ /^\[.*\]$/){
+			module = substr($1, 2, length($1)-2)
+		}else if ($1 == "substr"){
+			++rules_substr_count
+			rules_substr_field [rules_substr_count] = $2
+			rules_substr_str [rules_substr_count] = $3
+			rules_substr_module [rules_substr_count] = module
+		}else if ($1 == "match"){
+			++rules_match_count
+			rules_match_field [rules_match_count] = $2
+			rules_match_str [rules_match_count] = $3
+			rules_match_module [rules_match_count] = module
+		}else{
+			abort("bad line in config file")
+		}
+	}
+
+#	print rules_substr_count
+#	print rules_match_count
+
+	SUBSEP = "/"
+
+	module = "unknown"
+}
+
+function printout (                i){
+	if (!cnt)
+		return
+
+#	printf "%s module: %s\n", lines [1], module
+
+	for (i=2; i <= cnt; ++i){
+		print lines [i]
+	}
+}
+
+function update_summary (            i){
+#	print module
+	modules [module] = 1
+	for (i in cnts){
+		global_cnts [module, i] += cnts [i]
+	}
+}
+
+function process_stacktrace (){
+	if (sum){
+		update_summary()
+	}else{
+		printout()
+	}
+
+	# cleanup
+	delete cnts
+	cnt = 0
+	module = "unknown"
+}
+
+/^stacktrace / {
+	process_stacktrace()
+
+	lines [++cnt] = $0
+	for (i=2; i <= NF; ++i){
+		if ($i ~ /:$/){
+			cnts [$i] = $(i+1)
+		}
+	}
+	next
+}
+
+/^[^ ]/ {
+	print
+	next
+}
+
+{
+	lines [++cnt] = $0
+	if (module == "unknown"){
+		split($0, arr, /\t/)
+		for (i=1; i <= rules_substr_count; ++i){
+			field = rules_substr_field [i]
+			str = rules_substr_str [i]
+
+			if (field == "funcname")
+				str0 = arr [3]
+			else if (field == "source")
+				str0 = arr [2]
+			else
+				abort("this should not happen")
+
+#			print "str0=" str0, $0
+#			print "str=" str
+
+			if (index(str0, str) > 0){
+				module = rules_substr_module [i]
+#				print ".", module
+			}
+		}
+	}
+}
+
+function printout_global_summary (         i,m)
+{
+	for (m in modules){
+		printf "stacktrace"
+		for (i in global_cnts){
+			if (has_prefix(i, (m "/"))){
+				printf " %s %s", substr(i, index(i, SUBSEP)+1),
+					global_cnts [i]
+			}
+		}
+		print " module:", m
+	}
+}
+
+END {
+	if (sum)
+		printout_global_summary()
+}
