@@ -940,5 +940,29 @@ stacktrace peak: 68      max: 68      allocs: 1     leaks: 68         module: mo
 stacktrace peak: 8       max: 8       allocs: 1     leaks: 8          module: mod8
 '
 
+# lmdbg-modules
+lmdbg-modules -c lmdbg-modules_config.txt lmdbg-modules_input.txt |
+cmp 'lmdbg-modules' \
+'stacktrace foo module: module1
+ 0x1000	module1.c:1000	module1_func1(void*)
+stacktrace bar module: module5
+ 0x5200	submodule52.c:5000	submodule52_func52(int, int)
+ 0x5000	module5.c:5000	module5_func5(int, int)
+stacktrace baz module: module2
+ 0x2000	module2.c:2000	module2_func2(const char*)
+stacktrace foobar module: submodule53
+ 0x5300	submodule53.c:5000	submodule53_func53(const char*)
+ 0x5000	module5.c:5000	module5_func5(const char*)
+stacktrace foobarbaz module: module3
+ 0x3000	module3.c:3000	module3_func3(void)
+stacktrace lalala module: module4
+ 0x4000	module4.c:4000	module4_func4
+stacktrace lalala
+ 0x6000	module6.c:6000	module6_func6
+stacktrace bla-bla-bla module: submodule51
+ 0x5100	module5.c:5000	submodule51_func51
+ 0x5000	module5.c:5000	module5_func5
+'
+
 #
 exit "$ex"

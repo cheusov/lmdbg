@@ -65,14 +65,17 @@ BEGIN {
 	fields [4] = "leaks:"
 	fields [5] = "modules:"
 
-	module = "unknown"
+	module = ""
 }
 
 function printout (                i){
 	if (!cnt)
 		return
 
-	printf "%s module: %s\n", lines [1], module
+	if (module)
+		printf "%s module: %s\n", lines [1], module
+	else
+		print lines [1]
 
 	for (i=2; i <= cnt; ++i){
 		print lines [i]
@@ -97,7 +100,7 @@ function process_stacktrace (){
 	# cleanup
 	delete cnts
 	cnt = 0
-	module = "unknown"
+	module = ""
 }
 
 /^stacktrace / {
@@ -117,27 +120,45 @@ function process_stacktrace (){
 	next
 }
 
+function get_f_and_s (){
+	if (field == "funcname")
+		str0 = arr [3]
+	else if (field == "source")
+		str0 = arr [2]
+	else
+		abort("this should not happen")
+}
+
 {
+#	print "$0:", $0
+
 	lines [++cnt] = $0
-	if (module == "unknown"){
+	if (module == ""){
 		split($0, arr, /\t/)
+
 		for (i=1; i <= rules_substr_count; ++i){
 			field = rules_substr_field [i]
 			str = rules_substr_str [i]
 
-			if (field == "funcname")
-				str0 = arr [3]
-			else if (field == "source")
-				str0 = arr [2]
-			else
-				abort("this should not happen")
+#			print "fs:", field, str
 
-#			print "str0=" str0, $0
-#			print "str=" str
+			get_f_and_s()
 
 			if (index(str0, str) > 0){
 				module = rules_substr_module [i]
-#				print ".", module
+#				print "module:", module
+				break
+			}
+		}
+		for (i=1; i <= rules_match_count; ++i){
+			field = rules_match_field [i]
+			str = rules_match_str [i]
+
+			get_f_and_s()
+
+			if (match(str0, str) > 0){
+				module = rules_match_module [i]
+#				break
 			}
 		}
 	}
@@ -149,7 +170,6 @@ function printout_global_summary (         i,f,m)
 		printf "stacktrace"
 		for (i=1; i in fields; ++i){
 			f = fields [i]
-#			print m, f
 			if ((m SUBSEP f) in global_cnts) {
 				printf " %s %s", f, global_cnts [m, f]
 			}
@@ -159,6 +179,8 @@ function printout_global_summary (         i,f,m)
 }
 
 END {
+	process_stacktrace()
+
 	if (sum)
 		printout_global_summary()
 }

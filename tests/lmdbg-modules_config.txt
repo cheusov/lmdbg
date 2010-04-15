@@ -1,0 +1,14 @@
+[module1]
+  substr funcname module1_func1
+[module2]
+  match source module2
+[module3]
+  match source module3[.]c
+[module4]
+  substr funcname module4_func4
+[submodule51]
+  substr funcname func51
+[submodule53]
+  substr funcname func53
+[module5]
+  substr funcname module5
