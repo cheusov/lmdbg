@@ -916,5 +916,29 @@ stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
  0x5
 '
 
+lmdbg-sort -f leaks input5.txt |
+cmp 'lmdbg-sort -f leaks + no stacktraces'  \
+'info progname myprogram
+info stat total_allocs: 71087
+info stat total_free_cnt: 0
+info stat total_leaks: 51220723
+stacktrace peak: 29191257 max: 22006166 allocs: 12306 leaks: 29191257 module: mod13
+stacktrace peak: 7765763 max: 2471053 allocs: 32998 leaks: 7765763    module: mod4
+stacktrace peak: 5008186 max: 2251871   allocs: 1537 leaks: 5008186   module: mod14
+stacktrace peak: 4290081 max: 1611674 allocs: 5608  leaks: 4290081    module: mod1
+stacktrace peak: 2850474 max: 2849762   allocs: 104  leaks: 2850474   module: mod15
+stacktrace peak: 851100  max: 748820  allocs: 12768 leaks: 851100     module: mod3
+stacktrace peak: 473047  max: 324561  allocs: 4060  leaks: 473047     module: mod12
+stacktrace peak: 466367  max: 389244  allocs: 160   leaks: 466367     module: mod11
+stacktrace peak: 179274  max: 179086  allocs: 85    leaks: 179274     module: mod7
+stacktrace peak: 74746   max: 51846   allocs: 958   leaks: 74746      module: mod10
+stacktrace peak: 55586   max: 50880   allocs: 332   leaks: 55586      module: mod6
+stacktrace peak: 8224    max: 8080      allocs: 29   leaks: 8224      module: mod16
+stacktrace peak: 3696    max: 3696    allocs: 16    leaks: 3696       module: mod2
+stacktrace peak: 2845    max: 1185    allocs: 123   leaks: 2845       module: mod9
+stacktrace peak: 68      max: 68      allocs: 1     leaks: 68         module: mod5
+stacktrace peak: 8       max: 8       allocs: 1     leaks: 8          module: mod8
+'
+
 #
 exit "$ex"
