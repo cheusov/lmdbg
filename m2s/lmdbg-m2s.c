@@ -26,7 +26,6 @@
 #include <unistd.h>
 #include <string.h>
 
-static int first = 1;
 static int line_num = 0;
 
 static void xputc (int c, FILE *stream)
@@ -52,22 +51,14 @@ static void process_line (char *buf)
 				*p = '\032';
 		}
 
-		if (first){
-			xputc (' ', stdout);
-		}else{
-			xputc ('\034', stdout);
-		}
-
-		first = 0;
+		xputc ('\034', stdout);
 
 		printf ("%s", buf + 1);
 	}else{
 		if (line_num > 1)
 			xputc ('\n', stdout);
 
-		first = 1;
-
-		printf ("%s", buf);
+		printf ("%s \031", buf);
 	}
 }
 

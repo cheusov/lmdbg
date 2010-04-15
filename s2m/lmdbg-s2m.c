@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 
 static int first = 1;
 static int line_num = 0;
@@ -45,31 +46,21 @@ static void process_line (char *buf)
 	if (!buf [0])
 		return;
 
-	if (strncmp (buf, "malloc", 6) &&
-		strncmp (buf, "calloc", 6) &&
-		strncmp (buf, "realloc", 7) &&
-		strncmp (buf, "free", 4) &&
-		strncmp (buf, "stacktrace", 10) &&
-		strncmp (buf, "memalign", 8) &&
-		strncmp (buf, "posix_memalign", 14) &&
-		strncmp (buf, "stacktrace", 10))
-	{
-		puts (buf);
-		return;
-	}
-
+	/* mainline */
 	for (p=buf; *p; ++p){
-		if (*p == ' ' && p[1] != 0 && p[1] != ' ')
+		if (*p == '\031'){
+			assert(p [-1] == ' ');
+			p [-1] = 0;
+		}else if (*p == '\034' && !last_token){
 			last_token = p+1;
+		}
 	}
 
-	if (!last_token){
-		puts (buf);
-		return;
-	}
-
-	last_token [-1] = 0;
 	puts (buf);
+
+	/* stacktraces */
+	if (!last_token || !last_token [0])
+		return;
 
 	for (p=last_token; *p; ++p){
 		if (*p == '\033'){

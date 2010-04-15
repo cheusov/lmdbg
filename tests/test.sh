@@ -607,6 +607,7 @@ realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
 # lmdbg-m2s: malloc
 ctrl2norm (){
     awk '{
+	gsub(/\031/, "\\{031}")
 	gsub(/\032/, "\\{032}")
 	gsub(/\033/, "\\{033}")
 	gsub(/\034/, "\\{034}")
@@ -617,13 +618,13 @@ test_fn="$OBJDIR/_tst"
 
 lmdbg-m2s ./input2.txt | ctrl2norm |
 cmp "lmdbg-m2s:" \
-'info lalala
-malloc ( 123 ) -> 0x1234 0x234\{034}0x456
-calloc ( 16 , 124 ) -> 0x1235 0x235\{034}0x457\{034}0x678
-memalign ( 16 , 123 ) -> 0x1235000 0x1\{034}0x2\{034}0x3
-realloc ( 0x1235000 , 12300 ) -> 0x2236000 0x2\{034}0x3\{034}0x4
-posix_memalign ( 16 , 123 ) -> 0x3235000 0x1\{033}foo\{034}0x2\{033}bar\{032}baz\{034}0x3\{033}foobar
-stacktrace peak: 123 max: 234 allocs: 456 0x111\{034}0x222\{034}0x333
+'info lalala \{031}
+malloc ( 123 ) -> 0x1234 \{031}\{034}0x234\{034}0x456
+calloc ( 16 , 124 ) -> 0x1235 \{031}\{034}0x235\{034}0x457\{034}0x678
+memalign ( 16 , 123 ) -> 0x1235000 \{031}\{034}0x1\{034}0x2\{034}0x3
+realloc ( 0x1235000 , 12300 ) -> 0x2236000 \{031}\{034}0x2\{034}0x3\{034}0x4
+posix_memalign ( 16 , 123 ) -> 0x3235000 \{031}\{034}0x1\{033}foo\{034}0x2\{033}bar\{032}baz\{034}0x3\{033}foobar
+stacktrace peak: 123 max: 234 allocs: 456 \{031}\{034}0x111\{034}0x222\{034}0x333
 '
 
 # lmdbg-s2m: malloc
