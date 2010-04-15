@@ -3,7 +3,6 @@
 #use "power_getopt.awk"
 #use "xgetline.awk"
 #use "trim.awk"
-#use "has_prefix.awk"
 
 #.begin-str help
 # lmdbg-module - detects module by analysing stacktrace with a help of rules
@@ -56,13 +55,11 @@ BEGIN {
 		}
 	}
 
-	SUBSEP = "/"
-
-	fields [1] = "peak"
-	fields [2] = "max"
-	fields [3] = "allocs"
-	fields [4] = "leaks"
-	fields [5] = "modules"
+	fields [1] = "peak:"
+	fields [2] = "max:"
+	fields [3] = "allocs:"
+	fields [4] = "leaks:"
+	fields [5] = "modules:"
 
 	module = "unknown"
 }
@@ -142,14 +139,15 @@ function process_stacktrace (){
 	}
 }
 
-function printout_global_summary (         i,m)
+function printout_global_summary (         i,f,m)
 {
 	for (m in modules){
 		printf "stacktrace"
-		for (i in global_cnts){
-			if (has_prefix(i, (m "/"))){
-				printf " %s %s", substr(i, index(i, SUBSEP)+1),
-					global_cnts [i]
+		for (i=1; i in fields; ++i){
+			f = fields [i]
+#			print m, f
+			if ((m SUBSEP f) in global_cnts) {
+				printf " %s %s", f, global_cnts [m, f]
 			}
 		}
 		print " module:", m
