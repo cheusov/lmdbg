@@ -76,6 +76,8 @@ while test $# -ne 0; do
         -p|--pipe)
 	    pipe=$2
 	    shift;;
+        -p*)
+	    pipe=`echo $1 | cut -b 3-`;;
         -S)
 	    LMDBG_ST_SKIP="$2"
 	    shift;;
