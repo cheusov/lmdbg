@@ -36,10 +36,10 @@ extracts (or skips) system-wide memory leaks.
 usage:
     lmdbg-sysleaks [OPTIONS] [files...]
 OPTIONS:
-    -h --help                  displays this screen
-    -V --version               display version
-    -c --config <config_file>  configuration file
-    -s --skip-leaks            (like grep -v)
+    -h|--help                  displays this screen
+    -V|--version               display version
+    -c|--config <config_file>  configuration file
+    -s|--skip-leaks            (like grep -v)
 "
 }
 

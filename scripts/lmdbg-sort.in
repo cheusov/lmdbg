@@ -31,8 +31,8 @@ lalala
 
 usage: lmdbg-sort [OPTIONS] [files...]
 OPTIONS:
-  -h --help                display this help
-  -V --version             display version
+  -h|--help                display this help
+  -V|--version             display version
   -f <field>               sorting key,
                            valid values are: peak, max, allocs, leaks.
                            This option is mandatory.

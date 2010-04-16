@@ -35,11 +35,11 @@ lmdbg is a tiny program for detecting memory leaks in C programs
 
 usage: lmdbg [OPTIONS] <prog> [args...]
 OPTIONS:
-  -h --help                   display this screen
-  -V --version                display version
-  -c --config <config_file>   configuration file for lmdbg-leaks
-  -o --log <filename>         set a filename for logging
-  -v --verbose                verbose loggin
+  -h|--help                   display this screen
+  -V|--version                display version
+  -c|--config <config_file>   configuration file for lmdbg-leaks
+  -o|--log <filename>         set a filename for logging
+  -v|--verbose                verbose loggin
   -a                          pass -a to lmdbg-sym
   -g|--with-gdb               pass -g to lmdbg-sym (default)
 "

@@ -30,8 +30,8 @@ information and those stacktraces that match the specified AWK expression.
 
 usage: lmdbg-grep [OPTIONS] <awk_expr> [files...]
 OPTIONS:
-  -h --help                   display this screen
-  -V --version                display version
+  -h|--help                   display this screen
+  -V|--version                display version
   -v                          invert match
 EOF
 }

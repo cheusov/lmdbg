@@ -31,8 +31,8 @@ about memory alocations.
 
 usage: lmdbg-stat [OPTIONS] [files...]
 OPTIONS:
-  -h --help                   display this screen
-  -V --version                display version
+  -h|--help                   display this screen
+  -V|--version                display version
 EOF
 }
 

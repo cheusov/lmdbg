@@ -359,7 +359,7 @@ cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with two leaks
-lmdbg-run -o "$logname" -p "lmdbg-sym -p" "$execname2"
+lmdbg-run -o "$logname" -p"lmdbg-sym -p" "$execname2"
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |

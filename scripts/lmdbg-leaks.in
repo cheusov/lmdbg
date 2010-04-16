@@ -36,8 +36,8 @@ produces information about memory leaks.
 usage:
     lmdbg-leaks [OPTIONS] [files...]
 OPTIONS:
-    -h --help                  displays this screen
-    -V --version               display version
+    -h|--help                  displays this screen
+    -V|--version               display version
 "
 }
 

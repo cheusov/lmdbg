@@ -46,9 +46,9 @@ usage:
     lmdbg-sym [OPTIONS] <prog> [files...]
     lmdbg-sym [OPTIONS] -p     [files...]
 OPTIONS:
-    -h --help        displays this screen
-    -V --version     display version
-    -g --with-gdb    use 'gdb' for resolving (the default).
+    -h|--help        displays this screen
+    -V|--version     display version
+    -g|--with-gdb    use 'gdb' for resolving (the default).
     -a               use 'addr2line' for resolving. By default 'gdb' is used.
        --with-so <filename> <flags>
                      dlopen(3) specified libraries with specified flags.
