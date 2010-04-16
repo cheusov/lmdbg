@@ -2,7 +2,6 @@
 - lmdbg-run: always prepand addresses with 0x?
 - lmdbg-run: -n for numbering all memory allocations
 - Link to my own Debian/lenny repository
-- lmdbg-modules: -s option s/stacktrace/info modulestat/
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - LMDBG_AWK - preferred AWK interpreter
 - 'info time <minutes>'

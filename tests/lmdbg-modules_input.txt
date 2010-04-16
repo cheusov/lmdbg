@@ -1,16 +1,23 @@
-stacktrace foo
+stacktrace peak: 450 max: 123 allocs: 2000 leaks: 100
  0x1000	module1.c:1000	module1_func1(void*)
-stacktrace bar
+stacktrace peak: 430 max: 129 allocs: 2001 leaks: 1000
+ 0x1000	module1.c:1020	module1_func1(void*)
+stacktrace peak: 450 max: 423 allocs: 2200 leaks: 200
  0x5200	submodule52.c:5000	submodule52_func52(int, int)
  0x5000	module5.c:5000	module5_func5(int, int)
-stacktrace baz
+stacktrace peak: 470 max: 421 allocs: 2300 leaks: 300
+ 0x5200	submodule52.c:5100	submodule52_func52(int, int)
+ 0x5000	module5.c:5000	module5_func5(int, int)
+stacktrace peak: 270 max: 221 allocs: 2302 leaks: 302
  0x2000	module2.c:2000	module2_func2(const char*)
-stacktrace foobar
+stacktrace peak: 5270 max: 225 allocs: 2305 leaks: 305
  0x5300	submodule53.c:5000	submodule53_func53(const char*)
  0x5000	module5.c:5000	module5_func5(const char*)
-stacktrace foobarbaz
+stacktrace peak: 2702 max: 2212 allocs: 232 leaks: 3022
+ 0x2000	module2.c:2000	module2_func2(const char*)
+stacktrace peak: 3703 max: 3312 allocs: 332 leaks: 3033
  0x3000	module3.c:3000	module3_func3(void)
-stacktrace lalala
+stacktrace brbrbr
  0x4000	module4.c:4000	module4_func4
 stacktrace lalala
  0x6000	module6.c:6000	module6_func6

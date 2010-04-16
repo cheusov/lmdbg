@@ -963,25 +963,41 @@ stacktrace peak: 8       max: 8       allocs: 1     leaks: 8          module: mo
 # lmdbg-modules
 lmdbg-modules -c lmdbg-modules_config.txt lmdbg-modules_input.txt |
 cmp 'lmdbg-modules' \
-'stacktrace foo module: module1
+'stacktrace peak: 450 max: 123 allocs: 2000 leaks: 100 module: module1
  0x1000	module1.c:1000	module1_func1(void*)
-stacktrace bar module: module5
+stacktrace peak: 430 max: 129 allocs: 2001 leaks: 1000 module: module1
+ 0x1000	module1.c:1020	module1_func1(void*)
+stacktrace peak: 450 max: 423 allocs: 2200 leaks: 200 module: module5
  0x5200	submodule52.c:5000	submodule52_func52(int, int)
  0x5000	module5.c:5000	module5_func5(int, int)
-stacktrace baz module: module2
+stacktrace peak: 470 max: 421 allocs: 2300 leaks: 300 module: module5
+ 0x5200	submodule52.c:5100	submodule52_func52(int, int)
+ 0x5000	module5.c:5000	module5_func5(int, int)
+stacktrace peak: 270 max: 221 allocs: 2302 leaks: 302 module: module2
  0x2000	module2.c:2000	module2_func2(const char*)
-stacktrace foobar module: submodule53
+stacktrace peak: 5270 max: 225 allocs: 2305 leaks: 305 module: submodule53
  0x5300	submodule53.c:5000	submodule53_func53(const char*)
  0x5000	module5.c:5000	module5_func5(const char*)
-stacktrace foobarbaz module: module3
+stacktrace peak: 2702 max: 2212 allocs: 232 leaks: 3022 module: module2
+ 0x2000	module2.c:2000	module2_func2(const char*)
+stacktrace peak: 3703 max: 3312 allocs: 332 leaks: 3033 module: module3
  0x3000	module3.c:3000	module3_func3(void)
-stacktrace lalala module: module4
+stacktrace brbrbr module: module4
  0x4000	module4.c:4000	module4_func4
 stacktrace lalala
  0x6000	module6.c:6000	module6_func6
 stacktrace bla-bla-bla module: submodule51
  0x5100	module5.c:5000	submodule51_func51
  0x5000	module5.c:5000	module5_func5
+'
+
+lmdbg-modules -s -c lmdbg-modules_config.txt lmdbg-modules_input.txt |
+cmp 'lmdbg-modules -s' \
+'info modulestat peak: 470 max: 423 allocs: 4500 leaks: 500 module: module5
+info modulestat peak: 5270 max: 225 allocs: 2305 leaks: 305 module: submodule53
+info modulestat peak: 450 max: 129 allocs: 4001 leaks: 1100 module: module1
+info modulestat peak: 2702 max: 2212 allocs: 2534 leaks: 3324 module: module2
+info modulestat peak: 3703 max: 3312 allocs: 332 leaks: 3033 module: module3
 '
 
 # lmdbg-strip

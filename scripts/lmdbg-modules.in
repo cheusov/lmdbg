@@ -181,17 +181,23 @@ function get_f_and_s (){
 function printout_global_summary (         i,f,m)
 {
 	for (m in modules){
-		printf "stacktrace"
+		printed = 0
 		for (i=1; i in fields; ++i){
 			f = fields [i]
 			if ((m SUBSEP f) in global_cnts) {
+				if (!printed){
+					printf "info modulestat"
+					printed = 1
+				}
 				printf " %s %s", f, global_cnts [m, f]
 			}
 		}
-		if (m)
-			print " module:", m
-		else
-			print ""
+		if (printed){
+			if (m)
+				print " module:", m
+			else
+				print ""
+		}
 	}
 }
 
