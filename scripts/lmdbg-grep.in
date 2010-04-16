@@ -28,7 +28,7 @@ usage () {
 Given an output of lmdbg-stat on input lmdbg-grep outputs global
 information and those stacktraces that match the specified AWK expression.
 
-usage: lmdbg-grep [OPTIONS] [files...]
+usage: lmdbg-grep [OPTIONS] <awk_expr> [files...]
 OPTIONS:
   -h --help                   display this screen
   -V --version                display version
@@ -171,10 +171,29 @@ $0 ~ /^ / {
 }
 
 {
-    peak = max = allocs = leaks = 0
+    peak = max = allocs = leaks = bytes = 0
+    module = op = op_type = ""
 }
 
 /^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
+    if ($1 == "malloc") {
+	bytes   = $3 + 0
+	op      = "malloc"
+	op_type = "alloc"
+    }else if ($1 == "realloc"){
+	bytes   = $5 + 0
+	op      = "realloc"
+	op_type = "alloc"
+    }else if ($1 == "calloc"){
+	bytes   = $3 * $5
+	op      = "calloc"
+	op_type = "alloc"
+    }else if ($1 == "memalign" || $1 == "posix_memalign"){
+	bytes   = $5 + 0
+	op      = $1
+	op_type = "alloc"
+    }
+
     for (i=1; i <= NF; ++i){
 	if ($i == "peak:"){
 	    peak = $(i+1) + 0
@@ -184,6 +203,8 @@ $0 ~ /^ / {
 	    allocs = $(i+1) + 0
 	}else if ($i == "leaks:"){
 	    leaks = $(i+1) + 0
+	}else if ($i == "module:"){
+	    module = $(i+1)
 	}
     }
 }
