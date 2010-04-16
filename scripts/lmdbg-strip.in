@@ -19,7 +19,7 @@
 BEGIN {
 	# processing options
 	if (getarg("V")){
-		print "lmdbg-modules @LMDBG_VERSION@"
+		print "lmdbg-strip @LMDBG_VERSION@"
 		exitnow(1)
 	}
 
