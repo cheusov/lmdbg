@@ -1,5 +1,22 @@
 ======================================================================
 
+                               PACKAGES
+
+NetBSD, DragonFlyBSD etc. (pkgsrc):
+   package - wip/lmdbg
+
+FreeBSD:
+   port - devel/lmdbg
+
+Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
+
+   /etc/apt/sources.list:
+     ...
+     deb     http://mova.org/~cheusov/pub/debian       lenny    main
+     deb-src http://mova.org/~cheusov/pub/debian       lenny    main
+
+======================================================================
+
                              INSTALLATION
 
 0) As of version 0.10.0 autohell stuff was thrown out because I
