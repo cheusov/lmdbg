@@ -99,9 +99,19 @@ no_number (){
     sed 's/^[^ ]* //'
 }
 
+order_peak='r'
+order_max='r'
+order_allocs='r'
+order_leaks='r'
+order_num=''
+
+if test -z "$order"; then
+    eval order='$order_'"$field"
+fi
+
 runpipe0 \
     lmdbg-m2s "$@" '|' \
     number_first '|' \
-    sort -k1rn '|' \
+    sort -k1${order}n '|' \
     no_number '|' \
     lmdbg-s2m
