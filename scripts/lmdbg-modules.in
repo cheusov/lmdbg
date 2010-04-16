@@ -85,9 +85,17 @@ function printout (                i){
 function update_summary (            i){
 #	print module
 	modules [module] = 1
-	for (i in cnts){
-		global_cnts [module, i] += cnts [i]
-	}
+	if ("allocs:" in cnts)
+		global_cnts [module, "allocs:"] += cnts ["allocs:"]
+	if ("leaks:" in cnts)
+		global_cnts [module, "leaks:"] += cnts ["leaks:"]
+
+	if ("peak:" in cnts)
+		if (cnts ["peak:"] > global_cnts [module, "peak:"])
+			global_cnts [module, "peak:"] = cnts ["peak:"]
+	if ("max:" in cnts)
+		if (cnts ["max:"] > global_cnts [module, "max:"])
+			global_cnts [module, "max:"] = cnts ["max:"]
 }
 
 function process_stacktrace (){
@@ -103,7 +111,7 @@ function process_stacktrace (){
 	module = ""
 }
 
-/^stacktrace / {
+/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
 	process_stacktrace()
 
 	lines [++cnt] = $0
