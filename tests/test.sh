@@ -336,7 +336,7 @@ free ( 0xF00DBEAF )
 "
 
 # lmdbg-run --pipe lmdbg-leaks
-lmdbg-run -o "$logname" --pipe lmdbg-leaks "$execname1"
+lmdbg-run -o"$logname" --pipe lmdbg-leaks "$execname1"
 
 unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
@@ -346,7 +346,7 @@ cmp "prog1.c: lmdbg-run --pipe lmdbg-leaks" \
 "
 
 # lmdbg-run -p lmdbg-leaks
-lmdbg-run -o "$logname" -p lmdbg-leaks "$execname1"
+lmdbg-run -o"$logname" -p lmdbg-leaks "$execname1"
 
 unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |

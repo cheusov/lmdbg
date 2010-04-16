@@ -1,3 +1,5 @@
+- -V showing version for all lmdbg-* utilities
+- lmdbg-run: option for skipping addresses from the end
 - lmdbg-run: always prepand addresses with 0x?
 - lmdbg-sym: strip address, there is noe need for them anymore
 - lmdbg-run: -n for numbering all memory allocations
@@ -15,4 +17,4 @@
 - lmdbg-m2s and lmdbg-s2m --> /usr/local/libexec/lmdbg/
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
-- -olog and -p'pipe'
+- -p'pipe'

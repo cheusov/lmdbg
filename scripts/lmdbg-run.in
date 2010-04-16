@@ -40,11 +40,11 @@ The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 
 usage: lmdbg-run [OPTIONS] <prog> [args...]
 OPTIONS:
-  -h --help                   display this screen
-  -V --version                display version
-  -o --log <filename>         set a filename for logging
-  -p --pipe <pipe>            save pipe's output to log file
-  -v --verbose                verbose loggin
+  -h|--help                   display this screen
+  -V|--version                display version
+  -o|--log <filename>         set a filename for logging
+  -p|--pipe <pipe>            save pipe's output to log file
+  -v|--verbose                verbose loggin
   -S <stacktrace-skip>        a number of addresses to skip in a stacktrace
   -M <stacktrace-max>         limit for a number of addresses in a stacktrace
 
@@ -71,6 +71,8 @@ while test $# -ne 0; do
 	-o|--log)
 	    ofile=$2
 	    shift;;
+	-o*)
+	    ofile=`echo $1 | cut -b 3-`;;
         -p|--pipe)
 	    pipe=$2
 	    shift;;
