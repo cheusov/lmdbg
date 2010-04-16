@@ -1,3 +1,9 @@
+- lmdbg-run: always prepand addresses with 0x?
+- lmdbg-sym: strip address, there is noe need for them anymore
+- lmdbg-run: -n for numbering all memory allocations
+- Link to my own Debian/lenny repository
+- lmdbg-modules: -s option s/stacktrace/info modulestat/
+- lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - lmdbg-leaks: take into account "leaks:" in output of lmdbg-stat
 - usahe message: -h|--help bt not -h --help
 - lmdbg-leaks: should process lmdbg-stat output
