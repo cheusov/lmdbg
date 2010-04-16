@@ -174,7 +174,10 @@ function printout_global_summary (         i,f,m)
 				printf " %s %s", f, global_cnts [m, f]
 			}
 		}
-		print " module:", m
+		if (m)
+			print " module:", m
+		else
+			print ""
 	}
 }
 

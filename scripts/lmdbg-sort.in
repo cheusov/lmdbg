@@ -34,8 +34,8 @@ OPTIONS:
   -h --help                display this help
   -V --version             display version
   -f <field>               sorting key,
-                           valid values are: allocs, max, peak, max.
-                           This option is mandatory!
+                           valid values are: peak, max, allocs, leaks.
+                           This option is mandatory.
 EOF
 }
 
