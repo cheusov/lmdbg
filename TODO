@@ -1,6 +1,5 @@
 - lmdbg-run: option for skipping addresses from the end
 - lmdbg-run: always prepand addresses with 0x?
-- lmdbg-sym: strip address, there is noe need for them anymore
 - lmdbg-run: -n for numbering all memory allocations
 - Link to my own Debian/lenny repository
 - lmdbg-modules: -s option s/stacktrace/info modulestat/
@@ -8,8 +7,6 @@
 - LMDBG_AWK - preferred AWK interpreter
 - 'info time <minutes>'
 - SIGUSR1 (LMDBG_SIG_LOG) for starting logging, lmdbg-run -d
-- lmdbg-grep
-- lmdbg-stat - 
 - lmdbg-m2s and lmdbg-s2m --> /usr/local/libexec/lmdbg/
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
