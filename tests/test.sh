@@ -964,5 +964,90 @@ stacktrace bla-bla-bla module: submodule51
  0x5000	module5.c:5000	module5_func5
 '
 
+# lmdbg-strip
+lmdbg-strip -l input4.txt |
+cmp 'lmdbg-strip -l' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3	lmdbg.c	log_stacktrace
+ 0xbbbe33bd	lmdbg.c	realloc
+ 0x8049900	testme.c	testfunc1
+ 0x8048757	testme.c	main
+ 0x80485b4
+ 0x8048517
+stacktrace peak: 90 max: 90 allocs: 1
+ 0xbbbe2bc3	lmdbg.c	log_stacktrace
+ 0xbbbe3498	lmdbg.c	malloc
+ 0x8049700	testme2.c	testfunc21
+ 0x8049634	testme2.c	testfunc22
+ 0x8048788	testme.c	main
+ 0x80485b4
+ 0x8048517
+'
+
+lmdbg-strip -r input1.txt |
+cmp 'lmdbg-strip -r' \
+'info lalala
+malloc ( 123 ) --> 0xXYZ
+ 0x1
+ 0x2
+calloc ( 2 , 124 ) --> 0xXYZ
+ 0x2
+ 0x3
+ 0x4
+memalign ( 16 , 120 ) --> 0xXYZ
+ 0x3
+ 0x4
+ 0x5
+free ( 0xXYZ )
+ 0x1
+posix_memalign ( 16 , 130 ) --> 0xXYZ
+ 0x2
+ 0x3
+malloc ( 100 ) --> 0xXYZ
+ 0x1
+ 0x2
+malloc ( 200 ) --> 0xXYZ
+ 0x7
+realloc ( 0xXYZ , 300 ) --> 0xXYZ
+ 0x5
+free ( 0xXYZ )
+ 0x1
+realloc ( 0xXYZ , 110 ) --> 0xXYZ
+ 0x6
+realloc ( 0xXYZ , 120 ) --> 0xXYZ
+ 0x6
+realloc ( 0xXYZ , 140 ) --> 0xXYZ
+ 0x6
+realloc ( 0xXYZ , 130 ) --> 0xXYZ
+ 0x6
+memalign ( 16 , 110 ) --> 0xXYZ
+ 0x3
+ 0x4
+ 0x5
+realloc ( 0xXYZ , 180 ) --> 0xXYZ
+ 0x6
+'
+
+lmdbg-strip -al input4.txt |
+cmp 'lmdbg-strip -al' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 	lmdbg.c	log_stacktrace
+ 	lmdbg.c	realloc
+ 	testme.c	testfunc1
+ 	testme.c	main
+stacktrace peak: 90 max: 90 allocs: 1
+ 	lmdbg.c	log_stacktrace
+ 	lmdbg.c	malloc
+ 	testme2.c	testfunc21
+ 	testme2.c	testfunc22
+ 	testme.c	main
+'
+
 #
 exit "$ex"
