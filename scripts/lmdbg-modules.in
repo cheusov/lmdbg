@@ -10,6 +10,7 @@
 # usage: lmdbg-module [OPTIONS] [files...]
 # OPTIONS:
 #   -h|--help                     display this screen
+#   -V|--version                  display version
 #   =c|--config <config_file>     configuration file
 #   -s                            calculate and output sum of counters
 # Option -c is mandatory.
@@ -26,6 +27,11 @@
 
 BEGIN {
 	# processing arguments
+	if (getarg("V")){
+		print "lmdbg-modules @LMDBG_VERSION@"
+		exitnow(1)
+	}
+
 	sum = getarg("s")
 
 	config_file = getarg("c")

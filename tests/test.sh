@@ -186,6 +186,16 @@ cmp "lmdbg-grep --version" \
 "lmdbg-grep XXX
 "
 
+lmdbg-modules --version       | head -1 | version2XXX |
+cmp "lmdbg-modules --version" \
+"lmdbg-modules XXX
+"
+
+lmdbg-strip --version       | head -1 | version2XXX |
+cmp "lmdbg-strip --version" \
+"lmdbg-strip XXX
+"
+
 lmdbg-run -V               | head -1 | version2XXX |
 cmp "lmdbg-run -V" \
 "lmdbg-run XXX
@@ -215,6 +225,16 @@ lmdbg-grep -V              | head -1 | version2XXX |
 cmp 'lmdbg-grep -V' \
 'lmdbg-grep XXX
 '
+
+lmdbg-modules -V       | head -1 | version2XXX |
+cmp "lmdbg-modules -V" \
+"lmdbg-modules XXX
+"
+
+lmdbg-strip -V       | head -1 | version2XXX |
+cmp "lmdbg-strip -V" \
+"lmdbg-strip XXX
+"
 
 ####################
 # normal tests
