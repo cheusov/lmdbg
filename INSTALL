@@ -12,12 +12,15 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
 
    /etc/apt/sources.list:
      ...
-     deb     http://mova.org/~cheusov/pub/debian       lenny    main
-     deb-src http://mova.org/~cheusov/pub/debian       lenny    main
+     deb     http://mova.org/~cheusov/pub/debian    lenny    main
+     deb-src http://mova.org/~cheusov/pub/debian    lenny    main
+
+   # apt-get update
+   # apt-get install lmdbg
 
 ======================================================================
 
-                             INSTALLATION
+                      INSTALLATION FROM SOURCES
 
 0) As of version 0.10.0 autohell stuff was thrown out because I
    dislike it. In my view, LMDBG now looks much better and cleaner but
@@ -48,7 +51,11 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
 
    http://sourceforge.net/projects/pipestatus/
 
-2) After successfully installing bmake, mk-configure and pipestatus you
+2) Some of LMDBG programs are written in RunAWK. So, you need it too.
+
+   http://sourceforge.net/projects/runawk/
+
+3) After successfully installing bmake, mk-configure and pipestatus you
    are ready to install LMDBG.
 
    Uncompress LMDBG tarball you've downloaded like this
@@ -56,18 +63,18 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
 
    If you read this text, this step is probably already done :-)
 
-3) cd lmdbg-X-Y-Z
+4) cd lmdbg-X-Y-Z
 
-4) mkcmake
+5) mkcmake
 
    mkcmake is just a simple wrapper over bmake. It is a part of mk-configure.
    If you are unfamiliar with bmake see below for the samples of
    building and installation.
 
-5) (optional) mkcmake test
+6) (optional) mkcmake test
    If this command fails on your system, PLEASE LET ME NOW.
 
-6) mkcmake installdirs install
+7) mkcmake installdirs install
 
 If you need to change the default build options,
 run mkcmake like this
@@ -80,18 +87,13 @@ build and installation.  See Makefiles for LMDBG's own variables
 
 Examples of building and installing:
 
- 1)  env PREFIX=/usr mkcmake all installdirs install
+ a)  env PREFIX=/usr mkcmake all installdirs install
 
- 2)  env CC=gcc \
+ b)  env CC=gcc \
        PREFIX=/home/cheusov/local \
        CPPFLAGS='-I/usr/pkg/include' \
        LDFLAGS='-L/usr/pkg/lib -Wl,-rpath -Wl,/usr/pkg/lib' \
        LDADD=-lextralib \
        CFLAGS='-Werror -Wall' \
-       BINOWN=cheusov \
-       BINGRP=users \
-       MANOWN=cheusov \
-       MANGRP=users \
        GDB=/usr/pkg/bin/gdb \
-       MKCATPAGES=no \
           mkcmake -s all installdirs install
