@@ -992,12 +992,13 @@ stacktrace bla-bla-bla module: submodule51
 '
 
 lmdbg-modules -s -c lmdbg-modules_config.txt lmdbg-modules_input.txt |
+lmdbg-sort -f leaks |
 cmp 'lmdbg-modules -s' \
-'info modulestat peak: 470 max: 423 allocs: 4500 leaks: 500 module: module5
-info modulestat peak: 5270 max: 225 allocs: 2305 leaks: 305 module: submodule53
-info modulestat peak: 450 max: 129 allocs: 4001 leaks: 1100 module: module1
-info modulestat peak: 2702 max: 2212 allocs: 2534 leaks: 3324 module: module2
+'info modulestat peak: 2702 max: 2212 allocs: 2534 leaks: 3324 module: module2
 info modulestat peak: 3703 max: 3312 allocs: 332 leaks: 3033 module: module3
+info modulestat peak: 450 max: 129 allocs: 4001 leaks: 1100 module: module1
+info modulestat peak: 470 max: 423 allocs: 4500 leaks: 500 module: module5
+info modulestat peak: 5270 max: 225 allocs: 2305 leaks: 305 module: submodule53
 '
 
 # lmdbg-strip
