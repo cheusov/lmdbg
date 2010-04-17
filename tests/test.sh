@@ -1104,5 +1104,27 @@ stacktrace peak: 90 max: 90 allocs: 1
  		main
 '
 
+lmdbg-strip -n input4.txt |
+cmp 'lmdbg-strip -n' \
+'info stat total_leaks: 50
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0xbbbe2bc3	lmdbg.c:101	log_stacktrace
+ 0xbbbe33bd	lmdbg.c:456	realloc
+ 0x8049900	testme.c:987	testfunc1
+ 0x8048757	testme.c:9	main
+ 0x80485b4
+ 0x8048517
+stacktrace peak: 90 max: 90 allocs: 1
+ 0xbbbe2bc3	lmdbg.c:101	log_stacktrace
+ 0xbbbe3498	lmdbg.c:431	malloc
+ 0x8049700	testme2.c:987	testfunc21
+ 0x8049634	testme2.c:87	testfunc22
+ 0x8048788	testme.c:7	main
+ 0x80485b4
+ 0x8048517
+'
+
 #
 exit "$ex"
