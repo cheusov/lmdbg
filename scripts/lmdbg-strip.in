@@ -13,6 +13,7 @@
 #   -a            remove stacktrace addresses
 #   -r            replace return and input addresses with fake value
 #   -l            remove line number from sourcefile.c:<linenumber>
+#   -s            remove source, i.e. sourcefile.c:<linenumber>
 # Option -c is mandatory.
 #.end-str help
 
@@ -26,9 +27,10 @@ BEGIN {
 	mode_a = getarg("a")
 	mode_r = getarg("r")
 	mode_l = getarg("l")
+	mode_s = getarg("s")
 
-	if (!mode_a && !mode_l && !mode_r){
-		print "At least of the follosing options must be specified: -a, -l or -r" > "/dev/stderr"
+	if (!mode_a && !mode_l && !mode_r && !mode_s){
+		print "At least of the following options must be specified: -a, -l, -r or -s" > "/dev/stderr"
 		exitnow(1)
 	}
 
@@ -52,6 +54,10 @@ mode_r && /^[^ ]/ {
 
 mode_l && NF >= 2 {
 	sub(/:[^: \t]+$/, "", $2)
+}
+
+mode_s && /^ / && NF >= 2 {
+	$2 = ""
 }
 
 {
