@@ -78,7 +78,7 @@ fi
 
 number_first (){
     awk -v field="$field:" '
-$1 == "info" {
+$1 == "info" && $2 != "modulestat" {
    print "4000000000", $0
    next
 }
