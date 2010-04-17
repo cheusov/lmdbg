@@ -276,11 +276,11 @@ lmdbg-run -o "$logname" "$execname1"
 
 unify_address "$logname" | skip_useless_addr |
 cmp "prog1.c: lmdbg-run -o" \
-"malloc ( 555 ) --> 0xF00DBEAF
-realloc ( NULL , 666 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
-free ( 0xF00DBEAF )
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
 "
 
 # --log
@@ -288,11 +288,11 @@ lmdbg-run --log "$logname" "$execname1"
 
 unify_address "$logname" | skip_useless_addr |
 cmp "prog1.c: lmdbg-run --log" \
-"malloc ( 555 ) --> 0xF00DBEAF
-realloc ( NULL , 666 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
-free ( 0xF00DBEAF )
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
 "
 
 # lmdbg-leaks
@@ -301,7 +301,7 @@ lmdbg-leaks "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_useless_addr |
 cmp "prog1.c: lmdbg-leaks" \
-"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
 # lmdbg-sym --with-gdb
@@ -309,15 +309,15 @@ lmdbg-sym --with-gdb -p "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym" \
-"malloc ( 555 ) --> 0xF00DBEAF
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
  0xF00DBEAF	prog1.c:NNN	main
-free ( 0xF00DBEAF )
+free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN	main
 "
 
@@ -326,15 +326,15 @@ lmdbg-sym -g "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -g" \
-"malloc ( 555 ) --> 0xF00DBEAF
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
  0xF00DBEAF	prog1.c:NNN	main
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
  0xF00DBEAF	prog1.c:NNN	main
-free ( 0xF00DBEAF )
+free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN	main
 "
 
@@ -343,15 +343,15 @@ lmdbg-sym -a "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -a" \
-"malloc ( 555 ) --> 0xF00DBEAF
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN
-realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
  0xF00DBEAF	prog1.c:NNN
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
  0xF00DBEAF	prog1.c:NNN
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
  0xF00DBEAF	prog1.c:NNN
-free ( 0xF00DBEAF )
+free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN
 "
 
@@ -362,7 +362,7 @@ unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-run --pipe lmdbg-leaks" \
-"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
 # lmdbg-run -p lmdbg-leaks
@@ -372,7 +372,7 @@ unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
-"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+"realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
 # prog1.c
@@ -385,19 +385,19 @@ unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |
 canonize_paths | skip_useless_addr | hide_foreign_code |
 cmp "prog2.c: lmdbg-run -p" \
-"malloc ( 555 ) --> 0xF00DBEAF
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
  0xF00DBEAF	prog2.c:NNN	main
-realloc ( NULL , 666 ) --> 0xF00DBEAF
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog2.c:NNN	main
-realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog2.c:NNN	main
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog2.c:NNN	main
@@ -418,8 +418,8 @@ cmp "prog2.c: lmdbg-run -p again" \
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog2.c:NNN	main
  0xF00DBEAF	prog2.c:NNN	main
-malloc ( 555 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+malloc ( 555 ) --> 0xF00DBEAF num: 1
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
 # lmdbg-leaks with lmdbg-leak1.conf
@@ -522,7 +522,7 @@ lmdbg -c ./lmdbg3.conf -o "$logname" "$execname1" || true
 unify_paths "$logname" | skip_useless_addr |
 hide_line_numbers | unify_address | hide_foreign_code |
 cmp "prog1.c: lmdbg -c ./lmdbg3.conf" \
-'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
+'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog1.c:NNN	main
@@ -542,7 +542,7 @@ lmdbg -c ./lmdbg6.conf -o "$logname" "$execname2" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog1.c: lmdbg -o" \
-'malloc ( 555 ) --> 0xF00DBEAF
+'malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
  0xF00DBEAF	prog2.c:NNN	main
@@ -554,8 +554,8 @@ lmdbg-run -o "$logname" "$exec3name"
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths |
 cmp "prog3.c: lmdbg-run -o" \
-'malloc ( 555 ) --> 0xF00DBEAF
-malloc ( 666 ) --> 0xF00DBEAF
+'malloc ( 555 ) --> 0xF00DBEAF num: 1
+malloc ( 666 ) --> 0xF00DBEAF num: 2
 '
 
 # lmdbg-sym -g and shared libraries
@@ -563,10 +563,10 @@ lmdbg-sym --with-gdb "$exec3name" "$logname" |
 unify_paths | unify_address | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \
-'malloc ( 555 ) --> 0xF00DBEAF
+'malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	test3.c:NNN	allocate_memory
  0xF00DBEAF	prog3.c:NNN	main
-malloc ( 666 ) --> 0xF00DBEAF
+malloc ( 666 ) --> 0xF00DBEAF num: 2
  0xF00DBEAF	prog3.c:NNN	main
 '
 
@@ -578,19 +578,19 @@ lmdbg-run -o "$logname" "$execname4"
 unify_address "$logname" |
 skip_useless_addr |
 cmp "prog4.c: lmdbg-run -o" \
-'calloc ( 555 , 16 ) --> 0xF00DBEAF
-calloc ( 5 , 256 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
-calloc ( 1 , 10240 ) --> 0xF00DBEAF
-free ( 0xF00DBEAF )
+'calloc ( 555 , 16 ) --> 0xF00DBEAF num: 1
+calloc ( 5 , 256 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
+calloc ( 1 , 10240 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
 '
 
 # lmdbg-leaks + prog4.c
 lmdbg-leaks "$logname" |
 unify_address | skip_useless_addr | sort |
 cmp "prog4.c: lmdbg-leaks + calloc" \
-'calloc ( 1 , 10240 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+'calloc ( 1 , 10240 ) --> 0xF00DBEAF num: 4
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
 '
 
 # lmdbg-run + prog5.c
@@ -601,11 +601,11 @@ lmdbg-run -o "$logname" "$execname5"
 unify_address "$logname" |
 skip_useless_addr |
 cmp "prog5.c: lmdbg-run -o" \
-'posix_memalign ( 16 , 200 ) --> 0xF00DBEAF
-posix_memalign ( 8 , 256 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
-posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF
-free ( 0xF00DBEAF )
+'posix_memalign ( 16 , 200 ) --> 0xF00DBEAF num: 1
+posix_memalign ( 8 , 256 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
+posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
 '
 
 # lmdbg-leaks + prog5.c
@@ -620,8 +620,8 @@ cmp "prog5.c: lmdbg-leaks + lmdbg-sym" \
  0xF00DBEAF	lmdbg.c:NNN	realloc
  0xF00DBEAF	prog5.c:NNN	main
  0xF00DBEAF	prog5.c:NNN	main
-posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF
-realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF
+posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF num: 4
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
 '
 
 # lmdbg-m2s: malloc

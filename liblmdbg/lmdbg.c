@@ -54,6 +54,8 @@ static int         log_verbose  = 0;
 static int st_skip  = 0;
 static int st_count = INT_MAX;
 
+static unsigned alloc_count = 0;
+
 #define POINTER_FORMAT "%p"
 
 static void * (*real_malloc)  (size_t s);
@@ -437,8 +439,12 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		p = (*real_malloc) (s);
-		fprintf (log_fd, "malloc ( %u ) --> %p\n", (unsigned) s, p);
+		fprintf (log_fd, "malloc ( %u ) --> %p num: %u\n",
+				 (unsigned) s, p, alloc_count);
+
 		log_stacktrace ();
 
 		enable_logging ();
@@ -456,13 +462,15 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		np = (*real_realloc) (p, s);
 		if (p){
-			fprintf (log_fd, "realloc ( %p , %u ) --> %p\n",
-					 p, (unsigned) s, np);
+			fprintf (log_fd, "realloc ( %p , %u ) --> %p num: %u\n",
+					 p, (unsigned) s, np, alloc_count);
 		}else{
-			fprintf (log_fd, "realloc ( NULL , %u ) --> %p\n",
-					 (unsigned) s, np);
+			fprintf (log_fd, "realloc ( NULL , %u ) --> %p num: %u\n",
+					 (unsigned) s, np, alloc_count);
 		}
 		log_stacktrace ();
 
@@ -480,8 +488,10 @@ void WRAP(free) (void *p EXTRA_ARG)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		(*real_free) (p);
-		fprintf (log_fd, "free ( %p )\n", p);
+		fprintf (log_fd, "free ( %p ) num: %u\n", p, alloc_count);
 		log_stacktrace ();
 
 		enable_logging ();
@@ -498,9 +508,11 @@ void * calloc (size_t number, size_t size)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		p = (*real_calloc) (number, size);
-		fprintf (log_fd, "calloc ( %u , %u ) --> %p\n",
-				 (unsigned) number, (unsigned) size, p);
+		fprintf (log_fd, "calloc ( %u , %u ) --> %p num: %u\n",
+				 (unsigned) number, (unsigned) size, p, alloc_count);
 		log_stacktrace ();
 
 		enable_logging ();
@@ -519,9 +531,12 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		ret = (*real_posix_memalign) (memptr, align, size);
-		fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p\n",
-				 (unsigned) align, (unsigned) size, *memptr);
+		fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p num: %u\n",
+				 (unsigned) align, (unsigned) size, *memptr,
+				 alloc_count);
 		log_stacktrace ();
 
 		enable_logging ();
@@ -541,9 +556,11 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
 	if (log_enabled){
 		disable_logging ();
 
+		++alloc_count;
+
 		p = (*real_memalign) (align, size);
-		fprintf (log_fd, "memalign ( %u , %u ) --> %p\n",
-				 (unsigned) align, (unsigned) size, p);
+		fprintf (log_fd, "memalign ( %u , %u ) --> %p num: %u\n",
+				 (unsigned) align, (unsigned) size, p, alloc_count);
 		log_stacktrace ();
 
 		enable_logging ();
