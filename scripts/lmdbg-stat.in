@@ -84,7 +84,7 @@ function get_id (st){
 }
 
 /^malloc / {
-    id = get_id($7)
+    id = get_id($NF)
     ptr2trace [$6]   = id
     ptr2size  [$6]   = $3
     allocated [id]  += $3
@@ -99,7 +99,7 @@ function get_id (st){
 }
 
 /^calloc / {
-    id = get_id($9)
+    id = get_id($NF)
     bytes = $3 * $5
     ptr2trace [$8]   = id
     ptr2size  [$8]   = bytes
@@ -115,7 +115,7 @@ function get_id (st){
 }
 
 /^(memalign|posix_memalign) / {
-    id = get_id($9)
+    id = get_id($NF)
     ptr2trace [$8]   = id
     ptr2size  [$8]   = $5
     allocated [id]  += $5
@@ -130,7 +130,7 @@ function get_id (st){
 }
 
 /^realloc / {
-    id = get_id($9)
+    id = get_id($NF)
     allocated [id]  += $5
     total_allocated += $5
     total_allocated            -= ptr2size [$3]
