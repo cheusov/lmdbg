@@ -49,16 +49,19 @@ BEGIN {
 		if (NF == 0){
 		}else if ($1 ~ /^\[.*\]$/){
 			module = substr($1, 2, length($1)-2)
+			op     = "+"
 		}else if ($1 == "substr"){
 			++rules_substr_count
 			rules_substr_field [rules_substr_count] = $2
 			rules_substr_str [rules_substr_count] = $3
 			rules_substr_module [rules_substr_count] = module
+			rules_substr_op [rules_substr_count] = $4
 		}else if ($1 == "match"){
 			++rules_match_count
 			rules_match_field [rules_match_count] = $2
 			rules_match_str [rules_match_count] = $3
 			rules_match_module [rules_match_count] = module
+			rules_match_op [rules_match_count] = $4
 		}else{
 			abort("bad line in config file")
 		}
@@ -72,6 +75,7 @@ BEGIN {
 	fields [5] = "modules:"
 
 	module = ""
+	op     = "+"
 }
 
 function printout (                i){
@@ -115,6 +119,7 @@ function process_stacktrace (){
 	delete cnts
 	cnt = 0
 	module = ""
+	op     = "+"
 }
 
 /^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
@@ -147,7 +152,7 @@ function get_f_and_s (){
 #	print "$0:", $0
 
 	lines [++cnt] = $0
-	if (module == ""){
+	if (op == "+"){
 		split($0, arr, /\t/)
 
 		for (i=1; i <= rules_substr_count; ++i){
@@ -159,7 +164,12 @@ function get_f_and_s (){
 			get_f_and_s()
 
 			if (index(str0, str) > 0){
-				module = rules_substr_module [i]
+				if (module)
+					module = rules_substr_module [i] ":" module
+				else
+					module = rules_substr_module [i]
+
+				op     = rules_substr_op [i]
 #				print "module:", module
 				break
 			}
@@ -171,7 +181,12 @@ function get_f_and_s (){
 			get_f_and_s()
 
 			if (match(str0, str) > 0){
-				module = rules_match_module [i]
+				if (module)
+					module = rules_match_module [i] ":" module
+				else
+					module = rules_match_module [i]
+
+				op     = rules_match_op [i]
 #				break
 			}
 		}
