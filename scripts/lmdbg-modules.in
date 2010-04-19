@@ -82,7 +82,7 @@ function printout (                i){
 	if (!cnt)
 		return
 
-	if (module)
+	if (module && op != "i")
 		printf "%s module: %s\n", lines [1], module
 	else
 		print lines [1]
@@ -131,6 +131,12 @@ function process_stacktrace (){
 			cnts [$i] = $(i+1)
 		}
 	}
+
+	if ("module:" in cnts){
+		module = cnts ["module:"]
+		op = "i" # do not add yet another module: <module>
+	}
+
 	next
 }
 
@@ -138,6 +144,13 @@ function process_stacktrace (){
 	print
 	next
 }
+
+#module != "" && op == "" {
+#	if (!sum)
+#		print
+
+#	next
+#}
 
 function get_f_and_s (){
 	if (field == "funcname")
