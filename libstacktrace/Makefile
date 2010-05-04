@@ -13,11 +13,11 @@ SRCS=		stacktrace.c
 
 INCS=		stacktrace.h
 
-MKPIC=		yes
+MKPICLIB=	yes
 
 WARNS=		4
 
-MKINSTALL?=	no # internal library, do install it
+MKINSTALL?=	no # internal library, do not install it
 
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
