@@ -3,7 +3,7 @@
 #use "power_getopt.awk"
 #use "xgetline.awk"
 #use "trim.awk"
-#use "has_suffix.awk"
+#use "has_prefix.awk"
 
 #.begin-str help
 # lmdbg-module - detects module by analysing stacktrace with a help of rules
@@ -180,7 +180,7 @@ function get_f_and_s (){
 			if (index(str0, str) > 0){
 				modules_addon = rules_substr_module [i]
 
-				if (module == modules_addon || has_suffix(module, ":" modules_addon)){
+				if (module == modules_addon || has_prefix(module, modules_addon ":")){
 				}else if (module){
 					module = modules_addon ":" module
 				}else{
@@ -201,7 +201,7 @@ function get_f_and_s (){
 			if (match(str0, str) > 0){
 				modules_addon = rules_match_module [i]
 
-				if (module == modules_addon || has_suffix(module, ":" modules_addon)){
+				if (module == modules_addon || has_prefix(module, modules_addon ":")){
 				}else if (module){
 					module = modules_addon ":" module
 				}else{
