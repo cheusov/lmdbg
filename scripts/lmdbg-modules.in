@@ -3,6 +3,7 @@
 #use "power_getopt.awk"
 #use "xgetline.awk"
 #use "trim.awk"
+#use "has_suffix.awk"
 
 #.begin-str help
 # lmdbg-module - detects module by analysing stacktrace with a help of rules
@@ -168,39 +169,47 @@ function get_f_and_s (){
 	if (op == "+"){
 		split($0, arr, /\t/)
 
+		modules_addon = ""
+
 		for (i=1; i <= rules_substr_count; ++i){
 			field = rules_substr_field [i]
 			str = rules_substr_str [i]
 
-#			print "fs:", field, str
-
 			get_f_and_s()
 
 			if (index(str0, str) > 0){
-				if (module)
-					module = rules_substr_module [i] ":" module
-				else
-					module = rules_substr_module [i]
+				modules_addon = rules_substr_module [i]
+
+				if (module == modules_addon || has_suffix(module, ":" modules_addon)){
+				}else if (module){
+					module = modules_addon ":" module
+				}else{
+					module = modules_addon
+				}
 
 				op     = rules_substr_op [i]
-#				print "module:", module
 				break
 			}
 		}
-		for (i=1; i <= rules_match_count; ++i){
+
+		for (i=1; modules_addon == "" && i <= rules_match_count; ++i){
 			field = rules_match_field [i]
 			str = rules_match_str [i]
 
 			get_f_and_s()
 
 			if (match(str0, str) > 0){
-				if (module)
-					module = rules_match_module [i] ":" module
-				else
-					module = rules_match_module [i]
+				modules_addon = rules_match_module [i]
+
+				if (module == modules_addon || has_suffix(module, ":" modules_addon)){
+				}else if (module){
+					module = modules_addon ":" module
+				}else{
+					module = modules_addon
+				}
 
 				op     = rules_match_op [i]
-#				break
+				break
 			}
 		}
 	}
