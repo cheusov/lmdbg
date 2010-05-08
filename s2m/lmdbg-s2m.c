@@ -27,7 +27,6 @@
 #include <string.h>
 #include <assert.h>
 
-static int first = 1;
 static int line_num = 0;
 
 static void xputc (int c, FILE *stream)

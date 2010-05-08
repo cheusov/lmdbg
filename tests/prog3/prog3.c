@@ -2,7 +2,7 @@
 
 char *allocate_memory (size_t count);
 
-int main ()
+int main (int argc, char **argv)
 {
 	void *p1 = NULL;
 	void *p2 = NULL;
