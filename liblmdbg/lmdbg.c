@@ -179,7 +179,7 @@ static void init_log (void)
 	}
 }
 
-void init_st_range (void)
+static void init_st_range (void)
 {
 	const char *s_st_skip = getenv ("LMDBG_ST_SKIP");
 	const char *s_st_count = getenv ("LMDBG_ST_COUNT");
