@@ -81,7 +81,7 @@ static void restore_sigfatal_handlers (void)
 
 int stacktrace (void **tb, int size)
 {
-	unsigned i  = 0;
+	int i  = 0;
 	void* frame = NULL;
 
 	for (i=0; i < size; ++i){
