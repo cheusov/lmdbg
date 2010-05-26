@@ -1,4 +1,46 @@
 ======================================================================
+Version 0.15.0, by Aleksey Cheusov, Wed, 26 May 2010 16:17:27 +0300
+
+  Latest "mk-configure" is required for building.
+
+  External tool "runawk" is needed for newly created "lmdbg-strip" and
+  "lmdbg-modules" programs. http://sourceforge.net/projects/runawk/
+
+  New utility "lmdbg-module" for enriching stacktraces given on input
+  with information about module by set of rules specified by user.
+
+  New utility "lmdbg-strip" for sripping stacktrace given on input.
+
+  lmdbg-sort:
+     - new sorting field "num"
+     - minor fix in sorting order (Linux + gawk)
+     - support for "info modulestat" input
+
+  lmdbg-grep:
+     - new variables to check: "op", "op_type" and "bytes".
+     - new field to grep: "module".
+
+  lmdbg-stat:
+     - accepts "num: <num>" per-stacktrace information on input
+
+  lmdbg:
+     -ofilename is accepted and is equal to '-o filename'.
+
+  lmdbg-run:
+     - -ppipe is accepted and is equal to '-p pipe'.
+     - by default 'num: <number>' tokens are output for each stacktrace.
+
+  lmdbg-m2s, lmdbg-s2m:
+    Internal singleline format has changed. As a result lmdbg-m2s|lmdbg-s2m
+    pair works correctly with input that doesn't have real stacktraces.
+
+  Fix in usage message for most lmdbg-* programs.
+
+  Fixes for warnings messages produced by gcc.
+
+  More regression tests.
+
+======================================================================
 Version 0.14.0, by Aleksey Cheusov, Tue, 13 Apr 2010 17:06:26 +0300
 
   New tools: lmdbg-stat, lmdbg-grep and lmdbg-sort for collecting and
