@@ -159,15 +159,15 @@ See INSTALL file
   information about memory alocations.
 
      $ cat -n testme.c
-          1  #include <stdlib.h>
-          2  
-          3  int main ()
-          4  {
-          5          int i;
-          6          void *p1, *p2;
-          7          p1 = malloc (100);
-          8          for (i=0; i < 3; ++i){
-          9                  p2 = realloc (NULL, 10+30*i);
+           1  #include <stdlib.h>
+           2  
+           3  int main ()
+           4  {
+           5          int i;
+           6          void *p1, *p2;
+           7          p1 = malloc (100);
+           8          for (i=0; i < 3; ++i){
+           9                  p2 = realloc (NULL, 10+30*i);
           10          }
           11          free (p1);
           12          free (p2);
@@ -241,6 +241,52 @@ See INSTALL file
      $
 
 - lmdbg-sort - see manual page.
+
+- lmdbg-strip
+
+  Example:
+
+     $ cat tests/test2.c
+     #include <stdlib.h>
+
+     int main ()
+     {
+        void *p1 = NULL;
+        void *p2 = NULL;
+
+        p1 = malloc (555);
+        p2 = realloc (p2, 666);
+        p2 = realloc (p2, 777);
+        p2 = realloc (p2, 888);
+
+        return 0;
+     }
+     $ lmdbg-run  -p 'lmdbg-sym -p | lmdbg-strip -ars' -o _log ./_test2
+     $ cat _log
+     info progname ./_test2
+     malloc ( 555 ) --> 0xXYZ num: 1
+                     log_stacktrace
+                     malloc
+                     main
+     realloc ( NULL , 666 ) --> 0xXYZ num: 2
+                     log_stacktrace
+                     realloc
+                     main
+     realloc ( 0xXYZ , 777 ) --> 0xXYZ num: 3
+                     log_stacktrace
+                     realloc
+                     main
+     realloc ( 0xXYZ , 888 ) --> 0xXYZ num: 4
+                     log_stacktrace
+                     realloc
+                     main
+     $
+
+- lmdbg-module
+
+  Example:
+
+     XXX
 
 ====================================================================
                           QUICK GUIDE
