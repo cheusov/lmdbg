@@ -14,19 +14,14 @@ CLEANFILES=	ChangeLog _*
 
 ###########################
 
-SUBDIR+=	libstacktrace
-SUBDIR+=	scripts
-SUBDIR+=	m2s
-SUBDIR+=	s2m
-# lmdbg-stat is not finished yet
-#SUBDIR+=	stat
-SUBDIR+=	.WAIT
-SUBDIR+=	liblmdbg
-SUBDIR+=	tests
+SUBPRJS+=	libstacktrace:liblmdbg
+SUBPRJS+=	scripts
+SUBPRJS+=	s2m m2s
+SUBPRJS+=	scripts tests
 
 ###########################
 
 .include "version.mk"
 .include "test.mk"
 
-.include <mkc.subdir.mk>
+.include <mkc.subprjs.mk>
