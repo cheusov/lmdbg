@@ -15,16 +15,28 @@
 #   =c|--config <config_file>     configuration file
 #   -s                            calculate and output sum of counters
 # Option -c is mandatory.
+#
+# Config file format:
+#   [modulename1]
+#     <op1.1> <field1.1> <string1.1> [+]
+#     <op1.2> <field1.2> <string1.2> [+]
+#     ...
+#   [modulename2]
+#     <op2.1> <field2.1> <string2.1> [+]
+#     ...
+#  where <op> is either "substr" or "match",
+#       <field> is either "funcname" or "source" and
+#       <string> is either string (op = "string")
+#                or regular expression (op = "match").
+# Example of configuration file:
+#   [wbd]
+#      match       funcname    ^ENWBD +
+#   [lemmatizer]
+#      substring   source      ENLMZ  +
+#   [prosao1]
+#      substring   source      ENLingui
+#
 #.end-str help
-
-#
-# config file format:
-# [modulename]
-# <op> <field> <string>
-# Ex.:
-# substr source   ENWBDTools.cpp
-# match  funcname ENWBDTools::Load
-#
 
 BEGIN {
 	# processing arguments
