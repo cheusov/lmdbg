@@ -19,5 +19,7 @@ WARNS=		4
 
 MKINSTALL?=	no # internal library, do not install it
 
+MKC_REQD=	0.15.0
+
 .include <mkc.configure.mk>
 .include <mkc.lib.mk>
