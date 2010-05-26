@@ -15,7 +15,6 @@
 #   -l            remove line number from sourcefile.c:<linenumber>
 #   -s            remove source, i.e. sourcefile.c:<linenumber>
 #   -n            remove "num: <number>" from input
-# Option -c is mandatory.
 #.end-str help
 
 BEGIN {
