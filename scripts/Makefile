@@ -27,5 +27,4 @@ INTEXTS_SED+=	-e 's,@GDB@,${GDB},g'
 
 .include "../version.mk"
 
-.include <mkc.intexts.mk>
 .include <mkc.prog.mk>

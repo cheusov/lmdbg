@@ -24,4 +24,4 @@ SUBPRJS+=	scripts tests
 .include "version.mk"
 .include "test.mk"
 
-.include <mkc.subprjs.mk>
+.include <mkc.subprj.mk>
