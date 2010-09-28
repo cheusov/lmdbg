@@ -218,7 +218,10 @@ void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
 #endif
 
 /* no WRAP and EXTRA_ARG! for calloc(3) and posix_memalign(3) */
+#ifndef __GLIBC__
+/* On glibc-based systems calloc doesn't work */
 void * calloc (size_t number, size_t s);
+#endif /* __GLIBC__ */
 #if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
 int posix_memalign (void **memptr, size_t align, size_t size);
 #endif
@@ -507,6 +510,8 @@ void WRAP(free) (void *p EXTRA_ARG)
 	}
 }
 
+#ifndef __GLIBC__
+/* On glibc-based systems calloc doesn't work */
 void * calloc (size_t number, size_t size)
 {
 	void *p;
@@ -528,6 +533,7 @@ void * calloc (size_t number, size_t size)
 		return (*real_calloc) (number, size);
 	}
 }
+#endif
 
 #if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
 int posix_memalign (void **memptr, size_t align, size_t size)

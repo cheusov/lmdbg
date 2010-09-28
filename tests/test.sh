@@ -573,11 +573,12 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 # lmdbg-run + prog4.c
 logname="$OBJDIR"/_log
 
-lmdbg-run -o "$logname" "$execname4"
+if test $with_glibc = 0; then
+    lmdbg-run -o "$logname" "$execname4"
 
-unify_address "$logname" |
-skip_useless_addr |
-cmp "prog4.c: lmdbg-run -o" \
+    unify_address "$logname" |
+    skip_useless_addr |
+    cmp "prog4.c: lmdbg-run -o" \
 'calloc ( 555 , 16 ) --> 0xF00DBEAF num: 1
 calloc ( 5 , 256 ) --> 0xF00DBEAF num: 2
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
@@ -585,13 +586,14 @@ calloc ( 1 , 10240 ) --> 0xF00DBEAF num: 4
 free ( 0xF00DBEAF ) num: 5
 '
 
-# lmdbg-leaks + prog4.c
-lmdbg-leaks "$logname" |
-unify_address | skip_useless_addr | sort |
-cmp "prog4.c: lmdbg-leaks + calloc" \
+    # lmdbg-leaks + prog4.c
+    lmdbg-leaks "$logname" |
+    unify_address | skip_useless_addr | sort |
+    cmp "prog4.c: lmdbg-leaks + calloc" \
 'calloc ( 1 , 10240 ) --> 0xF00DBEAF num: 4
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
 '
+fi
 
 # lmdbg-run + prog5.c
 logname="$OBJDIR"/_log
