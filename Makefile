@@ -19,7 +19,7 @@ SUBPRJ+=	scripts
 SUBPRJ+=	s2m m2s
 SUBPRJ+=	scripts tests
 
-MKC_CHECK_DEFINES+=		__GLIBC__
+MKC_CHECK_DEFINES+=		__GLIBC__:string.h
 
 ###########################
 .include <mkc.configure.mk>

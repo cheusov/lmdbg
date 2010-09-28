@@ -14,7 +14,7 @@ test: all
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
-	with_glibc=${HAVE_DEFINE.__GLIBC__}; \
+	with_glibc=${HAVE_DEFINE.__GLIBC___string_h}; \
 	export PATH LMDBG_LIB OBJDIR SRCDIR CC with_glibc; \
 	echo with_glibc=${HAVE_DEFINE.__GLIBC__}; \
 	cd ${.CURDIR}/tests; \
