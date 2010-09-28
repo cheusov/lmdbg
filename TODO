@@ -1,4 +1,3 @@
-- remove test programs from "all' target
 - lmdbg-grep: -f <n> output n first stacktraces
 - lmdbg-grep: -l <n> output n last stacktraces
 - lmdbg-sym: option to NOT generate source.c:NN or funcname component
