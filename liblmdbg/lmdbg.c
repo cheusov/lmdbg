@@ -58,15 +58,22 @@ static unsigned alloc_count = 0;
 
 #define POINTER_FORMAT "%p"
 
-static void * (*real_malloc)  (size_t s);
-static void * (*real_realloc) (void *p, size_t s);
-static void   (*real_free)    (void *p);
-static void * (*real_calloc)  (size_t number, size_t s);
+typedef void* (*malloc_t) (size_t);
+typedef void* (*realloc_t) (void *, size_t);
+typedef void (*free_t)    (void *);
+typedef void* (*calloc_t)  (size_t, size_t);
+typedef int  (*posix_memalign_t)  (void **, size_t, size_t);
+typedef void* (*memalign_t) (size_t, size_t);
+
+static malloc_t  real_malloc;
+static realloc_t real_realloc;
+static free_t    real_free;
+static calloc_t  real_calloc;
 #if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
-static int (*real_posix_memalign)  (void **memptr, size_t align, size_t size);
+static posix_memalign_t real_posix_memalign;
 #endif
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
-static void * (*real_memalign) (size_t align, size_t size);
+static memalign_t real_memalign;
 #endif
 
 static void lmdbg_startup (void);
@@ -123,30 +130,30 @@ static void init_fun_ptrs (void)
 	if (!libc_so)
 		exit (40);
 
-	real_malloc  = dlsym (libc_so, "malloc");
+	real_malloc  = (malloc_t) dlsym (libc_so, "malloc");
 	if (!real_malloc)
 		exit (41);
 
-	real_realloc = dlsym (libc_so, "realloc");
+	real_realloc = (realloc_t) dlsym (libc_so, "realloc");
 	if (!real_realloc)
 		exit (42);
 
-	real_free    = dlsym (libc_so, "free");
+	real_free    = (free_t) dlsym (libc_so, "free");
 	if (!real_free)
 		exit (43);
 
-	real_calloc  = dlsym (libc_so, "calloc");
+	real_calloc  = (calloc_t) dlsym (libc_so, "calloc");
 	if (!real_calloc)
 		exit (44);
 
 #if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
-	real_posix_memalign = dlsym (libc_so, "posix_memalign");
+	real_posix_memalign = (posix_memalign_t) dlsym (libc_so, "posix_memalign");
 	if (!real_posix_memalign)
 		exit (45);
 #endif
 
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
-	real_memalign    = dlsym (libc_so, "memalign");
+	real_memalign    = (memalign_t) dlsym (libc_so, "memalign");
 	if (!real_memalign)
 		exit (46);
 #endif
@@ -441,7 +448,7 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 
 		++alloc_count;
 
-		p = (*real_malloc) (s);
+		p = real_malloc (s);
 		fprintf (log_fd, "malloc ( %u ) --> %p num: %u\n",
 				 (unsigned) s, p, alloc_count);
 
@@ -450,7 +457,7 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 		enable_logging ();
 		return p;
 	}else{
-		return (*real_malloc) (s);
+		return real_malloc (s);
 	}
 }
 
