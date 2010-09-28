@@ -573,7 +573,7 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 # lmdbg-run + prog4.c
 logname="$OBJDIR"/_log
 
-if test $with_glibc = 0; then
+if test "$with_glibc" = 0; then
     lmdbg-run -o "$logname" "$execname4"
 
     unify_address "$logname" |

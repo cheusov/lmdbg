@@ -1,6 +1,5 @@
 MKC_COMMON_DEFINES.Linux=	-D_GNU_SOURCE
 MKC_CHECK_FUNCS3+=		posix_memalign:stdlib.h
-MKC_CHECK_DEFINES+=		__GLIBC__
 
 .include <mkc.configure.mk>
 
@@ -19,6 +18,7 @@ MKINSTALL=	no
 .PHONY: all test
 test : all
 	set -e; cd ${.CURDIR}; \
-	env with_glibc=${HAVE_DEFINE.__GNUC__} ./test.sh
+	echo HAVE_DEFINE.__GLIBC__=${HAVE_DEFINE.__GLIBC__}; \
+	env with_glibc=${HAVE_DEFINE.__GLIBC__} ./test.sh
 
 .include <mkc.subdir.mk>
