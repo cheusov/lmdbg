@@ -3,7 +3,6 @@
 - lmdbg-sym: option to NOT generate source.c:NN or funcname component
 - lmdbg-run: option for skipping addresses from the end
 - lmdbg-run: always prepand addresses with 0x?
-- lmdbg-run: -n for numbering all memory allocations
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - LMDBG_AWK - preferred AWK interpreter
 - 'info time <minutes>'
