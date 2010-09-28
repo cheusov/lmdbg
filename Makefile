@@ -14,10 +14,10 @@ CLEANFILES=	ChangeLog _*
 
 ###########################
 
-SUBPRJS+=	libstacktrace:liblmdbg
-SUBPRJS+=	scripts
-SUBPRJS+=	s2m m2s
-SUBPRJS+=	scripts tests
+SUBPRJ+=	libstacktrace:liblmdbg
+SUBPRJ+=	scripts
+SUBPRJ+=	s2m m2s
+SUBPRJ+=	scripts tests
 
 ###########################
 
