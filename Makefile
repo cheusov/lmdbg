@@ -12,8 +12,6 @@ CLEANFILES=	ChangeLog _*
 
 ###########################
 
-VERSION=	0.15.1
-
 SUBPRJ+=	libstacktrace:liblmdbg
 SUBPRJ+=	scripts
 SUBPRJ+=	s2m m2s
