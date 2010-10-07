@@ -12,6 +12,8 @@ CLEANFILES=	ChangeLog _*
 
 ###########################
 
+VERSION=	0.15.1
+
 SUBPRJ+=	libstacktrace:liblmdbg
 SUBPRJ+=	scripts
 SUBPRJ+=	s2m m2s
@@ -24,8 +26,6 @@ MKC_CHECK_DEFINES+=		__GLIBC__:string.h
 MKC_REQD=	0.20.0
 
 ###########################
-.include <mkc.configure.mk>
-
 .include "version.mk"
 .include "test.mk"
 

@@ -1,4 +1,15 @@
 ======================================================================
+Version 0.15.1, by Aleksey Cheusov, Thu,  7 Oct 2010 22:22:16 +0300
+
+  FIX: On Linux/glibc systems lmdbg-run may fail (assert(3))
+  because calloc(3) actually uses malloc(3). So, logging calloc(3)
+  has been disabled.
+
+  mk-configure >= 0.20 is required for building.
+
+  Minor fixes and clean-ups.
+
+======================================================================
 Version 0.15.0, by Aleksey Cheusov, Wed, 26 May 2010 16:17:27 +0300
 
   Latest "mk-configure" is required for building.
