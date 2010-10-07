@@ -23,6 +23,9 @@ MKC_CHECK_DEFINES+=		__GLIBC__:string.h
 
 MKC_REQD=	0.20.0
 
+clean: clean-tests
+cleandir: cleandir-tests
+
 ###########################
 .include "version.mk"
 .include "test.mk"
