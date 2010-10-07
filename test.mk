@@ -1,6 +1,7 @@
 .PHONY: test
 test: all-tests
 	@echo 'running tests...'; \
+	SKIP_CONFIGURE_MK=1; export SKIP_CONFIGURE_MK; \
 	cd ${.CURDIR}/liblmdbg; \
 	    LMDBG_LIB=`${MAKE} mkc_printobjdir`/liblmdbg.so; \
 	cd ${.CURDIR}/scripts; \
@@ -8,8 +9,6 @@ test: all-tests
 	cd ${.CURDIR}/s2m; \
 	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
 	cd ${.CURDIR}/m2s; \
-	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
-	cd ${.CURDIR}/stat; \
 	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
