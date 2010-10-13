@@ -29,7 +29,6 @@
 
 #include <Judy.h>
 
-static int first = 1;
 static int line_num = 0;
 
 static Pvoid_t hash = NULL;
@@ -96,7 +95,6 @@ static void **stacktrace_dup (void **st, int st_len)
 
 static void process_stacktrace (void)
 {
-	int i=0;
 	PWord_t ret;
 	int id;
 	int new = 0;
@@ -158,6 +156,10 @@ static void process_stacktrace (void)
 			ptrdata->allocated = op.bytes;
 			ptrdata->stacktrace_id = id;
 			break;
+		case ft_free:
+			break;
+		default:
+			abort ();
 	}
 
 	switch (op.type){
@@ -199,12 +201,12 @@ static void process_stacktrace (void)
 	stacktrace_len = 0;
 }
 
-void print_results (void)
+static void print_results (void)
 {
 	int i, j;
 	printf ("info stat total_allocs: %i\n", total_allocs_cnt);
 	printf ("info stat total_free_cnt: %i\n", total_free_cnt);
-	printf ("info stat total_leaks: %lu\n", total_allocated);
+	printf ("info stat total_leaks: %lu\n", (unsigned long) total_allocated);
 
 //	printf ("stacktrace_count=%i\n", stacktrace_count);
 
@@ -214,9 +216,9 @@ void print_results (void)
 		printf ("stacktrace peak: %lu max: %lu allocs: %i",
 				(unsigned long) statistics [i].peak_allocated,
 				(unsigned long) statistics [i].max_allocated,
-				(unsigned long) statistics [i].allocs_cnt);
+				                statistics [i].allocs_cnt);
 		if (statistics [i].allocated){
-			printf (" leaks: %lu", statistics [i].allocated);
+			printf (" leaks: %lu", (unsigned long) statistics [i].allocated);
 		}
 		printf ("\n");
 		for (j=0; j < statistics [i].stacktrace_len; ++j){
@@ -259,9 +261,6 @@ static void process_line (char *buf)
 	char *p, *last_p;
 	char * tokens [10];
 	int token_count = 0;
-	int i;
-
-	size_t bytes;
 
 	char orig_buf [20480];
 
