@@ -401,12 +401,42 @@ static void process_stream (FILE *in)
 	process_stacktrace ();
 }
 
+extern char *optarg;
+extern int optind;
+
+static void show_version (void)
+{
+	printf ("lmdbg-stat " VERSION "\n");
+	exit (0);
+}
+
+static void show_help (void)
+{
+	printf ("\
+Given an output of lmdbg-run or other lmdbg-* utilities on input\n\
+lmdbg-stat outputs a total and per-stacktrace statistical information\n\
+about memory alocations.\n\
+\n\
+usage: lmdbg-stat [OPTIONS] [files...]\n\
+OPTIONS:\n\
+  -h|--help                   display this screen\n\
+  -V|--version                display version\n\
+");
+}
+
 int main (int argc, char **argv)
 {
 	int i;
 	FILE *fd;
 
 	--argc, ++argv;
+
+	if (argc > 0 && (!strcmp(argv [0], "-V") || !strcmp(argv [0], "--version")))
+		show_version ();
+	if (argc > 0 && (!strcmp(argv [0], "-h") || !strcmp(argv [0], "--help"))){
+		show_help ();
+		exit (0);
+	}
 
 	if (!argc){
 		process_stream (stdin);

@@ -26,5 +26,4 @@ INTEXTS_SED+=	-e 's,@AWK@,${AWK},g'
 INTEXTS_SED+=	-e 's,@GDB@,${GDB},g'
 
 .include "../version.mk"
-
 .include <mkc.prog.mk>

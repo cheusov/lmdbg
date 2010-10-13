@@ -29,5 +29,4 @@ cleandir: cleandir-tests
 ###########################
 .include "version.mk"
 .include "test.mk"
-
 .include <mkc.subprj.mk>
