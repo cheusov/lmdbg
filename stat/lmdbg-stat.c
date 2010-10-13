@@ -229,13 +229,15 @@ static void print_results (void)
 
 static void * s2p (const char *s)
 {
-	void *addr;
+	void *addr = NULL;
 	int ret = 0;
 
-	ret = sscanf (s, "%p", &addr);
-	if (ret != 1){
-		perror ("Bad address:");
-		exit (1);
+	if (strcmp (s, "NULL")){
+		ret = sscanf (s, "%p", &addr);
+		if (ret != 1){
+			fprintf (stderr, "Bad address: %s\n", s);
+			exit (1);
+		}
 	}
 
 	return addr;
@@ -248,7 +250,7 @@ static int s2i (const char *s)
 
 	ret = sscanf (s, "%i", &val);
 	if (ret != 1){
-		perror ("Bad integer:");
+		fprintf (stderr, "Bad integer: %s\n", s);
 		exit (1);
 	}
 
