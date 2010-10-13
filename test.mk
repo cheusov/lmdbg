@@ -10,6 +10,8 @@ test: all-tests
 	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
 	cd ${.CURDIR}/m2s; \
 	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
+	cd ${.CURDIR}/stat; \
+	    PATH=`${MAKE} mkc_printobjdir`:$$PATH; \
 	OBJDIR=${.OBJDIR}; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \

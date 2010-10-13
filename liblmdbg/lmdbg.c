@@ -452,8 +452,12 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 		++alloc_count;
 
 		p = real_malloc (s);
-		fprintf (log_fd, "malloc ( %u ) --> %p num: %u\n",
-				 (unsigned) s, p, alloc_count);
+		if (p)
+			fprintf (log_fd, "malloc ( %u ) --> %p num: %u\n",
+					 (unsigned) s, p, alloc_count);
+		else
+			fprintf (log_fd, "malloc ( %u ) --> NULL num: %u\n",
+					 (unsigned) s, alloc_count);
 
 		log_stacktrace ();
 
@@ -467,6 +471,9 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 {
 	void *np;
+	char np_buf [100];
+	const char *np_ptr = "NULL";
+
 	assert (real_realloc);
 
 	if (log_enabled){
@@ -475,13 +482,19 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 		++alloc_count;
 
 		np = (*real_realloc) (p, s);
-		if (p){
-			fprintf (log_fd, "realloc ( %p , %u ) --> %p num: %u\n",
-					 p, (unsigned) s, np, alloc_count);
-		}else{
-			fprintf (log_fd, "realloc ( NULL , %u ) --> %p num: %u\n",
-					 (unsigned) s, np, alloc_count);
+		if (np){
+			snprintf (np_buf, sizeof (np_buf), "%u", np);
+			np_ptr = np_buf;
 		}
+
+		if (p){
+			fprintf (log_fd, "realloc ( %p , %u ) --> %s num: %u\n",
+					 p, (unsigned) s, np_ptr, alloc_count);
+		}else{
+			fprintf (log_fd, "realloc ( NULL , %s ) --> %p num: %u\n",
+					 (unsigned) s, np_ptr, alloc_count);
+		}
+
 		log_stacktrace ();
 
 		enable_logging ();
@@ -501,7 +514,11 @@ void WRAP(free) (void *p EXTRA_ARG)
 		++alloc_count;
 
 		(*real_free) (p);
-		fprintf (log_fd, "free ( %p ) num: %u\n", p, alloc_count);
+		if (p)
+			fprintf (log_fd, "free ( %p ) num: %u\n", p, alloc_count);
+		else
+			fprintf (log_fd, "free ( NULL ) num: %u\n", alloc_count);
+
 		log_stacktrace ();
 
 		enable_logging ();
@@ -523,8 +540,13 @@ void * calloc (size_t number, size_t size)
 		++alloc_count;
 
 		p = (*real_calloc) (number, size);
-		fprintf (log_fd, "calloc ( %u , %u ) --> %p num: %u\n",
-				 (unsigned) number, (unsigned) size, p, alloc_count);
+		if (p)
+			fprintf (log_fd, "calloc ( %u , %u ) --> %p num: %u\n",
+					 (unsigned) number, (unsigned) size, p, alloc_count);
+		else
+			fprintf (log_fd, "calloc ( %u , %u ) --> NULL num: %u\n",
+					 (unsigned) number, (unsigned) size, alloc_count);
+
 		log_stacktrace ();
 
 		enable_logging ();
@@ -547,9 +569,15 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 		++alloc_count;
 
 		ret = (*real_posix_memalign) (memptr, align, size);
-		fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p num: %u\n",
-				 (unsigned) align, (unsigned) size, *memptr,
-				 alloc_count);
+		if (ret)
+			fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p num: %u\n",
+					 (unsigned) align, (unsigned) size, *memptr,
+					 alloc_count);
+		else
+			fprintf (log_fd, "posix_memalign ( %u , %u ) --> NULL num: %u\n",
+					 (unsigned) align, (unsigned) size, *memptr,
+					 alloc_count);
+
 		log_stacktrace ();
 
 		enable_logging ();
