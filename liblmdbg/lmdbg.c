@@ -483,7 +483,7 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 
 		np = (*real_realloc) (p, s);
 		if (np){
-			snprintf (np_buf, sizeof (np_buf), "%u", np);
+			snprintf (np_buf, sizeof (np_buf), "%p", np);
 			np_ptr = np_buf;
 		}
 
@@ -491,7 +491,7 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 			fprintf (log_fd, "realloc ( %p , %u ) --> %s num: %u\n",
 					 p, (unsigned) s, np_ptr, alloc_count);
 		}else{
-			fprintf (log_fd, "realloc ( NULL , %s ) --> %p num: %u\n",
+			fprintf (log_fd, "realloc ( NULL , %u ) --> %s num: %u\n",
 					 (unsigned) s, np_ptr, alloc_count);
 		}
 
@@ -569,13 +569,13 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 		++alloc_count;
 
 		ret = (*real_posix_memalign) (memptr, align, size);
-		if (ret)
+		if (!ret)
 			fprintf (log_fd, "posix_memalign ( %u , %u ) --> %p num: %u\n",
 					 (unsigned) align, (unsigned) size, *memptr,
 					 alloc_count);
 		else
 			fprintf (log_fd, "posix_memalign ( %u , %u ) --> NULL num: %u\n",
-					 (unsigned) align, (unsigned) size, *memptr,
+					 (unsigned) align, (unsigned) size,
 					 alloc_count);
 
 		log_stacktrace ();
