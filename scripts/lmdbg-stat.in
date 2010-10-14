@@ -25,7 +25,7 @@
 
 usage () {
     cat <<'EOF'
-Given an output of lmdbg-run or other lmdbg-* utilities on input
+Taking an output of lmdbg-run or other lmdbg-* utilities on input
 lmdbg-stat outputs a total and per-stacktrace statistical information
 about memory alocations.
 

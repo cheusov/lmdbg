@@ -25,7 +25,7 @@ set -e
 
 usage () {
     cat <<'EOF'
-Given an output of lmdbg-stat on input lmdbg-grep outputs global
+Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 information and those stacktraces that match the specified AWK expression.
 
 usage: lmdbg-grep [OPTIONS] <awk_expr> [files...]

@@ -20,7 +20,7 @@ lmdbg-stat \- outputs statistical information for lmdbg-run output
 .SH SYNOPSIS
 .BI lmdbg-stat " [OPTIONS] [files...]"
 .SH DESCRIPTION
-Given output of
+Taking an output of
 .B lmdbg-run
 or other
 .B lmdbg-*

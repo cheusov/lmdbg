@@ -394,7 +394,7 @@ static void show_version (void)
 static void show_help (void)
 {
 	printf ("\
-Given an output of lmdbg-run or other lmdbg-* utilities on input\n\
+Taking an output of lmdbg-run or other lmdbg-* utilities on input\n\
 lmdbg-stat outputs a total and per-stacktrace statistical information\n\
 about memory alocations.\n\
 \n\

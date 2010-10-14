@@ -6,7 +6,7 @@
 #use "has_prefix.awk"
 
 #.begin-str help
-# lmdbg-module - detects module by analysing stacktrace with a help of rules
+# lmdbg-module - detects module by analysing stacktraces with a help of rules
 #                specified by user.
 # usage: lmdbg-module [OPTIONS] [files...]
 # OPTIONS:

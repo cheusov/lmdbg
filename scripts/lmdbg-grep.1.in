@@ -20,7 +20,7 @@ lmdbg-grep \- output stacktraces that match the specified condition
 .SH SYNOPSIS
 .BI lmdbg-grep " [OPTIONS] <awk_expr> [files...]"
 .SH DESCRIPTION
-Given output of
+Taking an output of
 .B lmdbg-stat
 on input
 .B lmdbg-grep

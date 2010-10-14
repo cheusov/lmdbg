@@ -20,7 +20,7 @@ lmdbg-sort \- sort stacktraces given on input
 .SH SYNOPSIS
 .BI lmdbg-sort " [OPTIONS] [files...]"
 .SH DESCRIPTION
-Given output of
+Taking an output of
 .B lmdbg-stat
 on input
 .B lmdbg-sort
