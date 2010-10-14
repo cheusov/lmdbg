@@ -29,9 +29,11 @@
 
 #include <Judy.h>
 
+#include "st_hash.h"
+
 static int line_num = 0;
 
-static Pvoid_t hash = NULL;
+static st_hash_t hash;
 
 static void xputc (int c, FILE *stream)
 {
@@ -61,8 +63,6 @@ typedef struct {
 } operation_t;
 
 static operation_t op;
-
-static int stacktrace_count = 0;
 
 typedef struct {
 	void **stacktrace;
@@ -97,41 +97,26 @@ static void process_stacktrace (void)
 {
 	PWord_t ret;
 	int id;
+	int old_maxid;
 	int new = 0;
 	ptrdata_t *ptrdata;
 
-//	printf ("stacktrace_len=%i\n", stacktrace_len);
-
 	if (!stacktrace_len)
 		return;
-
-//	printf ("type = %i\n", op.type);
-//	printf ("bytes = %u\n", (unsigned) op.bytes);
-//	printf ("oldaddr = %p\n", op.oldaddr);
-//	printf ("addr = %p\n", op.addr);
-
-//	for (i=0; i < stacktrace_len; ++i){
-//		printf ("  addr [%i]=%p\n", i, stacktrace [i]);
-//	}
 
 	switch (op.type){
 		case ft_malloc:
 		case ft_realloc:
 		case ft_memalign:
 		case ft_posix_memalign:
-			ret = (PWord_t) JudyHSIns (
-				&hash, stacktrace,
-				stacktrace_len * sizeof (stacktrace [0]), 0);
-			if (*ret == 0){
-				new = 1;
-				*ret = ++stacktrace_count;
-			}
-			id = *ret;
+			old_maxid = st_hash_getmaxid (hash);
+			id = st_hash_insert (hash, stacktrace, stacktrace_len);
 
+			new = id > old_maxid;
 			if (new){
 				statistics = (stat_t*) realloc (
 					statistics,
-					sizeof (statistics [0]) * (stacktrace_count+1));
+					sizeof (statistics [0]) * (id + 1));
 				memset (&statistics [id],0, sizeof (statistics [0]));
 			}
 
@@ -195,8 +180,6 @@ static void process_stacktrace (void)
 			abort ();
 	}
 
-//	printf ("stacktrace_count=%i\n", stacktrace_count);
-
 	/* reinit */
 	stacktrace_len = 0;
 }
@@ -204,15 +187,14 @@ static void process_stacktrace (void)
 static void print_results (void)
 {
 	int i, j;
+	int st_count;
+
 	printf ("info stat total_allocs: %i\n", total_allocs_cnt);
 	printf ("info stat total_free_cnt: %i\n", total_free_cnt);
 	printf ("info stat total_leaks: %lu\n", (unsigned long) total_allocated);
 
-//	printf ("stacktrace_count=%i\n", stacktrace_count);
-
-//	return;
-
-	for (i=1; i <= stacktrace_count; ++i){
+	st_count = st_hash_getmaxid (hash);
+	for (i=1; i <= st_count; ++i){
 		printf ("stacktrace peak: %lu max: %lu allocs: %i",
 				(unsigned long) statistics [i].peak_allocated,
 				(unsigned long) statistics [i].max_allocated,
@@ -267,7 +249,6 @@ static void process_line (char *buf)
 	char orig_buf [20480];
 
 	snprintf (orig_buf, sizeof (orig_buf), "%s", buf);
-//	fprintf (stderr, "%s\n", orig_buf);
 
 	if (!buf [0])
 		return;
@@ -438,6 +419,8 @@ int main (int argc, char **argv)
 		exit (0);
 	}
 
+	st_hash_create (&hash);
+
 	if (!argc){
 		process_stream (stdin);
 	}else{
@@ -452,6 +435,8 @@ int main (int argc, char **argv)
 			fclose (fd);
 		}
 	}
+
+	st_hash_destroy (&hash);
 
 	print_results ();
 

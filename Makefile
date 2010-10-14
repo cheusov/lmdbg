@@ -14,7 +14,7 @@ CLEANFILES=	ChangeLog _*
 
 SUBPRJ+=	libstacktrace:liblmdbg
 SUBPRJ+=	scripts
-SUBPRJ+=	s2m m2s stat
+SUBPRJ+=	s2m m2s st_hash:stat
 SUBPRJ+=	liblmdbg:tests s2m:tests m2s:tests scripts:tests
 
 SUBPRJ_DFLT=	s2m m2s scripts liblmdbg stat
