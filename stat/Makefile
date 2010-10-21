@@ -1,5 +1,7 @@
 PROG=		lmdbg-stat
 
+SRCS=		lmdbg-stat.c stat.c
+
 LIB_Judy?=	Judy
 
 MKC_REQUIRE_FUNCLIBS+=	JudyHSIns:${LIB_Judy}

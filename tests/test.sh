@@ -119,12 +119,12 @@ cmp "lmdbg-sysleaks --help" \
 
 lmdbg-stat --help | head -1 |
 cmp "lmdbg-stat --help" \
-'Given an output of lmdbg-run or other lmdbg-* utilities on input
+'Taking an output of lmdbg-run or other lmdbg-* utilities on input
 '
 
 lmdbg-grep --help | head -1 |
 cmp "lmdbg-grep --help" \
-'Given an output of lmdbg-stat on input lmdbg-grep outputs global
+'Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 '
 
 lmdbg-run -h            | head -1 |
@@ -149,12 +149,12 @@ cmp "lmdbg-sysleaks --help" \
 
 lmdbg-stat -h | head -1 |
 cmp "lmdbg-stat -h" \
-'Given an output of lmdbg-run or other lmdbg-* utilities on input
+'Taking an output of lmdbg-run or other lmdbg-* utilities on input
 '
 
 lmdbg-grep -h | head -1 |
 cmp "lmdbg-grep -h" \
-'Given an output of lmdbg-stat on input lmdbg-grep outputs global
+'Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 '
 
 lmdbg-run --version        | head -1 | version2XXX |

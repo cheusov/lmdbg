@@ -30,6 +30,7 @@
 #include <Judy.h>
 
 #include "st_hash.h"
+#include "stat.h"
 
 static int line_num = 0;
 
@@ -64,17 +65,6 @@ typedef struct {
 
 static operation_t op;
 
-typedef struct {
-	void **stacktrace;
-	int stacktrace_len;
-	int allocs_cnt;
-	size_t allocated;
-	size_t max_allocated;
-	size_t peak_allocated;
-} stat_t;
-
-static stat_t *statistics;
-
 static int total_allocs_cnt = 0;
 static int total_free_cnt = 0;
 static size_t total_allocated = 0;
@@ -100,6 +90,8 @@ static void process_stacktrace (void)
 	int old_maxid;
 	int new = 0;
 	ptrdata_t *ptrdata;
+	stat_t **stat_cell_p = NULL;
+	stat_t *stat_cell = NULL;
 
 	if (!stacktrace_len)
 		return;
@@ -113,23 +105,29 @@ static void process_stacktrace (void)
 			id = st_hash_insert (hash, stacktrace, stacktrace_len);
 
 			new = id > old_maxid;
-			if (new){
-				statistics = (stat_t*) realloc (
-					statistics,
-					sizeof (statistics [0]) * (id + 1));
-				memset (&statistics [id],0, sizeof (statistics [0]));
-			}
+//			if (new){
+//				statistics = (stat_t*) realloc (
+//					statistics,
+//					sizeof (statistics [0]) * (id + 1));
+//				memset (&statistics [id],0, sizeof (statistics [0]));
+//			}
 
-			statistics [id].allocated += op.bytes;
-			if (statistics [id].allocated > statistics [id].peak_allocated)
-				statistics [id].peak_allocated = statistics [id].allocated;
-			if (op.bytes > statistics [id].max_allocated)
-				statistics [id].max_allocated = op.bytes;
-			++statistics [id].allocs_cnt;
+			stat_cell_p = get_stat (id);
+			if (!*stat_cell_p){
+				*stat_cell_p = malloc (sizeof (stat_t));
+				memset (*stat_cell_p, 0, sizeof (stat_t));
+			}
+			stat_cell = *stat_cell_p;
+			stat_cell->allocated += op.bytes;
+			if (stat_cell->allocated > stat_cell->peak_allocated)
+				stat_cell->peak_allocated = stat_cell->allocated;
+			if (op.bytes > stat_cell->max_allocated)
+				stat_cell->max_allocated = op.bytes;
+			++stat_cell->allocs_cnt;
 			if (new){
-				statistics [id].stacktrace
+				stat_cell->stacktrace
 					= stacktrace_dup (stacktrace, stacktrace_len);
-				statistics [id].stacktrace_len = stacktrace_len;
+				stat_cell->stacktrace_len = stacktrace_len;
 			}
 			++total_allocs_cnt;
 			total_allocated += op.bytes;
@@ -157,7 +155,9 @@ static void process_stacktrace (void)
 				ptrdata = *(ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
 				total_allocated -= ptrdata->allocated;
-				statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
+				stat_cell_p = get_stat (ptrdata->stacktrace_id);
+				stat_cell = *stat_cell_p;
+				stat_cell->allocated -= ptrdata->allocated;
 
 				free (ptrdata);
 				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
@@ -168,7 +168,9 @@ static void process_stacktrace (void)
 				ptrdata = *(ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
 				total_allocated -= ptrdata->allocated;
-				statistics [ptrdata->stacktrace_id].allocated -= ptrdata->allocated;
+				stat_cell_p = get_stat (ptrdata->stacktrace_id);
+				stat_cell = *stat_cell_p;
+				stat_cell->allocated -= ptrdata->allocated;
 
 				++total_free_cnt;
 
@@ -188,6 +190,7 @@ static void print_results (void)
 {
 	int i, j;
 	int st_count;
+	stat_t *stat_cell;
 
 	printf ("info stat total_allocs: %i\n", total_allocs_cnt);
 	printf ("info stat total_free_cnt: %i\n", total_free_cnt);
@@ -195,16 +198,18 @@ static void print_results (void)
 
 	st_count = st_hash_getmaxid (hash);
 	for (i=1; i <= st_count; ++i){
+		stat_cell = *get_stat (i);
+
 		printf ("stacktrace peak: %lu max: %lu allocs: %i",
-				(unsigned long) statistics [i].peak_allocated,
-				(unsigned long) statistics [i].max_allocated,
-				                statistics [i].allocs_cnt);
-		if (statistics [i].allocated){
-			printf (" leaks: %lu", (unsigned long) statistics [i].allocated);
+				(unsigned long) stat_cell->peak_allocated,
+				(unsigned long) stat_cell->max_allocated,
+				                stat_cell->allocs_cnt);
+		if (stat_cell->allocated){
+			printf (" leaks: %lu", (unsigned long) stat_cell->allocated);
 		}
 		printf ("\n");
-		for (j=0; j < statistics [i].stacktrace_len; ++j){
-			printf (" %p\n", statistics [i].stacktrace [j]);
+		for (j=0; j < stat_cell->stacktrace_len; ++j){
+			printf (" %p\n", stat_cell->stacktrace [j]);
 		}
 	}
 }
