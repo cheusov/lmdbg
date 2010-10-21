@@ -14,12 +14,17 @@ CLEANFILES=	ChangeLog _*
 
 SUBPRJ+=	libstacktrace:liblmdbg
 SUBPRJ+=	scripts
-SUBPRJ+=	s2m m2s st_hash:stat
+SUBPRJ+=	s2m m2s
 SUBPRJ+=	liblmdbg:tests s2m:tests m2s:tests scripts:tests
 
-SUBPRJ_DFLT=	s2m m2s scripts liblmdbg stat
+SUBPRJ_DFLT=	s2m m2s scripts liblmdbg
 
-MKC_CHECK_DEFINES+=		__GLIBC__:string.h
+.ifndef WITH_LMDBG_STAT_SCRIPT
+SUBPRJ+=	st_hash:stat
+SUBPRJ_DFLT+=	stat
+.endif
+
+MKC_CHECK_DEFINES+=	__GLIBC__:string.h
 
 MKC_REQD=	0.20.0
 
