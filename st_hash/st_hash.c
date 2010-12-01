@@ -9,7 +9,7 @@ typedef struct {
 	Pvoid_t hash;
 } st_hash_real_t;
 
-int st_hash_create (st_hash_t *h)
+void * st_hash_create (void)
 {
 	st_hash_real_t *p = malloc (sizeof (st_hash_real_t));
 	if (!p){
@@ -20,10 +20,10 @@ int st_hash_create (st_hash_t *h)
 	p->count = 0;
 	p->hash  = NULL;
 
-	*h = (st_hash_t *) p;
+	return p;
 }
 
-int st_hash_insert (st_hash_t h, void **st, int st_size)
+int st_hash_insert (void *h, void **st, int st_size)
 {
 	st_hash_real_t *p = (st_hash_real_t *) h;
 	PWord_t ret = (PWord_t) JudyHSIns (
@@ -33,19 +33,19 @@ int st_hash_insert (st_hash_t h, void **st, int st_size)
 	return *ret;
 }
 
-int st_hash_getid (st_hash_t h, void **st, int st_size)
+int st_hash_getid (const void *h, void **st, int st_size)
 {
 	/* not implemented yet */
 	abort ();
 }
 
-int st_hash_getmaxid (st_hash_t h)
+int st_hash_getmaxid (const void * h)
 {
-	st_hash_real_t *p = (st_hash_real_t *) h;
+	const st_hash_real_t *p = (const st_hash_real_t *) h;
 	return p->count;
 }
 
-int st_hash_destroy (st_hash_t h)
+void st_hash_destroy (void *h)
 {
 	st_hash_real_t *p = (st_hash_real_t *) h;
 	JudyHSFreeArray (&p->hash, 0);
