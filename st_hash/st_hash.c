@@ -35,6 +35,7 @@ int st_hash_insert (st_hash_t h, void **st, int st_size)
 
 int st_hash_getid (st_hash_t h, void **st, int st_size)
 {
+	/* not implemented yet */
 	abort ();
 }
 
@@ -44,7 +45,9 @@ int st_hash_getmaxid (st_hash_t h)
 	return p->count;
 }
 
-int st_hash_destroy (st_hash_t *h)
+int st_hash_destroy (st_hash_t h)
 {
-//	free (* (void **) h);
+	st_hash_real_t *p = (st_hash_real_t *) h;
+	JudyHSFreeArray (&p->hash, 0);
+	free (h);
 }

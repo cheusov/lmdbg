@@ -12,6 +12,6 @@ int st_hash_getid (st_hash_t h, void **st, int st_size);
 /* returns maximum id */
 int st_hash_getmaxid (st_hash_t h);
 /* destroys st_hash object */
-int st_hash_destroy (st_hash_t *h);
+int st_hash_destroy (st_hash_t h);
 
 #endif // _ST_HASH_H_

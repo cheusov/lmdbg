@@ -441,7 +441,7 @@ int main (int argc, char **argv)
 		}
 	}
 
-	st_hash_destroy (&hash);
+	st_hash_destroy (hash);
 
 	print_results ();
 
