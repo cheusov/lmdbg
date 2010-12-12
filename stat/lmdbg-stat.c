@@ -34,7 +34,7 @@
 
 static int line_num = 0;
 
-static void *hash;
+static void *hash = NULL;
 
 static void xputc (int c, FILE *stream)
 {
@@ -441,12 +441,12 @@ int main (int argc, char **argv)
 		}
 	}
 
-	st_hash_destroy (hash);
-
 	print_results ();
 
 	if (line_num >= 1)
 		xputc ('\n', stdout);
+
+	st_hash_destroy (hash);
 
 	return 0;
 }
