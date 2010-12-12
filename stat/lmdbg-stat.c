@@ -34,7 +34,7 @@
 
 static int line_num = 0;
 
-static st_hash_t hash;
+static void *hash;
 
 static void xputc (int c, FILE *stream)
 {
@@ -424,7 +424,7 @@ int main (int argc, char **argv)
 		exit (0);
 	}
 
-	st_hash_create (&hash);
+	hash = st_hash_create ();
 
 	if (!argc){
 		process_stream (stdin);
