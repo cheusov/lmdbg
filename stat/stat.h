@@ -13,6 +13,7 @@ typedef struct {
 } stat_t;
 
 extern stat_t **get_stat (int id);
-extern void *stat;
+
+void destroy_stats (void);
 
 #endif // _STAT_H_

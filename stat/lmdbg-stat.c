@@ -447,6 +447,7 @@ int main (int argc, char **argv)
 		xputc ('\n', stdout);
 
 	st_hash_destroy (hash);
+	destroy_stats ();
 
 	return 0;
 }
