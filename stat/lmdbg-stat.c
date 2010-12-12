@@ -76,6 +76,22 @@ typedef struct {
 
 static Pvoid_t ptr2data = NULL;
 
+static void ptr2data_destroy (void)
+{
+	Word_t idx = 0;
+	stat_t ** ptr = (stat_t **) JudyLFirst (ptr2data, &idx, NULL);
+	if (!ptr)
+		return;
+
+	do {
+		if (*ptr)
+			free (*ptr);
+
+		ptr = (stat_t **) JudyLNext (ptr2data, &idx, NULL);
+	} while (ptr != NULL);
+	JudyLFreeArray (&ptr2data, NULL);
+}
+
 static void **stacktrace_dup (void **st, int st_len)
 {
 	void **p = malloc (st_len * sizeof (st [0]));
@@ -448,6 +464,7 @@ int main (int argc, char **argv)
 
 	st_hash_destroy (hash);
 	destroy_stats ();
+	ptr2data_destroy ();
 
 	return 0;
 }

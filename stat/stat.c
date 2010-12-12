@@ -18,8 +18,6 @@ void destroy_stats (void)
 		return;
 
 	do {
-		printf ("%li %p\n", idx, *ptr);
-
 		if (*ptr)
 			free (*ptr);
 
