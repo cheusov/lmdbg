@@ -18,8 +18,10 @@ void destroy_stats (void)
 		return;
 
 	do {
-		if (*ptr)
+		if (*ptr){
+			free ((*ptr)->stacktrace);
 			free (*ptr);
+		}
 
 		ptr = (stat_t **) JudyLNext (stat, &idx, NULL);
 	} while (ptr != NULL);

@@ -401,6 +401,10 @@ static void process_stream (FILE *in)
 	}
 
 	process_stacktrace ();
+
+	if (stacktrace)
+		free (stacktrace);
+	stacktrace = NULL;
 }
 
 extern char *optarg;
