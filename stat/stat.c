@@ -25,4 +25,5 @@ void destroy_stats (void)
 
 		ptr = (stat_t **) JudyLNext (stat, &idx, NULL);
 	} while (ptr != NULL);
+	JudyLFreeArray (&stat, NULL);
 }
