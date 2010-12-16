@@ -38,6 +38,7 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
    FreeBSD and OpenBSD make-s are not good. Unfortunately they are
    incompatible with NetBSD bmake.
 
+   http://freshmeat.net/projects/bmake
    http://www.crufty.net/ftp/pub/sjg/
    http://www.crufty.net/help/sjg/bmake.html
 
@@ -46,17 +47,18 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
 
    http://sourceforge.net/projects/mk-configure/
 
-1) LMDBG also needs a pipestatus, a set of shell functions for checking an
-   exit status of ALL programs in a pipe.
+1) At run time LMDBG also needs a pipestatus, a set of shell functions
+   for checking an exit status of ALL programs in a pipe.
 
    http://sourceforge.net/projects/pipestatus/
 
-2) Some of LMDBG programs are written in RunAWK. So, you need it too.
+2) Some of LMDBG programs are written in RunAWK. So, at run time you
+   need it too.
 
    http://sourceforge.net/projects/runawk/
 
-3) After successfully installing bmake, mk-configure and pipestatus you
-   are ready to install LMDBG.
+3) After installing bmake and mk-configure you are ready
+   to build and install LMDBG.
 
    Uncompress LMDBG tarball you've downloaded like this
    gzip -dc lmdbg-X-Y-Z.tar.gz | tar -xf-
@@ -74,20 +76,18 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
 6) (optional) mkcmake test
    If this command fails on your system, PLEASE LET ME NOW.
 
-7) mkcmake installdirs install
+7) mkcmake install
 
 If you need to change the default build options,
 run mkcmake like this
 
      env [DEFAULT_ASSIGNMENTS] mkcmake <target> [YOUR_ASSIGNMENTS]
 
-There are a lot of Makefile variables that can be changed during
-build and installation.  See Makefiles for LMDBG's own variables
-(All they are in the begining of Makefile).
-
 Examples of building and installing:
 
- a)  env PREFIX=/usr mkcmake all installdirs install
+ a)  export PREFIX=/usr
+     export SYSCONFDIR=/etc
+     mkcmake all install
 
  b)  env CC=gcc \
        PREFIX=/home/cheusov/local \
@@ -96,4 +96,13 @@ Examples of building and installing:
        LDADD=-lextralib \
        CFLAGS='-Werror -Wall' \
        GDB=/usr/pkg/bin/gdb \
-          mkcmake -s all installdirs install
+          mkcmake -s all install
+
+LMDBG's own environment variables that can be changed at build time:
+   GDB - path to gdb [gdb]
+   AWK - path to awk, on Solaris it makes sense
+         to set it to /usr/xpg4/bin/awk or /usr/gnu/gawk [awk]
+   WITH_LMDBG_STAT_SCRIPT - by default lmdbg-stat written in "C"
+         is built and installed. If this variable is set,
+         script written in AWK is installed instead. []
+   LIB_Judy - Judy library name [Judy]

@@ -12,7 +12,7 @@ INFILES+=	lmdbg-stat.1 #lmdbg-modules.1 lmdbg-strip.1
 
 .ifndef AWK
 .if exists(/usr/xpg4/bin/awk)
-# Under Solaris /usr/bin/awk is a dead body, we need POSIX awk!
+# On Solaris /usr/bin/awk is a dead body, we need POSIX awk!
 AWK?=		/usr/xpg4/bin/awk
 .else
 AWK?=		/usr/bin/awk

@@ -1,4 +1,16 @@
 ======================================================================
+Version 0.16.0, by Aleksey Cheusov, Thu, 16 Dec 2010 17:54:22 +0200
+
+  Spelling corrections in man pages
+
+  lmdbg-stat:
+    - reimplemented in C. Now it uses libJudy library.
+      See INSTALL for details.
+
+  lmdbg-run:
+    - NULL is *always* output as string "NULL"
+
+======================================================================
 Version 0.15.1, by Aleksey Cheusov, Thu,  7 Oct 2010 22:22:16 +0300
 
   FIX: On Linux/glibc systems lmdbg-run may fail (assert(3))
