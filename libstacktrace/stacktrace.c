@@ -75,7 +75,7 @@ static void restore_sigfatal_handlers (void)
 		tb [x] = __builtin_return_address (x); \
 		frame  = __builtin_frame_address (x); \
 		if (!tb [x] || !frame){\
-			tb [x] = 0; \
+			tb [x] = NULL; \
 			break;\
 		}
 
@@ -85,7 +85,7 @@ int stacktrace (void **tb, int size)
 	void* frame = NULL;
 
 	for (i=0; i < size; ++i){
-		tb [i] = 0;
+		tb [i] = NULL;
 	}
 
 	set_sigfatal_handlers ();
