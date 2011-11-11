@@ -772,6 +772,40 @@ posix_memalign ( 16 , 123 ) -> 0x3235000
  0x3	foobar
 '
 
+lmdbg-grep 'bytes == 123' ./input2.txt |
+cmp 'lmdbg-grep + bytes' \
+'info lalala
+malloc ( 123 ) -> 0x1234
+ 0x234
+ 0x456
+memalign ( 16 , 123 ) -> 0x1235000
+ 0x1
+ 0x2
+ 0x3
+posix_memalign ( 16 , 123 ) -> 0x3235000
+ 0x1	foo
+ 0x2	bar baz
+ 0x3	foobar
+'
+
+lmdbg-grep 'bytes == 1984' ./input2.txt |
+cmp 'lmdbg-grep + bytes' \
+'info lalala
+calloc ( 16 , 124 ) -> 0x1235
+ 0x235
+ 0x457
+ 0x678
+'
+
+lmdbg-grep 'bytes == 12300' ./input2.txt |
+cmp 'lmdbg-grep + bytes' \
+'info lalala
+realloc ( 0x1235000 , 12300 ) -> 0x2236000
+ 0x2
+ 0x3
+ 0x4
+'
+
 lmdbg-grep -v 'addrline ~ /bar/' ./input2.txt |
 cmp 'lmdbg-grep -v + addrline' \
 'info lalala
