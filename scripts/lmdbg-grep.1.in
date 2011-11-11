@@ -38,6 +38,9 @@ display help message.
 .TP
 .BI "-V|--version"
 Display the lmdbg version.
+.TP
+.BI "-v"
+Invert the sense of match.
 .SH EXAMPLE
 .VB
 $ cat log                    

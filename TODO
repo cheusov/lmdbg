@@ -1,7 +1,7 @@
+- remove long options
 - fprintf-ing to pipe/stdout should checked for errors
 - lmdbg-grep: -f <n> output n first stacktraces
 - lmdbg-grep: -l <n> output n last stacktraces
-- lmdbg-grep: -v invert sense of match -> man page!
 - lmdbg-sym: option to NOT generate source.c:NN or funcname component
 - lmdbg-run: option for skipping addresses from the end
 - lmdbg-run: always prepand addresses with 0x?
