@@ -1,8 +1,3 @@
-- lmdbg-stat:
-  - reimplement it in C (libJudy)
-  - should accept [files...]
-- lmdbg-grep:
-  - document "bytes" variable in man page
 - fprintf-ing to pipe/stdout should checked for errors
 - lmdbg-grep: -f <n> output n first stacktraces
 - lmdbg-grep: -l <n> output n last stacktraces
