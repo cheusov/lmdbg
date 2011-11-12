@@ -425,8 +425,8 @@ about memory alocations.\n\
 \n\
 usage: lmdbg-stat [OPTIONS] [files...]\n\
 OPTIONS:\n\
-  -h|--help                   display this screen\n\
-  -V|--version                display version\n\
+  -h          display this screen\n\
+  -V          display version\n\
 ");
 }
 
@@ -434,15 +434,27 @@ int main (int argc, char **argv)
 {
 	int i;
 	FILE *fd;
+	int opt;
 
-	--argc, ++argv;
-
-	if (argc > 0 && (!strcmp(argv [0], "-V") || !strcmp(argv [0], "--version")))
-		show_version ();
-	if (argc > 0 && (!strcmp(argv [0], "-h") || !strcmp(argv [0], "--help"))){
-		show_help ();
-		exit (0);
+	while (opt = getopt (argc, argv, "hV"), opt != -1){
+		switch (opt) {
+			case 'h':
+				show_help ();
+				exit (0);
+				break;
+			case 'V':
+				show_version ();
+				exit (0);
+				break;
+			case '?':
+			default:
+				show_help ();
+				exit (1);
+		}
 	}
+
+	argc -= optind;
+	argv += optind;
 
 	hash = st_hash_create ();
 
