@@ -5,6 +5,8 @@
 #use "trim.awk"
 #use "has_prefix.awk"
 
+#interp-var "LMDBG_MODULES_AWK"
+
 #.begin-str help
 # lmdbg-module - detects module by analysing stacktraces with a help of rules
 #                specified by user.

@@ -4,6 +4,8 @@
 
 #env "LC_ALL=C"
 
+#interp-var "LMDBG_STRIP_AWK"
+
 #.begin-str help
 # lmdbg-strip - strip stacktraces given on input
 # usage: lmdbg-strip [OPTIONS] [files...]
