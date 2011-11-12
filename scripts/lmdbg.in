@@ -30,7 +30,7 @@ EOF
 }
 
 usage (){
-	echo -n "\
+    cat <<'EOF'
 lmdbg is a tiny program for detecting memory leaks in C programs
 
 usage: lmdbg [OPTIONS] <prog> [args...]
@@ -42,7 +42,7 @@ OPTIONS:
   -v                verbose loggin
   -a                pass -a to lmdbg-sym
   -g                pass -g to lmdbg-sym (default)
-"
+EOF
 }
 
 lmdbg_sym_opts=''
