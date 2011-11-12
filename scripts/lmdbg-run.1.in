@@ -111,6 +111,10 @@ Specify the log file.
 .BI "-p" " pipe"
 Send all stacktraces to the pipe, not to the log file.
 .TP
+.B "-n"
+Do not enable logging on startup, sending SIGUSR1 signal to the process
+enables it.
+.TP
 .BI "-T" " skip"
 A number of addresses to skip from the top of stacktrace (farther from function main).
 .TP

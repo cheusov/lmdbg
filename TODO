@@ -6,7 +6,6 @@
 - lmdbg-run: always prepand addresses with 0x?
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - 'info time <minutes>'
-- SIGUSR1 (LMDBG_SIG_LOG) for starting logging, lmdbg-run -d
 - lmdbg-m2s and lmdbg-s2m --> /usr/local/libexec/lmdbg/
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free

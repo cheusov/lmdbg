@@ -44,7 +44,8 @@ OPTIONS:
   -V                     display version
   -o <filename>          set a filename for logging
   -p <pipe>              save pipe's output to log file
-  -v                     verbose loggin
+  -v                     verbose mode
+  -n                     do not enable logging on startup, SIGUSR1 enables it
   -T <stacktrace-skip>   addresses to skip in the top of stacktrace
   -B <stacktrace-skip>   addresses to skip in the bottom of stacktrace
   -M <stacktrace-max>    limit for a number of addresses in a stacktrace
@@ -58,7 +59,7 @@ lmdbg-run @LMDBG_VERSION@
 EOF
 }
 
-while getopts hVvo:p:S:M:T:B: f; do
+while getopts hVvo:p:nS:M:T:B: f; do
     case $f in
 	h)
 	    usage
@@ -73,6 +74,8 @@ while getopts hVvo:p:S:M:T:B: f; do
 	    ofile="$OPTARG";;
         p)
 	    pipe="$OPTARG";;
+	n)
+	    LMDBG_TIMEOUT=-1;;
         S|T)
 	    LMDBG_ST_SKIP_TOP="$OPTARG";;
         B)
@@ -85,8 +88,6 @@ while getopts hVvo:p:S:M:T:B: f; do
     esac
 done
 shift $(expr $OPTIND - 1)
-
-export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
 TMPDIR=${TMPDIR:=/tmp}
 
@@ -109,12 +110,13 @@ if test "$LMDBG_VERBOSE"; then
     echo Running "'$@' with LD_PRELOAD=$LMDBG_LIB" 1>&2
 fi
 
-LMDBG_FULL_ENV="LMDBG_LOGFILE='$ofile' LD_PRELOAD='$LMDBG_LIB' $LMDBG_ENV"
+LMDBG_LOGFILE="$ofile"
 LMDBG_PROGNAME="$1"
 
-export LMDBG_LOGFILE LMDBG_PROGNAME
+export LMDBG_LOGFILE LMDBG_PROGNAME LMDBG_TIMEOUT
+export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
-(eval env $LMDBG_FULL_ENV "$@")
+(eval env LD_PRELOAD="$LMDBG_LIB" "$@")
 
 wait
 

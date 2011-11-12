@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include <limits.h>
+#include <signal.h>
 
 #include <dlfcn.h>
 
@@ -54,6 +55,8 @@ static int         log_verbose  = 0;
 static int st_skip_top    = 0;
 static int st_skip_bottom = 0;
 static int st_count = INT_MAX;
+
+static int enabling_timeout = 0;
 
 static unsigned alloc_count = 0;
 
@@ -91,6 +94,24 @@ void destruct(void) { lmdbg_finish(); }
 #else
 #define WRAP(name) name
 #endif
+
+static void enable_logging (void);
+
+static void handler_sigusr1 (int dummy)
+{
+	enable_logging ();
+}
+
+static void set_sigusr1_handler (void)
+{
+	struct sigaction sa;
+
+	sa.sa_handler = handler_sigusr1;
+	sigemptyset (&sa.sa_mask);
+	sa.sa_flags = SA_RESTART;
+
+	sigaction (SIGUSR1, &sa, NULL);
+}
 
 static void print_stacktrace (void **buffer, int size)
 {
@@ -220,6 +241,15 @@ static void init_st_range (void)
 	}
 }
 
+static void init_enabling_timeout (void)
+{
+	const char *s = getenv ("LMDBG_TIMEOUT");
+	if (!s || !*s)
+		enabling_timeout = 0;
+	else
+		enabling_timeout = atoi(s);
+}
+
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 #define EXTRA_ARG , const void *CALLER
 #else
@@ -253,6 +283,9 @@ static void *(*memalign_hook_orig) (size_t align, size_t size EXTRA_ARG);
 
 static void enable_logging (void)
 {
+	if (!log_fd)
+		return;
+
 	log_enabled = 1;
 
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
@@ -427,13 +460,7 @@ static void lmdbg_startup (void)
 	print_sections_map ();
 	print_progname ();
 	init_verbose_flag ();
-
-	/*
-	fprintf (stderr, "real_malloc=%p\n", real_malloc);
-	fprintf (stderr, "real_realloc=%p\n", real_realloc);
-	fprintf (stderr, "real_free=%p\n", real_free);
-	fprintf (stderr, "real_memalign=%p\n", real_memalign);
-	*/
+	init_enabling_timeout ();
 
 #ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
 	malloc_hook_orig   = __malloc_hook;
@@ -444,8 +471,10 @@ static void lmdbg_startup (void)
 #endif
 #endif
 
-	if (log_filename != NULL)
+	if (log_filename != NULL && enabling_timeout == 0)
 		enable_logging ();
+	else if (enabling_timeout == -1)
+		set_sigusr1_handler ();
 }
 
 static void lmdbg_finish (void)
@@ -544,7 +573,7 @@ void WRAP(free) (void *p EXTRA_ARG)
 }
 
 #ifndef __GLIBC__
-/* On glibc-based systems calloc doesn't work */
+/* On glibc-based systems lmdbg doesn't work with calloc */
 void * calloc (size_t number, size_t size)
 {
 	void *p;
