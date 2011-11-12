@@ -37,17 +37,36 @@ usage: lmdbg [OPTIONS] <prog> [args...]
 OPTIONS:
   -h                display this screen
   -V                display version
-  -c <config_file>  configuration file for lmdbg-leaks
+
+  -M <mode>         mode
+     l or leaks     program is analysed for memory leaks (the default)
+     p or peak      statistical infroamtion about peak memory usage
+                    per stacktrace is output
+     a or allocs    statistical infroamtion about a number of allocations
+                    per stacktrace is output
+     m or max       statistical infroamtion about maximum number of bytes
+                    allocated per stacktrace is output
+
   -o <filename>     set a filename for logging
   -v                verbose loggin
+
+  -c <config_file>  configuration file for lmdbg-leaks
+
+  -T <num>          pass -T<num> to lmdbg-run
+  -B <num>          pass -B<num> to lmdbg-run
+  -n                pass -n to lmdbg-run
+
   -a                pass -a to lmdbg-sym
   -g                pass -g to lmdbg-sym (default)
 EOF
 }
 
 lmdbg_sym_opts=''
+lmdbg_run_opts=''
 
-while getopts hVvo:c:ga f; do
+mode=leaks
+
+while getopts hVvo:c:gaT:B:nM: f; do
     case $f in
 	h)
 	    usage
@@ -65,6 +84,14 @@ while getopts hVvo:c:ga f; do
 	    lmdbg_sym_opts="$lmdbg_sym_opts -g";;
 	a)
 	    lmdbg_sym_opts="$lmdbg_sym_opts -a";;
+	T)
+	    lmdbg_run_opts="$lmdbg_run_opts -T$OPTARG";;
+	B)
+	    lmdbg_run_opts="$lmdbg_run_opts -B$OPTARG";;
+	n)
+	    lmdbg_run_opts="$lmdbg_run_opts -n";;
+	M)
+	    mode="$OPTARG";;
 	'?')
 	    usage 1>&2
 	    exit 1;;
@@ -91,12 +118,24 @@ type lmdbg-sym   > /dev/null || exit 2
 type lmdbg-leaks > /dev/null || exit 3
 type lmdbg-sysleaks > /dev/null || exit 3
 
-pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts -p | lmdbg-sysleaks $conf_opts -s | grep -v '^info '"
+case "$mode" in
+    l|leaks)
+	pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | grep -v '^info '";;
+    p|peak)
+	pipe="lmdbg-stat | lmdbg-sort -fpeak | lmdbg-sym $lmdbg_sym_opts";;
+    a|allocs)
+	pipe="lmdbg-stat | lmdbg-sort -fallocs | lmdbg-sym $lmdbg_sym_opts";;
+    m|max)
+	pipe="lmdbg-stat | lmdbg-sort -fmax | lmdbg-sym $lmdbg_sym_opts";;
+    *)
+	echo "bad argument for -M" 1>&2
+	exit 1;;
+esac
 
-lmdbg-run -p "$pipe" -o "$log_file" "$@"
+lmdbg-run $lmdbg_run_opts -p "$pipe" -o "$log_file" "$@"
 if test -s "$log_file"; then
     if test "$verbose"; then
-	echo "Memory leaks were detected and saved to the file '$log_file'" 1>&2
+	echo "Log file was saved to '$log_file'" 1>&2
     fi
 
     exit 10
