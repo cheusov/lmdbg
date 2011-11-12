@@ -214,6 +214,30 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 free ( 0xF00DBEAF ) num: 5
 "
 
+# -T
+lmdbg-run -o "$logname" -T1 "$execname1"
+
+unify_address "$logname" | skip_useless_addr |
+cmp "prog1.c: lmdbg-run -T" \
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
+"
+
+# -B
+lmdbg-run -o "$logname" -B2 "$execname1"
+
+unify_address "$logname" | skip_useless_addr |
+cmp "prog1.c: lmdbg-run -B" \
+"malloc ( 555 ) --> 0xF00DBEAF num: 1
+realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
+realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
+realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
+free ( 0xF00DBEAF ) num: 5
+"
+
 # -o
 lmdbg-run -o "$logname" "$execname1"
 

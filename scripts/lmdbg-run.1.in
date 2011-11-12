@@ -111,8 +111,11 @@ Specify the log file.
 .BI "-p" " pipe"
 Send all stacktraces to the pipe, not to the log file.
 .TP
-.BI "-S" " skip"
-A number of addresses to skip in stacktrace.
+.BI "-T" " skip"
+A number of addresses to skip from the top of stacktrace (farther from function main).
+.TP
+.BI "-B" " skip"
+A number of addresses to skip from the bottom of stacktrace (nearer to function main).
 .TP
 .BI "-M" " maximum"
 Limit for a number of addresses in a stacktrace.

@@ -45,7 +45,8 @@ OPTIONS:
   -o <filename>          set a filename for logging
   -p <pipe>              save pipe's output to log file
   -v                     verbose loggin
-  -S <stacktrace-skip>   a number of addresses to skip in a stacktrace
+  -T <stacktrace-skip>   addresses to skip in the top of stacktrace
+  -B <stacktrace-skip>   addresses to skip in the bottom of stacktrace
   -M <stacktrace-max>    limit for a number of addresses in a stacktrace
 
 EOF
@@ -57,7 +58,7 @@ lmdbg-run @LMDBG_VERSION@
 EOF
 }
 
-while getopts hVvo:p:S:M: f; do
+while getopts hVvo:p:S:M:T:B: f; do
     case $f in
 	h)
 	    usage
@@ -72,8 +73,10 @@ while getopts hVvo:p:S:M: f; do
 	    ofile="$OPTARG";;
         p)
 	    pipe="$OPTARG";;
-        S)
-	    LMDBG_ST_SKIP="$OPTARG";;
+        S|T)
+	    LMDBG_ST_SKIP_TOP="$OPTARG";;
+        B)
+	    LMDBG_ST_SKIP_BOTTOM="$OPTARG";;
         M)
 	    LMDBG_ST_COUNT="$OPTARG";;
 	'?')
@@ -83,7 +86,7 @@ while getopts hVvo:p:S:M: f; do
 done
 shift $(expr $OPTIND - 1)
 
-export LMDBG_ST_SKIP LMDBG_ST_COUNT
+export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
 TMPDIR=${TMPDIR:=/tmp}
 

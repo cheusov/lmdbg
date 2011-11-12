@@ -51,7 +51,8 @@ static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
 static int         log_verbose  = 0;
 
-static int st_skip  = 0;
+static int st_skip_top    = 0;
+static int st_skip_bottom = 0;
 static int st_count = INT_MAX;
 
 static unsigned alloc_count = 0;
@@ -94,10 +95,18 @@ void destruct(void) { lmdbg_finish(); }
 static void print_stacktrace (void **buffer, int size)
 {
 	int i;
+	int top, bottom;
 	if (!log_fd)
 		return;
 
-	for (i = st_skip; i < size && i-st_skip < st_count; ++i) {
+	if (st_skip_top + st_skip_bottom >= size){
+		top = bottom = 0;
+	}else{
+		top    = st_skip_top;
+		bottom = st_skip_bottom;
+	}
+
+	for (i = top; i < size - bottom && i-top < st_count; ++i){
 		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
 	}
 }
@@ -188,18 +197,25 @@ static void init_log (void)
 
 static void init_st_range (void)
 {
-	const char *s_st_skip = getenv ("LMDBG_ST_SKIP");
-	const char *s_st_count = getenv ("LMDBG_ST_COUNT");
+	const char *s_st_skip_top    = getenv ("LMDBG_ST_SKIP_TOP");
+	const char *s_st_skip_bottom = getenv ("LMDBG_ST_SKIP_BOTTOM");
+	const char *s_st_count       = getenv ("LMDBG_ST_COUNT");
 
-	if (s_st_skip && s_st_skip [0]){
-		st_skip = atoi (s_st_skip);
-		if (st_skip < 0)
-			st_skip = 0;
+	if (s_st_skip_top && s_st_skip_top [0]){
+		st_skip_top = atoi (s_st_skip_top);
+		if (st_skip_top < 0)
+			st_skip_top = 0;
+	}
+
+	if (s_st_skip_bottom && s_st_skip_bottom [0]){
+		st_skip_bottom = atoi (s_st_skip_bottom);
+		if (st_skip_bottom < 0)
+			st_skip_bottom = 0;
 	}
 
 	if (s_st_count && s_st_count [0]){
 		st_count = atoi (s_st_count);
-		if (st_count < 0)
+		if (st_count <= 0)
 			st_count = INT_MAX;
 	}
 }
