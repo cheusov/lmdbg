@@ -260,7 +260,7 @@ cmp "prog1.c: lmdbg-leaks" \
 "
 
 # lmdbg-sym -g
-lmdbg-sym -g -p "$logname" |
+lmdbg-sym -g "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym" \
@@ -277,7 +277,7 @@ free ( 0xF00DBEAF ) num: 5
 "
 
 # lmdbg-sym -g
-lmdbg-sym -g "$execname1" "$logname" |
+lmdbg-sym -g -P "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -g" \
@@ -294,7 +294,7 @@ free ( 0xF00DBEAF ) num: 5
 "
 
 # lmdbg-sym -a
-lmdbg-sym -a "$execname1" "$logname" |
+lmdbg-sym -a -P "$execname1" "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym -a" \
@@ -334,7 +334,7 @@ cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with two leaks
-lmdbg-run -o "$logname" -p"lmdbg-sym -p" "$execname2"
+lmdbg-run -o "$logname" -p"lmdbg-sym" "$execname2"
 
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers |
@@ -514,7 +514,7 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 '
 
 # lmdbg-sym -g and shared libraries
-lmdbg-sym -g "$exec3name" "$logname" |
+lmdbg-sym -g -P "$exec3name" "$logname" |
 unify_paths | unify_address | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \
