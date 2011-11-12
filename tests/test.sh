@@ -97,53 +97,23 @@ cmp (){
 
 ####################
 # completely stupid tests
-lmdbg-run --help | head -1 |
-cmp "lmdbg-run --help" \
-'lmdbg-run is intended to run your program with
-'
-
-lmdbg-sym --help | head -1 |
-cmp "lmdbg-sym --help" \
-"lmdbg-sym analyses lmdbg-run's output and converts
-"
-
-lmdbg-leaks --help | head -1 |
-cmp "lmdbg-leaks --help" \
-"This program analyses lmdbg-run's or lmdbg-sym's output and
-"
-
-lmdbg-sysleaks --help   | head -1 |
-cmp "lmdbg-sysleaks --help" \
-"This program analyses lmdbg-run's output and
-"
-
-lmdbg-stat --help | head -1 |
-cmp "lmdbg-stat --help" \
-'Taking an output of lmdbg-run or other lmdbg-* utilities on input
-'
-
-lmdbg-grep --help | head -1 |
-cmp "lmdbg-grep --help" \
-'Taking an output of lmdbg-stat on input lmdbg-grep outputs global
-'
-
 lmdbg-run -h            | head -1 |
-cmp "lmdbg-run --help" \
+cmp "lmdbg-run -h" \
 'lmdbg-run is intended to run your program with
 '
 
 lmdbg-sym -h            | head -1 |
-cmp "lmdbg-sym --help" \
+cmp "lmdbg-sym -h" \
 "lmdbg-sym analyses lmdbg-run's output and converts
 "
 
 lmdbg-leaks -h          | head -1 |
-cmp "lmdbg-leaks --help" \
+cmp "lmdbg-leaks -h" \
 "This program analyses lmdbg-run's or lmdbg-sym's output and
 "
 
 lmdbg-sysleaks -h       | head -1 |
-cmp "lmdbg-sysleaks --help" \
+cmp "lmdbg-sysleaks -h" \
 "This program analyses lmdbg-run's output and
 "
 
@@ -156,45 +126,6 @@ lmdbg-grep -h | head -1 |
 cmp "lmdbg-grep -h" \
 'Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 '
-
-lmdbg-run --version        | head -1 | version2XXX |
-cmp "lmdbg-run --version" \
-"lmdbg-run XXX
-"
-
-lmdbg-sym --version        | head -1 | version2XXX |
-cmp "lmdbg-sym --version" \
-"lmdbg-sym XXX
-"
-
-lmdbg-leaks --version      | head -1 | version2XXX |
-cmp "lmdbg-leaks --version" \
-"lmdbg-leaks XXX
-"
-lmdbg-sysleaks --version   | head -1 | version2XXX |
-cmp "lmdbg-sysleaks --version" \
-"lmdbg-sysleaks XXX
-"
-
-lmdbg-stat --version       | head -1 | version2XXX |
-cmp 'lmdbg-stat --version' \
-'lmdbg-stat XXX
-'
-
-lmdbg-grep --version       | head -1 | version2XXX |
-cmp "lmdbg-grep --version" \
-"lmdbg-grep XXX
-"
-
-lmdbg-modules --version       | head -1 | version2XXX |
-cmp "lmdbg-modules --version" \
-"lmdbg-modules XXX
-"
-
-lmdbg-strip --version       | head -1 | version2XXX |
-cmp "lmdbg-strip --version" \
-"lmdbg-strip XXX
-"
 
 lmdbg-run -V               | head -1 | version2XXX |
 cmp "lmdbg-run -V" \
@@ -283,11 +214,11 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 free ( 0xF00DBEAF ) num: 5
 "
 
-# --log
-lmdbg-run --log "$logname" "$execname1"
+# -o
+lmdbg-run -o "$logname" "$execname1"
 
 unify_address "$logname" | skip_useless_addr |
-cmp "prog1.c: lmdbg-run --log" \
+cmp "prog1.c: lmdbg-run -o" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
@@ -304,8 +235,8 @@ cmp "prog1.c: lmdbg-leaks" \
 "realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
-# lmdbg-sym --with-gdb
-lmdbg-sym --with-gdb -p "$logname" |
+# lmdbg-sym -g
+lmdbg-sym -g -p "$logname" |
 unify_address | hide_lmdbg_code | hide_line_numbers |
 canonize_paths | skip_useless_addr |
 cmp "prog1.c: lmdbg-sym" \
@@ -355,13 +286,13 @@ free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN
 "
 
-# lmdbg-run --pipe lmdbg-leaks
-lmdbg-run -o"$logname" --pipe lmdbg-leaks "$execname1"
+# lmdbg-run -p lmdbg-leaks
+lmdbg-run -o"$logname" -p lmdbg-leaks "$execname1"
 
 unify_address "$logname" | hide_lmdbg_code |
 hide_line_numbers |
 canonize_paths | skip_useless_addr |
-cmp "prog1.c: lmdbg-run --pipe lmdbg-leaks" \
+cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 "realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
@@ -559,7 +490,7 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 '
 
 # lmdbg-sym -g and shared libraries
-lmdbg-sym --with-gdb "$exec3name" "$logname" |
+lmdbg-sym -g "$exec3name" "$logname" |
 unify_paths | unify_address | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \

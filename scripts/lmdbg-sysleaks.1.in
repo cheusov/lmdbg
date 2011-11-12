@@ -27,16 +27,16 @@ output and
 prints (or skips) system-wide memory leaks listed in configuration file.
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version
 .TP
-.BI "-c|--config"
+.BI "-c"
 Specify the config file
 .TP
-.BI "-s|--skip-leaks"
+.BI "-s"
 Skip system-wide memory leaks
 .SH FILES
 .TP

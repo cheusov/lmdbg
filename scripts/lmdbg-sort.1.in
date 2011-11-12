@@ -28,10 +28,10 @@ resort stacktraces using values of
 .IR allocs ", " max ", " peak " or " leaks .
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message.
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-f" " field"

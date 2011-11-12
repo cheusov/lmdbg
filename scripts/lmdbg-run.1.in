@@ -99,16 +99,16 @@ $
 .VE
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message.
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version.
 .TP
-.BI "-o|--log" " filename"
+.BI "-o" " filename"
 Specify the log file.
 .TP
-.BI "-p|--pipe" " pipe"
+.BI "-p" " pipe"
 Send all stacktraces to the pipe, not to the log file.
 .TP
 .BI "-S" " skip"

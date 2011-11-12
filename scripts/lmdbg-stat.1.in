@@ -45,10 +45,10 @@ Per-stacktrace or total amount of bytes that were allocated but not freed/
 .RE
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message.
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version.
 .SH EXAMPLE
 .VB

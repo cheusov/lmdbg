@@ -8,13 +8,13 @@
 # lmdbg-strip - strip stacktraces given on input
 # usage: lmdbg-strip [OPTIONS] [files...]
 # OPTIONS:
-#   -h|--help     display this screen
-#   -V|--version  display version
-#   -a            remove stacktrace addresses
-#   -r            replace return and input addresses with fake value
-#   -l            remove line number from sourcefile.c:<linenumber>
-#   -s            remove source, i.e. sourcefile.c:<linenumber>
-#   -n            remove "num: <number>" from input
+#   -h      display this screen
+#   -V      display version
+#   -a      remove stacktrace addresses
+#   -r      replace return and input addresses with fake value
+#   -l      remove line number from sourcefile.c:<linenumber>
+#   -s      remove source, i.e. sourcefile.c:<linenumber>
+#   -n      remove "num: <number>" from input
 #.end-str help
 
 BEGIN {

@@ -31,8 +31,8 @@ about memory alocations.
 
 usage: lmdbg-stat [OPTIONS] [files...]
 OPTIONS:
-  -h|--help                   display this screen
-  -V|--version                display version
+  -h        display this screen
+  -V        display version
 EOF
 }
 
@@ -42,26 +42,20 @@ lmdbg-stat @LMDBG_VERSION@
 EOF
 }
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hV f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	'?')
+	    usage 1>&2
 	    exit 1;;
-	*)
-	    break;;
     esac
-
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 sumcounts (){
     @AWK@ '

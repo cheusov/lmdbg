@@ -30,16 +30,16 @@ uses
 .BR lmdbg-run ", " lmdbg-leaks ", " lmdbg-sym ", and " lmdbg-sysleaks "."
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version
 .TP
-.BI "-o|--log" " filename"
+.BI "-o" " filename"
 Specify the log file.
 .TP
-.BI "-c|--config" " filename"
+.BI "-c" " filename"
 Specify the config file
 .TP
 .B "-v"

@@ -27,15 +27,12 @@ set -e
 
 usage () {
     cat <<'EOF'
-lalala
-
 usage: lmdbg-sort [OPTIONS] [files...]
 OPTIONS:
-  -h|--help                display this help
-  -V|--version             display version
-  -f <field>               sorting key,
-                           valid values are: peak, max, allocs, leaks.
-                           This option is mandatory.
+  -h           display this help
+  -V           display version
+  -f <field>   sorting key, valid values are: peak, max, allocs, leaks.
+               This option is mandatory.
 EOF
 }
 
@@ -45,31 +42,22 @@ lmdbg-grep @LMDBG_VERSION@
 EOF
 }
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hVf: f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	-f)
-	    field=$2
-	    shift;;
-	-f*)
-	    field=`echo $1 | cut -b 3-`;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	f)
+	    field=$OPTARG;;
+	'?')
+	    usage
 	    exit 1;;
-	*)
-	    break;;
     esac
-
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 if test -z "$field"; then
     usage

@@ -35,58 +35,50 @@ lmdbg is a tiny program for detecting memory leaks in C programs
 
 usage: lmdbg [OPTIONS] <prog> [args...]
 OPTIONS:
-  -h|--help                   display this screen
-  -V|--version                display version
-  -c|--config <config_file>   configuration file for lmdbg-leaks
-  -o|--log <filename>         set a filename for logging
-  -v|--verbose                verbose loggin
-  -a                          pass -a to lmdbg-sym
-  -g|--with-gdb               pass -g to lmdbg-sym (default)
+  -h                display this screen
+  -V                display version
+  -c <config_file>  configuration file for lmdbg-leaks
+  -o <filename>     set a filename for logging
+  -v                verbose loggin
+  -a                pass -a to lmdbg-sym
+  -g                pass -g to lmdbg-sym (default)
 "
 }
 
 lmdbg_sym_opts=''
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hVvo:c:ga f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	-v|--verbose)
+	v)
 	    verbose=--verbose;;
-	-o|--log)
-	    log_file=$2
-	    shift;;
-        -c|--config)
-	    conf_opts="-c $2"
-	    shift;;
-	-g|--with-gdb)
+	o)
+	    log_file="$OPTARG";;
+        c)
+	    conf_opts="-c $OPTARG";;
+	g)
 	    lmdbg_sym_opts="$lmdbg_sym_opts -g";;
-	-a)
+	a)
 	    lmdbg_sym_opts="$lmdbg_sym_opts -a";;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	'?')
+	    usage 1>&2
 	    exit 1;;
-	*)
-	    break;;
     esac
-
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 if test $# = 0; then
-    echo "<prog> is missing. Run lmdbg --help for more information" 1>&2
+    echo "<prog> is missing. Run lmdbg -h for more information" 1>&2
     exit 1
 fi
 
 if test "_$log_file" = "_"; then
-    echo "log file is not specified. Run lmdbg --help for more information" 1>&2
+    echo "log file is not specified. Run lmdbg -h for more information" 1>&2
     exit 1
 fi
 

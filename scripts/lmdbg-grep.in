@@ -30,9 +30,9 @@ information and those stacktraces that match the specified AWK expression.
 
 usage: lmdbg-grep [OPTIONS] <awk_expr> [files...]
 OPTIONS:
-  -h|--help                   display this screen
-  -V|--version                display version
-  -v                          invert match
+  -h         display this screen
+  -V         display version
+  -v         invert the sense of match
 EOF
 }
 
@@ -43,28 +43,23 @@ EOF
 }
 
 invert=0
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+
+while getopts hVv f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	-v)
+	v)
 	    invert=1;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	'?')
+	    usage
 	    exit 1;;
-	*)
-	    break;;
     esac
-
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 if test $# -lt 1; then
     usage

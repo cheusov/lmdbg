@@ -27,10 +27,10 @@ output and prints stacktraces with
 memory leaks.
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version
 .SH EXAMPLES
 .VB

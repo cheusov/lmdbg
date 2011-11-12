@@ -29,51 +29,45 @@ export LC_ALL
 sysconfdir=@sysconfdir@
 
 usage (){
-    echo -n "\
+cat <<'EOF'
 This program analyses lmdbg-run's output and
 extracts (or skips) system-wide memory leaks.
 
 usage:
     lmdbg-sysleaks [OPTIONS] [files...]
 OPTIONS:
-    -h|--help                  displays this screen
-    -V|--version               display version
-    -c|--config <config_file>  configuration file
-    -s|--skip-leaks            (like grep -v)
-"
+    -h                displays this screen
+    -V                display version
+    -c <config_file>  configuration file
+    -s                (like grep -v)
+EOF
 }
 
 version () {
-    cat <<EOF
+    cat <<'EOF'
 lmdbg-sysleaks @LMDBG_VERSION@
 EOF
 }
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hVc:s f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-        -c|--config)
-	    conf_file=$2
-	    shift;;
-	-s|--skip-leaks)
+        c)
+	    conf_file="$OPTARG";;
+	s)
 	    skip_leaks=1
 	    export skip_leaks;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	'?')
+	    usage 1>&2
 	    exit 1;;
-	*)
-	    break;;
     esac
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 if test -z "$conf_file"; then
     conf_file=$HOME/.lmdbg.conf

@@ -50,13 +50,13 @@ in it.  Address, source file and
 function name are separated by TAB character.
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version
 .TP
-.BI "-g|--with-gdb"
+.BI "-g"
 Use gdb(1) for resolving symbols. This is the default.
 .TP
 .BI "-p"
@@ -67,7 +67,7 @@ This option is recomended.
 .BI "-a"
 Use addr2line(1) for resolving symbols.
 .TP
-.BI "--with-so" " filename flags"
+.BI "-s" " filename flags"
 dlopen(3) specified libraries with specified flags.
 Possible flags are: RTLD_LAZY, RTLD_NOW and RTLD_GLOBAL
 .SH ENVIRONMENT
@@ -89,7 +89,7 @@ lmdbg-run -o _log ./my_app &&
   lmdbg-sym -a ./my_app _log_leaks > _log_leaks2 &&
   lmdbg-sysleaks -s _log_leaks2 > _log_final
 lmdbg-run -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
-lmdbg-sym -g --with-so /path/to/dll1.so RTLD_NOW -p < _log
+lmdbg-sym -g -s /path/to/dll1.so RTLD_NOW -p < _log
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,

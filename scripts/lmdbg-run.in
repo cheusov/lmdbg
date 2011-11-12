@@ -40,13 +40,13 @@ The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 
 usage: lmdbg-run [OPTIONS] <prog> [args...]
 OPTIONS:
-  -h|--help                   display this screen
-  -V|--version                display version
-  -o|--log <filename>         set a filename for logging
-  -p|--pipe <pipe>            save pipe's output to log file
-  -v|--verbose                verbose loggin
-  -S <stacktrace-skip>        a number of addresses to skip in a stacktrace
-  -M <stacktrace-max>         limit for a number of addresses in a stacktrace
+  -h                     display this screen
+  -V                     display version
+  -o <filename>          set a filename for logging
+  -p <pipe>              save pipe's output to log file
+  -v                     verbose loggin
+  -S <stacktrace-skip>   a number of addresses to skip in a stacktrace
+  -M <stacktrace-max>    limit for a number of addresses in a stacktrace
 
 EOF
 }
@@ -57,49 +57,31 @@ lmdbg-run @LMDBG_VERSION@
 EOF
 }
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hVvo:p:S:M: f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	-v|--verbose)
+	v)
 	    LMDBG_VERBOSE=1;
 	    export LMDBG_VERBOSE;;
-	-o|--log)
-	    ofile=$2
-	    shift;;
-	-o*)
-	    ofile=`echo $1 | cut -b 3-`;;
-        -p|--pipe)
-	    pipe=$2
-	    shift;;
-        -p*)
-	    pipe=`echo $1 | cut -b 3-`;;
-        -S)
-	    LMDBG_ST_SKIP="$2"
-	    shift;;
-        -S*)
-	    LMDBG_ST_SKIP=`echo $1 | cut -b 3-`;;
-        -M)
-	    LMDBG_ST_COUNT="$2"
-	    shift;;
-        -M*)
-	    LMDBG_ST_COUNT=`echo $1 | cut -b 3-`;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	o)
+	    ofile="$OPTARG";;
+        p)
+	    pipe="$OPTARG";;
+        S)
+	    LMDBG_ST_SKIP="$OPTARG";;
+        M)
+	    LMDBG_ST_COUNT="$OPTARG";;
+	'?')
+	    usage 1>&2
 	    exit 1;;
-	*)
-	    break;;
     esac
-
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 export LMDBG_ST_SKIP LMDBG_ST_COUNT
 

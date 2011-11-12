@@ -29,43 +29,40 @@ export LC_ALL
 sysconfdir=@sysconfdir@
 
 usage (){
-    echo -n "\
+    cat <<'EOF'
 This program analyses lmdbg-run's or lmdbg-sym's output and
 produces information about memory leaks.
 
 usage:
     lmdbg-leaks [OPTIONS] [files...]
 OPTIONS:
-    -h|--help                  displays this screen
-    -V|--version               display version
-"
+    -h        displays this screen
+    -V        display version
+EOF
 }
 
 version () {
-    cat <<EOF
+    cat <<'EOF'
 lmdbg-leaks @LMDBG_VERSION@
 EOF
 }
 
-while test $# -ne 0; do
-    case $1 in
-	-h|--help)
+while getopts hV f; do
+    case $f in
+	h)
 	    usage
 	    exit 0;;
-	-V|--version)
+	V)
 	    version
 	    exit 0;;
-	--)
-	    shift
-	    break;;
-	-*)
-	    echo "unknown option '$1'" 1>&2
+	'?')
+	    usage 1>&2
 	    exit 1;;
 	*)
 	    break;;
     esac
-    shift
 done
+shift $(expr $OPTIND - 1)
 
 leaks () {
     @AWK@ '

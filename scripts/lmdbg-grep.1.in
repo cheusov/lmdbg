@@ -33,10 +33,10 @@ The following variables are numeric:
 others are string values.
 .SH OPTIONS
 .TP
-.B "-h|--help"
+.B "-h"
 display help message.
 .TP
-.BI "-V|--version"
+.BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-v"
