@@ -64,7 +64,7 @@ EOF
 lmdbg_sym_opts=''
 lmdbg_run_opts=''
 
-mode=leaks
+mode=default
 
 while getopts hVvo:c:gaT:B:nM: f; do
     case $f in
@@ -120,13 +120,15 @@ type lmdbg-sysleaks > /dev/null || exit 3
 
 case "$mode" in
     l|leaks)
-	pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | grep -v '^info '";;
+	pipe="lmdbg-leaks | lmdbg-stat | lmdbg-sort -fleaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s";;
     p|peak)
 	pipe="lmdbg-stat | lmdbg-sort -fpeak | lmdbg-sym $lmdbg_sym_opts";;
     a|allocs)
 	pipe="lmdbg-stat | lmdbg-sort -fallocs | lmdbg-sym $lmdbg_sym_opts";;
     m|max)
 	pipe="lmdbg-stat | lmdbg-sort -fmax | lmdbg-sym $lmdbg_sym_opts";;
+    default)
+	pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | grep -v '^info '";;
     *)
 	echo "bad argument for -M" 1>&2
 	exit 1;;

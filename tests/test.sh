@@ -523,13 +523,13 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -M allocs #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 '
 
@@ -541,13 +541,13 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -Ma #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 '
 
@@ -559,11 +559,11 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -M peak #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
  0xF00DBEAF	prog6.c:NNN	main
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
@@ -577,11 +577,11 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -M p #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
  0xF00DBEAF	prog6.c:NNN	main
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
@@ -595,9 +595,9 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -M max #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
@@ -613,13 +613,45 @@ hide_line_numbers | unify_paths | hide_foreign_code |
 cmp "prog6.c: lmdbg -M m #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
-info stat total_free_cnt: 0
-info stat total_leaks: 3400
-stacktrace peak: 1000 max: 1000 allocs: 1 leaks: 1000
+info stat total_free_cnt: 1
+info stat total_leaks: 2400
+stacktrace peak: 1000 max: 1000 allocs: 1
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
+ 0xF00DBEAF	prog6.c:NNN	main
+'
+
+# lmdbg -M leaks!
+lmdbg -T2 -M leaks -o "$logname" "$execname6" || true
+
+unify_address "$logname" | skip_useless_addr |
+hide_line_numbers | unify_paths | hide_foreign_code |
+cmp "prog6.c: lmdbg -M leaks #1" \
+'info progname /lmdbg/dir/prog6
+info stat total_allocs: 2200
+info stat total_free_cnt: 0
+info stat total_leaks: 2400
+stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
+ 0xF00DBEAF	prog6.c:NNN	main
+stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
+ 0xF00DBEAF	prog6.c:NNN	main
+'
+
+# lmdbg -M leaks!
+lmdbg -T2 -M l -o "$logname" "$execname6" || true
+
+unify_address "$logname" | skip_useless_addr |
+hide_line_numbers | unify_paths | hide_foreign_code |
+cmp "prog6.c: lmdbg -M l #2" \
+'info progname /lmdbg/dir/prog6
+info stat total_allocs: 2200
+info stat total_free_cnt: 0
+info stat total_leaks: 2400
+stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
+ 0xF00DBEAF	prog6.c:NNN	main
+stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  0xF00DBEAF	prog6.c:NNN	main
 '
 
