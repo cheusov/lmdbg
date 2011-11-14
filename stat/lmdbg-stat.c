@@ -207,6 +207,7 @@ static void print_results (void)
 	int i, j;
 	int st_count;
 	stat_t *stat_cell;
+	char buf [200];
 
 	printf ("info stat total_allocs: %i\n", total_allocs_cnt);
 	printf ("info stat total_free_cnt: %i\n", total_free_cnt);
@@ -225,7 +226,14 @@ static void print_results (void)
 		}
 		printf ("\n");
 		for (j=0; j < stat_cell->stacktrace_len; ++j){
-			printf (" %p\n", stat_cell->stacktrace [j]);
+			buf [0] = 0;
+			snprintf (buf, sizeof (buf), "%p", stat_cell->stacktrace [j]);
+			if (buf [0] != '0' || buf [1] != 'x'){
+				/* Under Solaris %p doesn't print 0x prefix for address */
+				printf (" 0x%s\n", buf);
+			}else{
+				printf (" %s\n", buf);
+			}
 		}
 	}
 }
@@ -237,6 +245,11 @@ static void * s2p (const char *s)
 
 	if (strcmp (s, "NULL")){
 		ret = sscanf (s, "%p", &addr);
+		if (!addr){
+			/* Under Solaris %p doesn't accept 0x prefix for address */
+			assert (s[0] == '0' && s[1] == 'x');
+			ret = sscanf (s+2, "%p", &addr);
+		}
 		if (ret != 1){
 			fprintf (stderr, "Bad address: %s\n", s);
 			exit (1);

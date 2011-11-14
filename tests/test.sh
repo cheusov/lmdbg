@@ -305,11 +305,12 @@ free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN	main
 "
 
+if addr2line --help >/dev/null 2>&1 && test `uname -s` != SunOS; then
 # lmdbg-sym -a
-lmdbg-sym -a -P "$execname1" "$logname" |
-unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
-canonize_paths | skip_useless_addr |
-cmp "prog1.c: lmdbg-sym -a" \
+    lmdbg-sym -a -P "$execname1" "$logname" |
+    unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
+    canonize_paths | skip_useless_addr |
+    cmp "prog1.c: lmdbg-sym -a" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -321,6 +322,7 @@ realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 free ( 0xF00DBEAF ) num: 5
  0xF00DBEAF	prog1.c:NNN
 "
+fi
 
 # lmdbg-run -p lmdbg-leaks
 lmdbg-run -o"$logname" -p lmdbg-leaks "$execname1"
@@ -519,7 +521,7 @@ cmp "prog1.c: lmdbg -o" \
 lmdbg -T2 -M allocs -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M allocs #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -537,7 +539,7 @@ stacktrace peak: 1000 max: 1000 allocs: 1
 lmdbg -T2 -Ma -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -Ma #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -555,7 +557,7 @@ stacktrace peak: 1000 max: 1000 allocs: 1
 lmdbg -T2 -Mpeak -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M peak #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -573,7 +575,7 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 lmdbg -T2 -M p -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M p #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -591,7 +593,7 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 lmdbg -T2 -Mmax -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M max #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -609,7 +611,7 @@ stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
 lmdbg -T2 -M m -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M m #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2201
@@ -627,7 +629,7 @@ stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
 lmdbg -T2 -M leaks -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M leaks #1" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2200
@@ -643,7 +645,7 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 lmdbg -T2 -M l -o "$logname" "$execname6" || true
 
 unify_address "$logname" | skip_useless_addr |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M l #2" \
 'info progname /lmdbg/dir/prog6
 info stat total_allocs: 2200
