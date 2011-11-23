@@ -42,6 +42,53 @@ Specify the log file.
 .BI "-c" " filename"
 Specify the config file
 .TP
+.BR "-Md" " or " "-Mdefault"
+All stacktraces with memory leaks are output.
+This is default mode.
+.TP
+.BR "-Ml" " or " "-Mleaks"
+Ordered stacktraces are output.
+.TP
+.BR "-Mp" " or " "-Mpeak"
+Ordered stacktraces are output.
+.TP
+.BR "-Ma" " or " "-Mallocs"
+Ordered stacktraces are output.
+.TP
+.BR "-Mm" " or " "-Mmax"
+Ordered stacktraces are output.
+.TP
+.B "-a"
+Option
+.B -a
+is passed
+.BR lmdbg-sym(1) .
+.TP
+.B "-g"
+Option
+.B -g
+is passed
+.BR lmdbg-sym(1) .
+This is the default.
+.TP
+.B "-n"
+Option
+.B -n
+is passed
+.BR lmdbg-run(1) .
+.TP
+.BI "-T" " num"
+Option
+.BI -T " num"
+is passed
+.BR lmdbg-run(1) .
+.TP
+.BI "-B" " num"
+Option
+.BI -B " num"
+is passed
+.BR lmdbg-run(1) .
+.TP
 .B "-v"
 Enable verbose mode.
 .SH FILES

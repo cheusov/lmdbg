@@ -38,7 +38,7 @@ OPTIONS:
   -h                display this screen
   -V                display version
 
-  -M <mode>         mode
+  -M <mode>
      l or leaks     program is analysed for memory leaks (the default)
      p or peak      statistical infroamtion about peak memory usage
                     per stacktrace is output
@@ -127,7 +127,7 @@ case "$mode" in
 	pipe="lmdbg-stat | lmdbg-sort -fallocs | lmdbg-sym $lmdbg_sym_opts";;
     m|max)
 	pipe="lmdbg-stat | lmdbg-sort -fmax | lmdbg-sym $lmdbg_sym_opts";;
-    default)
+    d|default)
 	pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | grep -v '^info '";;
     *)
 	echo "bad argument for -M" 1>&2
