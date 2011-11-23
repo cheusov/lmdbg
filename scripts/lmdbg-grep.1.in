@@ -22,15 +22,41 @@ lmdbg-grep \- output stacktraces that match the specified condition
 .SH DESCRIPTION
 Taking an output of
 .B lmdbg-stat
+or
+.B lmdbg-run
 on input
 .B lmdbg-grep
-outputs global information and stacktraces that match the
-specified AWK expression.  Available AWK variables:
+outputs lines that start with the token
+.I info
+and stacktraces that match the
+specified
+.IR awk_expr .
+Available AWK variables:
 .IR bytes ", " allocs ", " max ", " peak ", " leaks ", " address ", " source ", "
 .IR funcname " and " addrline .
 The following variables are numeric:
 .IR bytes ", " allocs ", " max ", " peak ", " leaks ;
 others are string values.
+The variable
+.I bytes
+means a number of allocated bytes,
+.I allocs
+-- a number of calls of malloc/calloc/memalign/posix_memalign,
+.I max
+-- a maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
+function,
+.I peak
+-- a maximum number of allocated bytes,
+.I leaks
+-- a number of allocated but not freed bytes,
+.I address
+-- an address returned by memory allocation function,
+.I source
+-- a source code filename,
+.I funcname
+-- a function name,
+.I addrline
+-- an address in the stacktrace.
 .SH OPTIONS
 .TP
 .B "-h"
