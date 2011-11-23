@@ -2,9 +2,16 @@
 Version 0.17.0, by Aleksey Cheusov, Thu, 24 Nov 2011 00:09:48 +0300
 
   lmdbg-sym:
-    - DOESN'T ACCEPT PROGNAME AS AN ARGUMENT ANYMORE. USE -P OPTION FOR THIS.
-      SORRY FOR INCOMPATIBILITY.
+    - Doesn't accept progname as an argument anymore.
+      Use -P option instead.
     - option --with-so was replaced with -s.
+
+  Long options have been removed from all programs.
+  use standard single-letter POSIX-compatible options.
+
+  SORRY FOR INCOMPATIBILITIES WITH PREVIOUS RELEASES.
+
+                                    ----------------------------------
 
   lmdbg-stat, tests/test.sh:
     - Fixes for Solaris
@@ -28,9 +35,6 @@ Version 0.17.0, by Aleksey Cheusov, Thu, 24 Nov 2011 00:09:48 +0300
   "lmdbg-strip" programs.
 
   More regression tests
-
-  Long options have been removed from all programs. Please use
-  standard single-letter POSIX-compatible options.
 
 ======================================================================
 Version 0.16.0, by Aleksey Cheusov, Thu, 16 Dec 2010 17:54:22 +0200
