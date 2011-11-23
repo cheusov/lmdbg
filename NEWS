@@ -1,4 +1,38 @@
 ======================================================================
+Version 0.17.0, by Aleksey Cheusov, Thu, 24 Nov 2011 00:09:48 +0300
+
+  lmdbg-sym:
+    - DOESN'T ACCEPT PROGNAME AS AN ARGUMENT ANYMORE. USE -P OPTION FOR THIS.
+      SORRY FOR INCOMPATIBILITY.
+    - option --with-so was replaced with -s.
+
+  lmdbg-stat, tests/test.sh:
+    - Fixes for Solaris
+
+  lmdbg-run:
+    - options -T and -B were added to lmdbg-run.
+    - option -n was added. It disables logging on startup.
+      Sending SIGUSR1 signal to the process enables it.
+
+  lmdbg:
+    - -M option was added
+    - -n option was added
+    - -T and -B options were added
+    - Regression tests were added for -M
+
+  lmdbg-grep.1:
+    - documentation for "bytes" variable
+
+  If set, LMDBG_MODULES_AWK and LMDBG_STRIP_AWK environment variables
+  are used as a path to AWK interpreter by "lmdbg-modules" and
+  "lmdbg-strip" programs.
+
+  More regression tests
+
+  Long options have been removed from all programs. Please use
+  standard single-letter POSIX-compatible options.
+
+======================================================================
 Version 0.16.0, by Aleksey Cheusov, Thu, 16 Dec 2010 17:54:22 +0200
 
   Spelling corrections in man pages
