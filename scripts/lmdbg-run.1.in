@@ -105,6 +105,9 @@ display help message.
 .BI "-V"
 Display the lmdbg version.
 .TP
+.B "-v"
+Enable verbose mode.
+.TP
 .BI "-o" " filename"
 Specify the log file.
 .TP
@@ -123,9 +126,6 @@ A number of addresses to skip from the bottom of stacktrace (nearer to function 
 .TP
 .BI "-M" " maximum"
 Limit for a number of addresses in a stacktrace.
-.TP
-.B "-v"
-Enable verbose mode.
 .SH ENVIRONMENT
 .TP
 .B LMDBG_LIB
