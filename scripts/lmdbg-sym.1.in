@@ -57,12 +57,12 @@ display the lmdbg version
 .BI "-g"
 use gdb(1) for resolving symbols. This is the default.
 .TP
+.BI "-a"
+use addr2line(1) for resolving symbols.
+.TP
 .BI "-P" " progname"
 path to program. By default it is read from
 .IR logfiles .
-.TP
-.BI "-a"
-use addr2line(1) for resolving symbols.
 .TP
 .BI "-s" " library:flags"
 Library to dlopen(3) and flags separated by the colon symbol.
