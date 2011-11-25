@@ -43,7 +43,7 @@ OPTIONS:
   -h                     display this screen
   -V                     display version
   -o <filename>          set a filename for logging
-  -p <pipe>              save pipe's output to log file
+  -f|-p <filter>         save filter's output to log file
   -v                     verbose mode
   -n                     do not enable logging on startup, SIGUSR1 enables it
   -T <stacktrace-skip>   addresses to skip in the top of stacktrace
@@ -59,7 +59,7 @@ lmdbg-run @LMDBG_VERSION@
 EOF
 }
 
-while getopts hVvo:p:nS:M:T:B: f; do
+while getopts hVvo:f:p:nS:M:T:B: f; do
     case $f in
 	h)
 	    usage
@@ -72,7 +72,7 @@ while getopts hVvo:p:nS:M:T:B: f; do
 	    export LMDBG_VERBOSE;;
 	o)
 	    ofile="$OPTARG";;
-        p)
+        f|p)
 	    pipe="$OPTARG";;
 	n)
 	    LMDBG_TIMEOUT=-1;;

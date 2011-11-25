@@ -324,23 +324,23 @@ free ( 0xF00DBEAF ) num: 5
 "
 fi
 
-# lmdbg-run -p lmdbg-leaks
-lmdbg-run -o"$logname" -p lmdbg-leaks "$execname1"
+# lmdbg-run -f lmdbg-leaks
+lmdbg-run -o"$logname" -f lmdbg-leaks "$execname1"
 
 unify_address "$logname" | skip_info | hide_lmdbg_code |
 hide_line_numbers |
 canonize_paths | skip_useless_addr |
-cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
+cmp "prog1.c: lmdbg-run -f lmdbg-leaks" \
 "realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
-# lmdbg-run -p lmdbg-leaks
-lmdbg-run -o"$logname" -p lmdbg-leaks "$execname1"
+# lmdbg-run -f lmdbg-leaks
+lmdbg-run -o"$logname" -f lmdbg-leaks "$execname1"
 
 unify_address "$logname" | skip_info | hide_lmdbg_code |
 hide_line_numbers |
 canonize_paths | skip_useless_addr |
-cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
+cmp "prog1.c: lmdbg-run -f lmdbg-leaks" \
 "realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
 "
 
@@ -348,12 +348,12 @@ cmp "prog1.c: lmdbg-run -p lmdbg-leaks" \
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with two leaks
-lmdbg-run -o "$logname" -p"lmdbg-sym" "$execname2"
+lmdbg-run -o "$logname" -f"lmdbg-sym" "$execname2"
 
 unify_address "$logname" | skip_info | skip_useless_addr |
 hide_line_numbers |
 canonize_paths | skip_useless_addr | hide_foreign_code |
-cmp "prog2.c: lmdbg-run -p" \
+cmp "prog2.c: lmdbg-run -f" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	malloc
