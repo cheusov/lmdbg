@@ -16,7 +16,7 @@
 .\" ------------------------------------------------------------------
 .TH LMDBG-RUN 1 "May 9, 2009" "" ""
 .SH NAME
-lmdbg-run \- run program and traces the malloc/realloc/free calls
+lmdbg-run \- runs a program and traces the malloc/realloc/free calls
 .SH SYNOPSIS
 .BI lmdbg-run " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
@@ -27,10 +27,11 @@ and creates a log file where all
 invocations of
 .IR malloc ", " calloc ", " realloc ", " memalign ", "
 .IR posix_memalign " and " free
-are registered with the following information: full stacktrace
+are registered accompanied by the following information: full stacktrace
 (addresses), input argument(s) (requested size and/or address) and
-result value (returned address, if any).  All stacktraces may
-alternatively be sent to a pipe. Example for
+result value (returned address, if any). Before being saved to the log file,
+stacktrace info can be filtered through a custom command.
+Example of
 .B lmdbg-run
 output:
 .VB
@@ -45,11 +46,11 @@ output:
 .VE
 This output means that
 .I realloc
-function was given pointer 0xbb901800 and 777
-bytes was requested. As a result
+function was given the pointer 0xbb901800 and 777
+bytes were requested. As a result
 .I realloc
-returned address 0xbb901c00.
-Addresses 0xbbbe58e8, 0xbbbe5a37 etc. are a part of stacktrace.  Another example:
+returned the address 0xbb901c00.
+Addresses 0xbbbe58e8, 0xbbbe5a37 etc. are a part of the stacktrace. Another example:
 .VB
 
 $ cat tests/test2.c
@@ -67,9 +68,9 @@ int main ()
 
    return 0;
 }
-$ cc -O0 -g -o _test2 tests/test2.c
-$ lmdbg-run -o _log ./_test2 
-$ cat _log
+$ cc -O0 -g -o test2 tests/test2.c
+$ lmdbg-run -o log ./test2 
+$ cat log
 malloc ( 555 ) --> 0xbb901400
  0xbbbe58e8
  0xbbbe5b03
@@ -100,7 +101,7 @@ $
 .SH OPTIONS
 .TP
 .B "-h"
-display help message.
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
@@ -109,23 +110,28 @@ Display the lmdbg version.
 Enable verbose mode.
 .TP
 .BI "-o" " filename"
-Specify the log file.
+Specify the log file name.
+.TP
+.BI "-f" " command"
+Filter stacktrace through a filtering command/pipe.
+The result is sent to the log file specified in -o option or to stdout otherwise.
 .TP
 .BI "-p" " pipe"
-Send all stacktraces to the pipe, not to the log file.
+(obsolete) Same as -f. 
 .TP
 .B "-n"
-Do not enable logging on startup, sending SIGUSR1 signal to the process
-enables it.
+Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
+process.
 .TP
-.BI "-T" " skip"
-A number of addresses to skip from the top of stacktrace (farther from function main).
+.BI "-T" " number"
+Specify the number of addresses to skip from the top of the stacktrace (farther from function main).
 .TP
-.BI "-B" " skip"
-A number of addresses to skip from the bottom of stacktrace (nearer to function main).
+.BI "-B" " number"
+Specify the number of addresses to skip from the bottom of the stacktrace (nearer to function main).
 .TP
-.BI "-M" " maximum"
-Limit for a number of addresses in a stacktrace.
+.BI "-M" " number"
+Limit the number of addresses shown in a stacktrace. An incomplete stacktrace
+may be generated, that includes the top of the stack.
 .SH ENVIRONMENT
 .TP
 .B LMDBG_LIB
@@ -135,26 +141,26 @@ Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
 .VB
 lmdbg-run -h
 lmdbg-run -V
-lmdbg-run -o _log ./my_app &&
-  lmdbg-leaks _log > _log_leaks &&
-  lmdbg-sym ./my_app _log_leaks > _log_leaks2 &&
-  lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-run -B2 -M6 -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
+lmdbg-run -o log ./my_app &&
+  lmdbg-leaks log > log_leaks &&
+  lmdbg-sym ./my_app log_leaks > log_leaks2 &&
+  lmdbg-sysleaks -s log_leaks2 > log_final
+lmdbg-run -B2 -M6 -f 'lmdbg-leaks | lmdbg-sym > log' ./my_app <args>
 .VE
 .SH NOTES
-Full stacktrace allows you to analyse your application on per-module
-basis, i.e.  you can determine what libraries and/or components require
+Full stacktrace allows analysing an application on per-module
+basis. It helps determine what libraries and/or components require
 more memory than others and why. See
 .B lmdbg-stat
 and
 .BR lmdbg-sort .
 .SH BUGS
-At the moment
+The current implementation of
 .B lmdbg-run
-relies on several GCC's extension including __builtin_return_address,
+relies on several GCC's extensions, namely, __builtin_return_address,
 __builtin_frame_address, __attribute__((constructor)) and
-__attribute__((destructor)). Besides GCC these extensions are
-supported by Intel C compiler. If you have a solution that works for
+__attribute__((destructor)). In my knowledge, Besides GCC these extensions are also
+supported by Intel C compiler. If you know a solution that works for
 other compilers let me now ;-)
 .SH SEE ALSO
 .BR lmdbg-sym(1) ,
