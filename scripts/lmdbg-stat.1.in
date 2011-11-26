@@ -1,6 +1,4 @@
-.\"	$NetBSD$
-.\"
-.\" Copyright (c) 2010 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,39 +12,39 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-STAT 1 "Apr 10, 2010" "" ""
+.TH LMDBG-STAT 1 "Nov 26, 2011" "" ""
 .SH NAME
 lmdbg-stat \- outputs statistical information for lmdbg-run output
 .SH SYNOPSIS
 .BI lmdbg-stat " [OPTIONS] [files...]"
 .SH DESCRIPTION
-Taking an output of
+.B lmdbg-stat
+takes an output of
 .B lmdbg-run
 or other
 .B lmdbg-*
 utilities on input
-.B lmdbg-stat
-outputs total and per-stacktrace statistical information about
+and outputs total and per-stacktrace statistical information about
 memory alocations.
 The following statistics is output:
 .RS
 .TP
-.BR allocs " or " total_allocs
+.IR allocs " or " total_allocs
 Per-stacktrace or total number of memory allocations
 .TP
-.BR max " or " total_max
+.IR max " or " total_max
 Per-stacktrace or total maximum of requested bytes
 .TP
-.BR peak " or " total_peak
+.IR peak " or " total_peak
 Per-stacktrace or total peak of allocated memory
 .TP
-.BR leaks " or " total_leaks
+.IR leaks " or " total_leaks
 Per-stacktrace or total amount of bytes that were allocated but not freed/
 .RE
 .SH OPTIONS
 .TP
 .B "-h"
-display help message.
+Display help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
@@ -57,19 +55,19 @@ $ cat -n testme.c
      2  
      3  int main ()
      4  {
-     5          int i;
-     6          void *p1, *p2;
-     7          p1 = malloc (100);
-     8          for (i=0; i < 3; ++i){
-     9                  p2 = realloc (NULL, 10+30*i);
-    10          }
-    11          free (p1);
-    12          free (p2);
+     5     int i;
+     6     void *p1, *p2;
+     7     p1 = malloc (100);
+     8     for (i=0; i < 3; ++i){
+     9        p2 = realloc (NULL, 10+30*i);
+    10     }
+    11     free (p1);
+    12     free (p2);
     13  
-    14          return 0;
+    14     return 0;
     15  }
 $ cc -O0 -g -o testme testme.c
-$ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym -p' ./testme     
+$ lmdbg-run -o log -f 'lmdbg-stat | lmdbg-sym' ./testme     
 $ cat log
 info stat total_leaks: 50
 info stat total_allocs: 4
