@@ -1,6 +1,4 @@
-.\"	$NetBSD$
-.\"
-.\" Copyright (c) 2010 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,49 +12,55 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-GREP 1 "Apr 10, 2010" "" ""
+.TH LMDBG-GREP 1 "Nov 26, 2011" "" ""
 .SH NAME
 lmdbg-grep \- output stacktraces that match the specified condition
 .SH SYNOPSIS
 .BI lmdbg-grep " [OPTIONS] <awk_expr> [files...]"
 .SH DESCRIPTION
-Taking an output of
+.B lmdbg-grep
+takes an output of
 .B lmdbg-stat
 or
 .B lmdbg-run
-on input
-.B lmdbg-grep
-outputs lines that start with the token
-.I info
-and stacktraces that match the
+on input and outputs stacktraces that match the
 specified
 .IR awk_expr .
-Available AWK variables:
-.IR bytes ", " allocs ", " max ", " peak ", " leaks ", " address ", " source ", "
-.IR funcname " and " addrline .
+The following variables are available in
+.IR awk_exp :
+.RS
+.TP
+.I bytes
+a number of allocated bytes,
+.TP
+.I allocs
+a number of calls of malloc/calloc/memalign/posix_memalign,
+.TP
+.I max
+a maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
+function,
+.TP
+.I peak
+a maximum number of allocated bytes,
+.TP
+.I leaks
+a number of allocated but not freed bytes,
+.TP
+.I address
+an address returned by memory allocation function,
+.TP
+.I source
+a source code filename,
+.TP
+.I funcname
+a function name,
+.TP
+.I addrline
+an address in the stacktrace.
+.RE
 The following variables are numeric:
 .IR bytes ", " allocs ", " max ", " peak ", " leaks ;
 others are string values.
-The variable
-.I bytes
-means a number of allocated bytes,
-.I allocs
--- a number of calls of malloc/calloc/memalign/posix_memalign,
-.I max
--- a maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
-function,
-.I peak
--- a maximum number of allocated bytes,
-.I leaks
--- a number of allocated but not freed bytes,
-.I address
--- an address returned by memory allocation function,
-.I source
--- a source code filename,
-.I funcname
--- a function name,
-.I addrline
--- an address in the stacktrace.
 .SH OPTIONS
 .TP
 .B "-h"
@@ -69,7 +73,7 @@ Display the lmdbg version.
 Invert the sense of match.
 .SH EXAMPLE
 .VB
-$ cat log                    
+$ cat log
 stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
  0xbbbe2bc3     lmdbg.c:101     log_stacktrace
  0xbbbe3498     lmdbg.c:456     realloc
