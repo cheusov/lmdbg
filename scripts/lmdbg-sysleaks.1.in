@@ -1,6 +1,4 @@
-.\"	$NetBSD$
-.\"
-.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,9 +12,9 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-SYSLEAKS 1 "May 9, 2009" "" ""
+.TH LMDBG-SYSLEAKS 1 "Nov 26, 2011" "" ""
 .SH NAME
-lmdbg-sysleaks \- extracts/skips the system-wide memory leaks
+lmdbg-sysleaks \- extracts/skips the system memory leaks
 .SH SYNOPSIS
 .BI lmdbg-sysleaks " [OPTIONS] [files...]"
 .SH DESCRIPTION
@@ -24,20 +22,20 @@ lmdbg-sysleaks \- extracts/skips the system-wide memory leaks
 analyses
 .BR lmdbg-sym "'s"
 output and
-prints (or skips) system-wide memory leaks listed in configuration file.
+prints (or skips) system memory leaks listed in configuration file.
 .SH OPTIONS
 .TP
 .B "-h"
-display help message
+Display help message.
 .TP
 .BI "-V"
-Display the lmdbg version
+Display the lmdbg version.
 .TP
 .BI "-c"
-Specify the config file
+Specify the config file.
 .TP
 .BI "-s"
-Skip system-wide memory leaks
+Skip system-wide memory leaks.
 .SH FILES
 .TP
 .IR ~/.lmdbg.conf " or " @sysconfdir@/lmdbg.conf
@@ -46,13 +44,11 @@ default
 configuration file
 .SH EXAMPLES
 .VB
-lmdbg-sysleaks -h
-lmdbg-sysleaks -V
-lmdbg-sysleaks -o _log ./my_app &&
-  lmdbg-leaks _log > _log_leaks &&
-  lmdbg-sym -p _log_leaks > _log_leaks2 &&
-  lmdbg-sysleaks -s _log_leaks2 > _log_final
-lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s _log_leaks2 > _log_final
+lmdbg-sysleaks -o log ./my_app &&
+  lmdbg-leaks log > log_leaks &&
+  lmdbg-sym -p log_leaks > log_leaks2 &&
+  lmdbg-sysleaks -s log_leaks2 > log_final
+lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s log_leaks2 > log_final
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,

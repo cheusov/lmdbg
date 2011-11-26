@@ -1,5 +1,3 @@
-.\"	$NetBSD$
-.\"
 .\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
@@ -28,10 +26,10 @@ memory leaks.
 .SH OPTIONS
 .TP
 .B "-h"
-display help message
+Display help message.
 .TP
 .BI "-V"
-Display the lmdbg version
+Display the lmdbg version.
 .SH EXAMPLE
 .VB
 $ cat test3.c

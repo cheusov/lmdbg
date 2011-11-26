@@ -42,9 +42,9 @@ usage: lmdbg-run [OPTIONS] <prog> [args...]
 OPTIONS:
   -h                     display this screen
   -V                     display version
+  -v                     verbose mode
   -o <filename>          set a filename for logging
   -f|-p <filter>         save filter's output to log file
-  -v                     verbose mode
   -n                     do not enable logging on startup, SIGUSR1 enables it
   -T <stacktrace-skip>   addresses to skip in the top of stacktrace
   -B <stacktrace-skip>   addresses to skip in the bottom of stacktrace
