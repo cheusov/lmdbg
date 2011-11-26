@@ -1,6 +1,6 @@
 .\"	$NetBSD$
 .\"
-.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,7 +14,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-RUN 1 "May 9, 2009" "" ""
+.TH LMDBG-RUN 1 "Nov 26, 2011" "" ""
 .SH NAME
 lmdbg-run \- runs a program and traces the malloc/realloc/free calls
 .SH SYNOPSIS
@@ -27,13 +27,17 @@ and creates a log file where all
 invocations of
 .IR malloc ", " calloc ", " realloc ", " memalign ", "
 .IR posix_memalign " and " free
-are registered accompanied by the following information: full stacktrace
-(addresses), input argument(s) (requested size and/or address) and
-result value (returned address, if any). Before being saved to the log file,
-stacktrace info can be filtered through a custom command.
-Example of
+are registered accompanied by the following information: full
+stacktrace (addresses), input argument(s) (requested size and/or
+address), result value (returned address, if any) and ordinal number
+of function invocation.  Also, some
+special information is output about the program being run.
+Before being saved to the log file, stacktrace info can be filtered
+through a custom command.
+.SH EXAMPLE
+The output of
 .B lmdbg-run
-output:
+may look like the following
 .VB
 
  realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
@@ -50,10 +54,11 @@ function was given the pointer 0xbb901800 and 777
 bytes were requested. As a result
 .I realloc
 returned the address 0xbb901c00.
-Addresses 0xbbbe58e8, 0xbbbe5a37 etc. are a part of the stacktrace. Another example:
+Addresses 0xbbbe58e8, 0xbbbe5a37 etc. are a part of the stacktrace.
+.SH EXAMPLE
 .VB
 
-$ cat tests/test2.c
+$ cat test2.c
 #include <stdlib.h>
 
 int main ()
@@ -68,35 +73,47 @@ int main ()
 
    return 0;
 }
-$ cc -O0 -g -o test2 tests/test2.c
+$ cc -O0 -g -o test2 test2.c
 $ lmdbg-run -o log ./test2 
 $ cat log
-malloc ( 555 ) --> 0xbb901400
- 0xbbbe58e8
- 0xbbbe5b03
- 0x8048738
- 0x8048584
- 0x80484e7
-realloc ( NULL , 666 ) --> 0xbb901800
- 0xbbbe58e8
- 0xbbbe5a37
- 0x804874e
- 0x8048584
- 0x80484e7
-realloc ( 0xbb901800 , 777 ) --> 0xbb901c00
- 0xbbbe58e8
- 0xbbbe5a37
- 0x8048764
- 0x8048584
- 0x80484e7
-realloc ( 0xbb901c00 , 888 ) --> 0xbb901800
- 0xbbbe58e8
- 0xbbbe5a37
- 0x804877a
- 0x8048584
- 0x80484e7
+info section 0x0xbbace000 0x0xbbbc6000 /lib/libc.so.12.179
+info section 0x0xbbbdd000 0x0xbbbe1000 /usr/pkg/lib/liblmdbg.so.0.0
+info section 0x0xbbbee000 0x0xbbbfe000 /libexec/ld.elf_so
+info progname ./test2
+malloc ( 555 ) --> 0xbb90a400 num: 1
+ 0xbbbddb7a
+ 0xbbbde53b
+ 0x8048769
+ 0x804863d
+ 0x8048678
+realloc ( NULL , 666 ) --> 0xbb90a800 num: 2
+ 0xbbbddb7a
+ 0xbbbde68c
+ 0x8048781
+ 0x804863d
+ 0x8048678
+realloc ( 0xbb90a800 , 777 ) --> 0xbb90ac00 num: 3
+ 0xbbbddb7a
+ 0xbbbde68c
+ 0x8048799
+ 0x804863d
+ 0x8048678
+realloc ( 0xbb90ac00 , 888 ) --> 0xbb90a800 num: 4
+ 0xbbbddb7a
+ 0xbbbde68c
+ 0x80487b1
+ 0x804863d
+ 0x8048678
 $
 
+.VE
+.SH EXAMPLE
+.VB
+lmdbg-run -o log ./my_app &&
+  lmdbg-leaks log > log_leaks &&
+  lmdbg-sym ./my_app log_leaks > log_leaks2 &&
+  lmdbg-sysleaks -s log_leaks2 > log_final
+lmdbg-run -B2 -M6 -f 'lmdbg-leaks | lmdbg-sym > log' ./my_app <args>
 .VE
 .SH OPTIONS
 .TP
@@ -112,12 +129,9 @@ Enable verbose mode.
 .BI "-o" " filename"
 Specify the log file name.
 .TP
-.BI "-f" " command"
+.BI "-f|-p" " command"
 Filter stacktrace through a filtering command/pipe.
 The result is sent to the log file specified in -o option or to stdout otherwise.
-.TP
-.BI "-p" " pipe"
-(obsolete) Same as -f. 
 .TP
 .B "-n"
 Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
@@ -137,16 +151,6 @@ may be generated, that includes the top of the stack.
 .B LMDBG_LIB
 Path to LD_PRELOAD'ed liblmdbg dynamic library. It defaults to
 @libdir@/liblmdbg.so
-.SH EXAMPLES
-.VB
-lmdbg-run -h
-lmdbg-run -V
-lmdbg-run -o log ./my_app &&
-  lmdbg-leaks log > log_leaks &&
-  lmdbg-sym ./my_app log_leaks > log_leaks2 &&
-  lmdbg-sysleaks -s log_leaks2 > log_final
-lmdbg-run -B2 -M6 -f 'lmdbg-leaks | lmdbg-sym > log' ./my_app <args>
-.VE
 .SH NOTES
 Full stacktrace allows analysing an application on per-module
 basis. It helps determine what libraries and/or components require
@@ -160,7 +164,7 @@ The current implementation of
 relies on several GCC's extensions, namely, __builtin_return_address,
 __builtin_frame_address, __attribute__((constructor)) and
 __attribute__((destructor)). In my knowledge, Besides GCC these extensions are also
-supported by Intel C compiler. If you know a solution that works for
+supported by Intel C compiler and Clang. If you know a solution that works for
 other compilers let me now ;-)
 .SH SEE ALSO
 .BR lmdbg-sym(1) ,
