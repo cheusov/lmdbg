@@ -23,7 +23,11 @@ BEGIN {
 	# processing options
 	if (getarg("V")){
 		print "lmdbg-strip @LMDBG_VERSION@"
-		exitnow(1)
+		exitnow(0)
+	}
+	if (getarg("h")){
+		print_help()
+		exitnow(0)
 	}
 
 	mode_a = getarg("a")
