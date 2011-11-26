@@ -1,6 +1,6 @@
 .\"	$NetBSD$
 .\"
-.\" Copyright (c) 2010 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,32 +14,74 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-SORT 1 "Apr 10, 2010" "" ""
+.TH LMDBG-SORT 1 "Nov 26, 2011" "" ""
 .SH NAME
 lmdbg-sort \- sort stacktraces given on input
 .SH SYNOPSIS
 .BI lmdbg-sort " [OPTIONS] [files...]"
 .SH DESCRIPTION
-Taking an output of
-.B lmdbg-stat
-on input
 .B lmdbg-sort
-resort stacktraces using values of
+sorts the input stacktraces using the values of
 .IR allocs ", " max ", " peak " or " leaks .
 .SH OPTIONS
 .TP
 .B "-h"
-display help message.
+Display help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-f" " field"
 Specify the sorting field. Valid values are:
-.IR allocs ", " max ", " peak " or " leaks .
+.IR allocs ", " max ", " peak ", " leaks " or " num .
 This option is mandatory.
 .SH EXAMPLE
 .VB
+$ cat -n testme.c
+     1 #include <stdlib.h>
+     2
+     3 int main ()
+     4 {
+     5    int i;
+     6    void *p1, *p2;
+     7    p1 = malloc (100);
+     8    for (i=0; i < 3; ++i){
+     9       p2 = realloc (NULL, 10+30*i);
+    10    }
+    11    free (p1);
+    12    free (p2);
+    13
+    14    return 0;
+    15 }
+$ lmdbg-run -T2 -B2 -f 'lmdbg-stat | lmdbg-sym' -o log ./testme
+$ cat log
+info progname ./testme
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+info stat total_leaks: 50
+stacktrace peak: 100 max: 100 allocs: 1
+ 0x8048789      testme.c:7      main
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0x80487bb      testme.c:9      main
+$ lmdbg-sort -f peak log
+info progname ./testme
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+info stat total_leaks: 50
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0x80487bb      testme.c:9      main
+stacktrace peak: 100 max: 100 allocs: 1
+ 0x8048789      testme.c:7      main
+$ lmdbg-sort -fmax log
+info progname ./testme
+info stat total_allocs: 4
+info stat total_free_cnt: 2
+info stat total_leaks: 50
+stacktrace peak: 100 max: 100 allocs: 1
+ 0x8048789      testme.c:7      main
+stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
+ 0x80487bb      testme.c:9      main
+$
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,
