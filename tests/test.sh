@@ -528,11 +528,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M allocs!
@@ -546,11 +546,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M peak!
@@ -564,11 +564,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M p!
@@ -582,11 +582,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M max!
@@ -600,11 +600,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M m!
@@ -618,11 +618,11 @@ info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
 stacktrace peak: 1000 max: 1000 allocs: 1
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M leaks!
@@ -636,9 +636,9 @@ info stat total_allocs: 2200
 info stat total_free_cnt: 0
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg -M leaks!
@@ -652,9 +652,9 @@ info stat total_allocs: 2200
 info stat total_free_cnt: 0
 info stat total_leaks: 2400
 stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
- 0xF00DBEAF	prog6.c:NNN	main
+ 	prog6.c:NNN	main
 '
 
 # lmdbg-run -o and shared libraries

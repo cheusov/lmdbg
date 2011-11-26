@@ -120,13 +120,13 @@ type lmdbg-sysleaks > /dev/null || exit 3
 
 case "$mode" in
     l|leaks)
-	pipe="lmdbg-leaks | lmdbg-stat | lmdbg-sort -fleaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s";;
+	pipe="lmdbg-leaks | lmdbg-stat | lmdbg-sort -fleaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | lmdbg-strip -a";;
     p|peak)
-	pipe="lmdbg-stat | lmdbg-sort -fpeak | lmdbg-sym $lmdbg_sym_opts";;
+	pipe="lmdbg-stat | lmdbg-sort -fpeak | lmdbg-sym $lmdbg_sym_opts | lmdbg-strip -a";;
     a|allocs)
-	pipe="lmdbg-stat | lmdbg-sort -fallocs | lmdbg-sym $lmdbg_sym_opts";;
+	pipe="lmdbg-stat | lmdbg-sort -fallocs | lmdbg-sym $lmdbg_sym_opts | lmdbg-strip -a";;
     m|max)
-	pipe="lmdbg-stat | lmdbg-sort -fmax | lmdbg-sym $lmdbg_sym_opts";;
+	pipe="lmdbg-stat | lmdbg-sort -fmax | lmdbg-sym $lmdbg_sym_opts | lmdbg-strip -a";;
     d|default)
 	pipe="lmdbg-leaks | lmdbg-sym $lmdbg_sym_opts | lmdbg-sysleaks $conf_opts -s | grep -v '^info '";;
     *)
