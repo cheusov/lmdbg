@@ -1,6 +1,4 @@
-.\"	$NetBSD$
-.\"
-.\" Copyright (c) 2008-2009 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -14,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG 1 "May 9, 2009" "" ""
+.TH LMDBG 1 "Nov 26, 2011" "" ""
 .SH NAME
 lmdbg \- all-in-one high-level LMDBG tool
 .SH SYNOPSIS
@@ -42,21 +40,28 @@ Specify the log file.
 .BI "-c" " filename"
 Specify the config file
 .TP
-.BR "-Md" " or " "-Mdefault"
+.BI -M " mode"
+where
+.I mode
+is either of the following.
+.RS
+.TP
+.IR "d" " or " "default"
 All stacktraces with memory leaks are output.
-This is default mode.
+This is the default.
 .TP
-.BR "-Ml" " or " "-Mleaks"
+.IR "l" " or " "leaks"
 Ordered stacktraces are output.
 .TP
-.BR "-Mp" " or " "-Mpeak"
+.IR "p" " or " "peak"
 Ordered stacktraces are output.
 .TP
-.BR "-Ma" " or " "-Mallocs"
+.IR "a" " or " "allocs"
 Ordered stacktraces are output.
 .TP
-.BR "-Mm" " or " "-Mmax"
+.IR "m" " or " "max"
 Ordered stacktraces are output.
+.RE
 .TP
 .B "-a"
 Option
@@ -98,7 +103,7 @@ Enable verbose mode.
 configuration file
 .SH EXAMPLES
 .VB
-lmdbg -o _log ./my-app
+lmdbg -o log ./my-app
 .VE
 .SH SEE ALSO
 .BR lmdbg-run(1) ,
