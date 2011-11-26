@@ -31,7 +31,7 @@ usage: lmdbg-sort [OPTIONS] [files...]
 OPTIONS:
   -h           display this help
   -V           display version
-  -f <field>   sorting key, valid values are: peak, max, allocs, leaks.
+  -f <field>   sorting key, valid values are: peak, max, allocs, leaks, num.
                This option is mandatory.
 EOF
 }
