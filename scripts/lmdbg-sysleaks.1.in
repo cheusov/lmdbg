@@ -22,20 +22,22 @@ lmdbg-sysleaks \- extracts/skips the system memory leaks
 analyses
 .BR lmdbg-sym "'s"
 output and
-prints (or skips) system memory leaks listed in configuration file.
+prints (or supresses printing of) system memory leaks listed in the configuration file.
+Note that unlike lmdbg-leaks, lmdbg-sysleaks makes use of resolved symbols
+to sort out system calls, therefore it should be run after lmdbg-sym.
 .SH OPTIONS
 .TP
 .B "-h"
-Display help message.
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-c"
-Specify the config file.
+Specify the configuration file.
 .TP
 .BI "-s"
-Skip system-wide memory leaks.
+Do not print system memory leaks, print the rest.
 .SH FILES
 .TP
 .IR ~/.lmdbg.conf " or " @sysconfdir@/lmdbg.conf
@@ -44,7 +46,7 @@ default
 configuration file
 .SH EXAMPLES
 .VB
-lmdbg-sysleaks -o log ./my_app &&
+lmdbg-run -o log ./my_app &&
   lmdbg-leaks log > log_leaks &&
   lmdbg-sym -p log_leaks > log_leaks2 &&
   lmdbg-sysleaks -s log_leaks2 > log_final
