@@ -1,5 +1,3 @@
-.\"	$NetBSD$
-.\"
 .\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
@@ -16,17 +14,17 @@
 .\" ------------------------------------------------------------------
 .TH LMDBG-SORT 1 "Nov 26, 2011" "" ""
 .SH NAME
-lmdbg-sort \- sort stacktraces given on input
+lmdbg-sort \- sort stacktraces
 .SH SYNOPSIS
 .BI lmdbg-sort " [OPTIONS] [files...]"
 .SH DESCRIPTION
 .B lmdbg-sort
-sorts the input stacktraces using the values of
+sorts stacktraces using the values of
 .IR allocs ", " max ", " peak " or " leaks .
 .SH OPTIONS
 .TP
 .B "-h"
-Display help message.
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
