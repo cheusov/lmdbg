@@ -87,12 +87,14 @@ stacktrace peak: 100 max: 100 allocs: 1
 $ 
 .VE
 .SH SEE ALSO
+.BR lmdbg(1) ,
 .BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
+.BR lmdbg-sort(1) ,
+.BR lmdbg-grep(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
-.BR lmdbg-grep(1) ,
-.BR lmdbg-sort(1) ,
-.B lmdbg(1)
+.BR lmdbg-strip(1) ,
+.B lmdbg-modules(1)
 .SH AUTHOR
 Aleksey Cheusov <vle@gmx.net>

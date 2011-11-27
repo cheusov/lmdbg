@@ -129,12 +129,15 @@ lmdbg-run -p 'lmdbg-leaks | lmdbg-sym -p > _log' ./my_app <args>
 lmdbg-sym -g -s /path/to/dll1.so RTLD_NOW -p < _log
 .VE
 .SH SEE ALSO
+.BR lmdbg(1) ,
 .BR lmdbg-run(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-sort(1) ,
+.BR lmdbg-grep(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
-.BR lmdbg(1),
-.BR lmdbg-stat(1),
-.BR lmdbg-sort(1),
+.BR lmdbg-strip(1) ,
+.BR lmdbg-modules(1) ,
 .BR gdb(1) ,
 .B addr2line(1)
 .SH AUTHOR
