@@ -14,18 +14,18 @@
 .\" ------------------------------------------------------------------
 .TH LMDBG-STAT 1 "Nov 26, 2011" "" ""
 .SH NAME
-lmdbg-stat \- outputs statistical information for lmdbg-run output
+lmdbg-stat \- outputs statistical information based on lmdbg-run output
 .SH SYNOPSIS
 .BI lmdbg-stat " [OPTIONS] [files...]"
 .SH DESCRIPTION
 .B lmdbg-stat
-takes an output of
+takes output of
 .B lmdbg-run
 or other
 .B lmdbg-*
 utilities on input
 and outputs total and per-stacktrace statistical information about
-memory alocations.
+memory allocations.
 The following statistics is output:
 .RS
 .TP
@@ -39,12 +39,12 @@ Per-stacktrace or total maximum of requested bytes
 Per-stacktrace or total peak of allocated memory
 .TP
 .IR leaks " or " total_leaks
-Per-stacktrace or total amount of bytes that were allocated but not freed/
+Per-stacktrace or total amount of bytes that were allocated but not freed
 .RE
 .SH OPTIONS
 .TP
 .B "-h"
-Display help message.
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
