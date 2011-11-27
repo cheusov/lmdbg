@@ -14,7 +14,7 @@
 .\" ------------------------------------------------------------------
 .TH LMDBG 1 "Nov 26, 2011" "" ""
 .SH NAME
-lmdbg \- all-in-one high-level LMDBG tool
+lmdbg \- memory debugging tool
 .SH SYNOPSIS
 .BI lmdbg " [OPTIONS] <prog> [args...]"
 .SH DESCRIPTION
@@ -38,7 +38,8 @@ such as the highest memory consumption (
 the number of calls to memory allocation functions (
 .BI -M " allocs"
 )
-and the highest size of memory allocated by a single call to malloc functions (
+and the highest size of memory allocated by a single
+invocation of malloc function (
 .BI -M " max"
 ).
 To accomplish the above tasks,
@@ -50,7 +51,7 @@ utilities, namely,
 .SH OPTIONS
 .TP
 .B "-h"
-Display the help message
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
@@ -77,7 +78,8 @@ Rank stacktraces by the peak memory consumption.
 Rank stacktraces by the number of calls to memory allocation functions.
 .TP
 .IR "m" " or " "max"
-Rank stacktraces by the highest amount of memory allocated in a single call to malloc function.
+Rank stacktraces by the highest amount of memory allocated in a single
+invocation of malloc function.
 .RE
 .TP
 .BI "-c" " filename"
