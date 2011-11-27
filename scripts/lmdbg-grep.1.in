@@ -19,32 +19,32 @@ lmdbg-grep \- output stacktraces that match the specified condition
 .BI lmdbg-grep " [OPTIONS] <awk_expr> [files...]"
 .SH DESCRIPTION
 .B lmdbg-grep
-takes an output of
+takes output of
 .B lmdbg-stat
 or
 .B lmdbg-run
-on input and outputs stacktraces that match the
-specified
+as input and outputs stacktraces that match the condition
 .IR awk_expr .
-The following variables are available in
-.IR awk_exp :
+The following special variables can be used in
+.IR awk_exp
+expression :
 .RS
 .TP
 .I bytes
-a number of allocated bytes,
+the number of allocated bytes,
 .TP
 .I allocs
-a number of calls of malloc/calloc/memalign/posix_memalign,
+the number of calls of malloc/calloc/memalign/posix_memalign,
 .TP
 .I max
-a maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
+the maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
 function,
 .TP
 .I peak
-a maximum number of allocated bytes,
+the maximum number of allocated bytes,
 .TP
 .I leaks
-a number of allocated but not freed bytes,
+the number of allocated but not freed bytes,
 .TP
 .I address
 an address returned by memory allocation function,
@@ -60,17 +60,17 @@ an address in the stacktrace.
 .RE
 The following variables are numeric:
 .IR bytes ", " allocs ", " max ", " peak ", " leaks ;
-others are string values.
+others contain string values.
 .SH OPTIONS
 .TP
 .B "-h"
-display help message.
+Display the help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-v"
-Invert the sense of match.
+Invert the sense of matching, select non-matching lines.
 .SH EXAMPLE
 .VB
 $ cat log
