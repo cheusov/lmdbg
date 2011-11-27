@@ -704,14 +704,15 @@ realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
 '
 fi
 
-# lmdbg-run + prog5.c
-logname="$OBJDIR"/_log
+if test "$with_posix_memalign" = 1; then
+    # lmdbg-run + prog5.c
+    logname="$OBJDIR"/_log
 
-lmdbg-run -o "$logname" "$execname5"
+    lmdbg-run -o "$logname" "$execname5"
 
-unify_address "$logname" | skip_info |
-skip_useless_addr |
-cmp "prog5.c: lmdbg-run -o" \
+    unify_address "$logname" | skip_info |
+    skip_useless_addr |
+    cmp "prog5.c: lmdbg-run -o" \
 'posix_memalign ( 16 , 200 ) --> 0xF00DBEAF num: 1
 posix_memalign ( 8 , 256 ) --> 0xF00DBEAF num: 2
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
@@ -719,12 +720,12 @@ posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF num: 4
 free ( 0xF00DBEAF ) num: 5
 '
 
-# lmdbg-leaks + prog5.c
-lmdbg-leaks "$logname" | lmdbg-sym -p |
-unify_paths | hide_line_numbers |
-unify_address | skip_info | skip_useless_addr |
-hide_foreign_code | sort |
-cmp "prog5.c: lmdbg-leaks + lmdbg-sym" \
+    # lmdbg-leaks + prog5.c
+    lmdbg-leaks "$logname" | lmdbg-sym -p |
+    unify_paths | hide_line_numbers |
+    unify_address | skip_info | skip_useless_addr |
+    hide_foreign_code | sort |
+    cmp "prog5.c: lmdbg-leaks + lmdbg-sym" \
 ' 0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
  0xF00DBEAF	lmdbg.c:NNN	posix_memalign
@@ -734,6 +735,7 @@ cmp "prog5.c: lmdbg-leaks + lmdbg-sym" \
 posix_memalign ( 256 , 10240 ) --> 0xF00DBEAF num: 4
 realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: 3
 '
+fi
 
 # lmdbg-m2s: malloc
 ctrl2norm (){

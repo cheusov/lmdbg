@@ -20,6 +20,8 @@ MKINSTALL?=	no
 test : all
 	set -e; cd ${.CURDIR}; \
 	echo HAVE_DEFINE.__GLIBC__=${HAVE_DEFINE.__GLIBC__}; \
-	env with_glibc=${HAVE_DEFINE.__GLIBC__} ./test.sh
+	env with_glibc=${HAVE_DEFINE.__GLIBC__} \
+	env with_posix_memalign=${HAVE_FUNC3.posix_memalign.stdlib_h} \
+	./test.sh
 
 .include <mkc.subdir.mk>
