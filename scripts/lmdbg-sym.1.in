@@ -113,7 +113,7 @@ free ( 0xbb904060 ) num: 6
  0x80487e3      testme.c:14     main
 $ 
 .VE
-.SH EXAMPLES
+.SH EXAMPLE
 .VB
 lmdbg-sym -h
 lmdbg-sym -V
