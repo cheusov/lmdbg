@@ -116,6 +116,7 @@ $ lmdbg-grep 'allocs > 1000 || peak > 1000000' log
 $
 .VE
 .SH SEE ALSO
+.BR lmdbg(1) ,
 .BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
 .BR lmdbg-leaks(1) ,

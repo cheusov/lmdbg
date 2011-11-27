@@ -21,80 +21,87 @@ lmdbg \- all-in-one high-level LMDBG tool
 .B lmdbg
 runs an external program
 .I prog
-and collects its memory leaks and double
-frees in a specified log file. 
+, collects run-time information and saves it to a specified log file. More particulary,
 .B lmdbg
-uses
-.BR lmdbg-run ", " lmdbg-leaks ", " lmdbg-sym ", and " lmdbg-sysleaks "."
+is able of:
+decoding all symbols in the source code (function names, file name and position in the file);
+discovering all memory leaks (
+.BI -M " default"
+);
+finding per-stacktrace memory leaks and ranking them from the largest to the smallest (
+.BI -M " leaks"
+);
+gathering (and ranking) various types of per-stacktrace run time statistics,
+such as the highest memory consumption (
+.BI -M " peak"
+),
+the number of calls to memory allocation functions (
+.BI -M " allocs"
+)
+and the highest size of memory allocated by a single call to malloc functions (
+.BI -M " max"
+).
+To accomplish the above tasks,
+.B lmdbg
+, as a meta tool, manages a set of low level
+.B lmdbg-*
+utilities, namely,
+.BR lmdbg-run ", " lmdbg-leaks ", " lmdbg-sym ", " lmdbg-sysleaks ", " lmdbg-sort " and " lmdbg-stat "."
 .SH OPTIONS
 .TP
 .B "-h"
-Display help message.
+Display the help message
 .TP
 .BI "-V"
 Display the lmdbg version.
 .TP
 .BI "-o" " filename"
-Specify the log file.
+Specify the log file to save data to.
 .TP
 .BI -M " mode"
-where
+Specify the task to do, 
 .I mode
-is either of the following.
+is either of the following:
 .RS
 .TP
 .IR "d" " or " "default"
-All stacktraces with memory leaks are output.
-This is the default.
+Show all stacktraces with memory leaks. This is the default.
 .TP
 .IR "l" " or " "leaks"
-Ordered stacktraces are output.
+Rank stacktraces by memory leaks.
 .TP
 .IR "p" " or " "peak"
-Ordered stacktraces are output.
+Rank stacktraces by the peak memory consumption.
 .TP
 .IR "a" " or " "allocs"
-Ordered stacktraces are output.
+Rank stacktraces by the number of calls to memory allocation functions.
 .TP
 .IR "m" " or " "max"
-Ordered stacktraces are output.
+Rank stacktraces by the highest amount of memory allocated in a single call to malloc function.
 .RE
 .TP
 .BI "-c" " filename"
-Option
-.BI -c " filename"
-is passed
+This option is passed to
 .BR lmdbg-sysleaks(1) .
 .TP
 .B "-a"
-Option
-.BI -a
-is passed
+This option is passed to
 .BR lmdbg-sym(1) .
 .TP
 .B "-g"
-Option
-.BI -g
-is passed
+This option is passed to
 .BR lmdbg-sym(1) .
-This is the default.
 .TP
 .B "-n"
-Option
-.B -n
-is passed
+This option is passed to
 .BR lmdbg-run(1) .
 .TP
 .BI "-T" " num"
-Option
-.BI -T " num"
-is passed
+This option is passed to
 .BR lmdbg-run(1) .
 .TP
 .BI "-B" " num"
-Option
-.BI -B " num"
-is passed
+This option is passed to
 .BR lmdbg-run(1) .
 .TP
 .B "-v"
@@ -201,8 +208,11 @@ stacktrace peak: 900 max: 900 allocs: 1
 $
 .VE
 .SH SEE ALSO
+.BR lmdbg(1) ,
 .BR lmdbg-run(1) ,
 .BR lmdbg-sym(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-grep(1) ,
 .BR lmdbg-leaks(1) ,
 .B lmdbg-sysleaks(1)
 .SH AUTHOR
