@@ -1,17 +1,28 @@
 ======================================================================
-Version 0.17.0, by Aleksey Cheusov, Thu, 24 Nov 2011 00:09:48 +0300
+Version 0.17.0, by Aleksey Cheusov, Sat,  3 Dec 2011 01:06:02 +0300
+
+  Long options have been removed from all programs.
+  Use standard single-letter POSIX-compatible options.
 
   lmdbg-sym:
     - Doesn't accept progname as an argument anymore.
       Use -P option instead.
     - option --with-so was replaced with -s.
 
-  Long options have been removed from all programs.
-  use standard single-letter POSIX-compatible options.
-
   SORRY FOR INCOMPATIBILITIES WITH PREVIOUS RELEASES.
 
                                     ----------------------------------
+
+  lmdbg:
+    - -M option was added. lmdbg(1) is now a meta tools which is able
+      to not only collecting memory leaks. See the manual page for
+      details.
+    - -n option was added
+    - -T and -B options were added
+    - Regression tests were added for -M
+
+  A lot of improvements and grammar fixes in manual pages.
+  Thanks to Nikolai Krot for this.
 
   lmdbg-stat, tests/test.sh:
     - Fixes for Solaris
@@ -20,19 +31,14 @@ Version 0.17.0, by Aleksey Cheusov, Thu, 24 Nov 2011 00:09:48 +0300
     - options -T and -B were added to lmdbg-run.
     - option -n was added. It disables logging on startup.
       Sending SIGUSR1 signal to the process enables it.
-
-  lmdbg:
-    - -M option was added
-    - -n option was added
-    - -T and -B options were added
-    - Regression tests were added for -M
+    -f option was added, synonym for -p.
 
   lmdbg-grep.1:
     - documentation for "bytes" variable
 
   If set, LMDBG_MODULES_AWK and LMDBG_STRIP_AWK environment variables
   are used as a path to AWK interpreter by "lmdbg-modules" and
-  "lmdbg-strip" programs.
+  "lmdbg-strip" programs respectively.
 
   More regression tests
 
