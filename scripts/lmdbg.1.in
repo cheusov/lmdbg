@@ -134,79 +134,70 @@ int main ()
 $ cc -O0 -g -o test3 test3.c
 $ lmdbg -o log ./test3; cat log
 realloc ( NULL , 10 ) --> 0xbb901040 num: 2
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 realloc ( NULL , 310 ) --> 0xbb912140 num: 3
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 $ lmdbg -M leaks -o log ./test3; cat log
 info progname ./test3
 info stat total_allocs: 2
 info stat total_free_cnt: 0
 info stat total_leaks: 320
 stacktrace peak: 320 max: 310 allocs: 2 leaks: 320
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 $ lmdbg -M peak -o log ./test3; cat log
 info progname ./test3
 info stat total_allocs: 4
 info stat total_free_cnt: 2
 info stat total_leaks: 320
 stacktrace peak: 930 max: 610 allocs: 3 leaks: 320
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 stacktrace peak: 900 max: 900 allocs: 1
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde53b     lmdbg.c:509     malloc
- 0x8048789      test3.c:7       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:509     malloc
+      test3.c:7       main
+ 
 $ lmdbg -M max -o log ./test3; cat log
 info progname ./test3
 info stat total_allocs: 4
 info stat total_free_cnt: 2
 info stat total_leaks: 320
 stacktrace peak: 900 max: 900 allocs: 1
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde53b     lmdbg.c:509     malloc
- 0x8048789      test3.c:7       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:509     malloc
+      test3.c:7       main
+ 
 stacktrace peak: 930 max: 610 allocs: 3 leaks: 320
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 $ lmdbg -M allocs -o log ./test3; cat log
 info progname ./test3
 info stat total_allocs: 4
 info stat total_free_cnt: 2
 info stat total_leaks: 320
 stacktrace peak: 930 max: 610 allocs: 3 leaks: 320
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde68c     lmdbg.c:545     realloc
- 0x80487c7      test3.c:9       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:545     realloc
+      test3.c:9       main
+ 
 stacktrace peak: 900 max: 900 allocs: 1
- 0xbbbddb7a     lmdbg.c:140     log_stacktrace
- 0xbbbde53b     lmdbg.c:509     malloc
- 0x8048789      test3.c:7       main
- 0x804866d
- 0x80486a8
+      lmdbg.c:140     log_stacktrace
+      lmdbg.c:509     malloc
+      test3.c:7       main
+ 
 $
 .VE
 .SH SEE ALSO
