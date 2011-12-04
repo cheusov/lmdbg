@@ -40,11 +40,11 @@ OPTIONS:
 
   -M <mode>
      l or leaks     program is analysed for memory leaks (the default)
-     p or peak      statistical infroamtion about peak memory usage
+     p or peak      statistical information about peak memory usage
                     per stacktrace is output
-     a or allocs    statistical infroamtion about a number of allocations
+     a or allocs    statistical information about a number of allocations
                     per stacktrace is output
-     m or max       statistical infroamtion about maximum number of bytes
+     m or max       statistical information about maximum number of bytes
                     allocated per stacktrace is output
 
   -o <filename>     set a filename for logging
