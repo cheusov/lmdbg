@@ -38,8 +38,6 @@ int stacktrace (void **buffer, int size)
 #else
 /* !HAVE_HEADER_EXECINFO_H (probably NetBSD/FreeBSD/Solaris etc.) */
 
-#include <string.h>
-
 #define one_return_address(x)                      \
 		if (x == size) return size;                \
 		if (!__builtin_frame_address (x)) return x;\
