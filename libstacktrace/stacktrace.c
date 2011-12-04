@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007-2008 Aleksey Cheusov <vle@gmx.net>
+ * Copyright (c) 2007-2011 Aleksey Cheusov <vle@gmx.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -38,13 +38,17 @@ int stacktrace (void **buffer, int size)
 #else
 /* !HAVE_HEADER_EXECINFO_H (probably NetBSD/FreeBSD/Solaris etc.) */
 
-#define one_return_address(x)                      \
-		if (x == size) return size;                \
-		if (!__builtin_frame_address (x)) return x;\
-		tb [x] = __builtin_return_address (x);
+#define one_return_address(x) \
+ if (x == size) return size; \
+ if (!__builtin_frame_address (x)) return x; \
+ tb [x] = __builtin_return_address (x); \
+ if (!tb [x]) return x; \
+ ret = x;
 
 int stacktrace (void **tb, int size)
 {
+	int ret = 0;
+
 	one_return_address(0);
 	one_return_address(1);
 	one_return_address(2);
@@ -85,6 +89,7 @@ int stacktrace (void **tb, int size)
 	one_return_address(37);
 	one_return_address(38);
 	one_return_address(39);
-	return 40;
+
+	return ret+1;
 }
 #endif /* HAVE_HEADER_EXECINFO_H */
