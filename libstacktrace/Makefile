@@ -3,6 +3,7 @@
 
 # Ex.: CFLAGS += -DHAVE_HEADER_EXECINFO_H=1 on GNU libc
 MKC_CHECK_HEADERS+=	execinfo.h
+#MKC_CHECK_FUNCLIBS+=	backtrace:execinfo
 
 ######################################################################
 
