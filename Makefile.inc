@@ -1,0 +1,1 @@
+DOCDIR ?=       ${DATADIR}/doc/lmdbg
