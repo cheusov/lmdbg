@@ -27,7 +27,7 @@
 
 #include "stacktrace.h"
 
-#if HAVE_HEADER_EXECINFO_H
+#ifdef EXTERNAL_BACKTRACE
 #include <execinfo.h>
 /* GNU libc ? */
 int stacktrace (void **buffer, int size)
