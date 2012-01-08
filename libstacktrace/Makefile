@@ -7,20 +7,19 @@ MKC_CHECK_HEADERS+=	execinfo.h
 
 ######################################################################
 
-COPTS+=	-O0 -g # gcc's -O2 is not allowed!
+COPTS +=	-O0 -g # gcc's -O2 is not allowed!
 
-LIB=		stacktrace
-SRCS=		stacktrace.c
+LIB =		stacktrace
+SRCS =		stacktrace.c
 
-INCS=		stacktrace.h
+INCS =		stacktrace.h
 
-MKPICLIB=	yes
+MKPICLIB =	yes
 
-WARNS=		4
+WARNS =		4
 
-MKINSTALL?=	no # internal library, do not install it
+MKINSTALL ?=	no # internal library, do not install it
 
-MKC_REQD=	0.15.0
+MKC_REQD =	0.15.0
 
-.include <mkc.configure.mk>
 .include <mkc.lib.mk>

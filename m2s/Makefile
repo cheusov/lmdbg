@@ -1,5 +1,5 @@
-PROG=		lmdbg-m2s
+PROG =		lmdbg-m2s
 
-WARNS=		4
+WARNS =		4
 
 .include <mkc.prog.mk>
