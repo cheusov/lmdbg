@@ -1,4 +1,19 @@
 ======================================================================
+Version 1.0.0, by Aleksey Cheusov, Mon,  9 Jan 2012 21:56:33 +0300
+
+  libstacktrace:
+     Remove signal handlers and other garbage.
+     All we need is __builtin_frame_address and __builtin_return_address
+     builtins and nothing else.
+
+  Documentation files have been moved to subproject "doc".
+  Run "mkcmake install-doc" for installing it (or change SUBPRJ_DFLT).
+
+  Only backtrace(3) in libc is accepted as an external implementation
+  of stacktrace(3). This may fix build failure on FreeBSD with
+  installed libbacktrace.
+
+======================================================================
 Version 0.17.0, by Aleksey Cheusov, Sat,  3 Dec 2011 01:06:02 +0300
 
   Long options have been removed from all programs.
