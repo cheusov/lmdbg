@@ -1,5 +1,3 @@
-README,TODO... -> doc/
-
 - fprintf-ing to pipe/stdout should checked for errors
 - lmdbg-grep: -f <n> output n first stacktraces
 - lmdbg-grep: -l <n> output n last stacktraces
