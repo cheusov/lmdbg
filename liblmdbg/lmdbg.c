@@ -128,6 +128,7 @@ static void print_stacktrace (void **buffer, int size)
 	}
 
 	for (i = top; i < size - bottom && i-top < st_count; ++i){
+		assert (buffer [i]);
 		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
 	}
 }

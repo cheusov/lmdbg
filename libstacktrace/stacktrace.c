@@ -32,7 +32,15 @@
 /* GNU libc ? */
 int stacktrace (void **buffer, int size)
 {
-	return backtrace (buffer, size);
+	int ret = backtrace (buffer, size);
+	int i;
+
+	for (i=0; i < ret; ++i){
+		if (!buffer [i])
+			return i;
+	}
+
+	return ret;
 }
 
 #else
