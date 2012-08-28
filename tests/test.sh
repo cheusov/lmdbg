@@ -2,9 +2,6 @@
 
 set -e
 
-CC=${CC:=cc}
-SRCDIR=${SRCDIR:=.}
-
 test -n "$OBJDIR"
 test -n "$LMDBG_LIB"
 
@@ -76,10 +73,9 @@ hide_foreign_code (){
 tmpfn1=/tmp/lmdbg.1.$$
 tmpfn2=/tmp/lmdbg.2.$$
 tmpfn3=/tmp/lmdbg.3.$$
+errfn=/tmp/lmdbg.4.$$
 
-trap "rm -rf $tmpfn1 $tmpfn2 $tmpfn3" 0 INT QUIT TERM HUP
-
-ex=0
+trap "rm -rf $tmpfn1 $tmpfn2 $tmpfn3 $errfn" 0 INT QUIT TERM HUP
 
 cmp (){
     # $1 - progress message
@@ -94,7 +90,7 @@ cmp (){
     else
 	echo FAILED
 	awk '{print "   " $0}' "$tmpfn3"
-	ex=1
+	echo '' > "$errfn"
     fi
 }
 
@@ -1274,4 +1270,8 @@ stacktrace peak: 90 max: 90 allocs: 1
 '
 
 #
-exit "$ex"
+if test -f "$errfn"; then
+    exit 1
+else
+    exit 0
+fi
