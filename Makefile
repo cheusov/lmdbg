@@ -1,5 +1,5 @@
 # Makefile for lmdbg
-# Copyright 2003-2009 Aleksey Cheusov <vle@gmx.net>
+# Copyright 2003-2012 Aleksey Cheusov <vle@gmx.net>
 ##################################################
 
 PROJECTNAME=	lmdbg
@@ -19,7 +19,7 @@ SUBPRJ+=	liblmdbg:tests s2m:tests m2s:tests scripts:tests
 SUBPRJ_DFLT=	s2m m2s scripts liblmdbg
 
 .ifndef WITH_LMDBG_STAT_SCRIPT
-SUBPRJ+=	st_hash:stat
+SUBPRJ+=	st_hash:stat stat:tests
 SUBPRJ_DFLT+=	stat
 .endif
 
