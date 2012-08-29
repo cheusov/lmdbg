@@ -440,6 +440,11 @@ static void print_sections_map (void)
 		++sections_count;
 
 		/* printing */
+		if (addr_beg [0] == '0' && addr_beg [1] == 'x')
+			addr_beg += 2;
+		if (addr_end [0] == '0' && addr_end [1] == 'x')
+			addr_end += 2;
+
 		if (log_fd)
 			fprintf (log_fd, "info section 0x%s 0x%s %s\n",
 					 addr_beg, addr_end, module);
