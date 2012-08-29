@@ -403,6 +403,8 @@ static void process_stream (FILE *in)
 		len = strlen (buffer);
 		if (len > 0 && buffer [len-1] == '\n')
 			buffer [len-1] = 0;
+		else
+			break;
 
 		++line_num;
 		process_line (buffer);
