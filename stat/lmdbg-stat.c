@@ -401,10 +401,13 @@ static void process_stream (FILE *in)
 	size_t len;
 	while (fgets (buffer, sizeof (buffer), in)){
 		len = strlen (buffer);
-		if (len > 0 && buffer [len-1] == '\n')
+		if (len > 0 && buffer [len-1] == '\n'){
 			buffer [len-1] = 0;
-		else
+		}else{
+			/* ignore incomplete badly formatted lines,
+			   they may appear due to program crash */
 			break;
+		}
 
 		++line_num;
 		process_line (buffer);

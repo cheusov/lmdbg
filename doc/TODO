@@ -1,4 +1,3 @@
-- add comment for code that was added for ignoring incompletely read lines
 - regression tests for all recent fixes
 - regression test for killing process
 - lmdbg-grep: -f <n> output n first stacktraces
