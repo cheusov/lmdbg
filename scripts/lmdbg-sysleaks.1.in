@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-SYSLEAKS 1 "Nov 26, 2011" "" ""
+.TH LMDBG-SYSLEAKS 1 "Sep 2, 2012" "" ""
 .SH NAME
 lmdbg-sysleaks \- extracts/skips the system memory leaks
 .SH SYNOPSIS
@@ -23,8 +23,12 @@ analyses
 .BR lmdbg-sym "'s"
 output and
 prints (or supresses printing of) system memory leaks listed in the configuration file.
-Note that unlike lmdbg-leaks, lmdbg-sysleaks makes use of resolved symbols
-to sort out system calls, therefore it should be run after lmdbg-sym.
+Note that unlike
+.BR lmdbg-leaks ,
+.B lmdbg-sysleaks
+makes use of resolved symbols
+to sort out system functions, therefore it should be run after
+.BR lmdbg-sym .
 .SH OPTIONS
 .TP
 .B "-h"

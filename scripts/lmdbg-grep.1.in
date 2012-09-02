@@ -1,4 +1,4 @@
-.\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2010-2012 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-GREP 1 "Nov 26, 2011" "" ""
+.TH LMDBG-GREP 1 "Sep 2, 2012" "" ""
 .SH NAME
 lmdbg-grep \- output stacktraces that match the specified condition
 .SH SYNOPSIS
@@ -41,22 +41,22 @@ the maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
 function,
 .TP
 .I peak
-the maximum number of allocated bytes,
+the peak number of allocated bytes,
 .TP
 .I leaks
 the number of allocated but not freed bytes,
 .TP
 .I address
-an address returned by memory allocation function,
+address returned by memory allocation function,
 .TP
 .I source
-a source code filename,
+source code filename,
 .TP
 .I funcname
-a function name,
+function name,
 .TP
 .I addrline
-an address in the stacktrace.
+address in the stacktrace.
 .RE
 The following variables are numeric:
 .IR bytes ", " allocs ", " max ", " peak ", " leaks ;

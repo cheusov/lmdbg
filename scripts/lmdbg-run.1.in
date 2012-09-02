@@ -1,4 +1,4 @@
-.\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2008-2012 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-RUN 1 "Nov 26, 2011" "" ""
+.TH LMDBG-RUN 1 "Sep 2, 2012" "" ""
 .SH NAME
 lmdbg-run \- runs a program and traces the malloc/realloc/free calls
 .SH SYNOPSIS
@@ -32,6 +32,37 @@ of function invocation.  Also, some
 special information is output about the program being run.
 Before being saved to the log file, stacktrace info can be filtered
 through a custom command.
+.SH OPTIONS
+.TP
+.B "-h"
+Display the help message.
+.TP
+.BI "-V"
+Display the lmdbg version.
+.TP
+.B "-v"
+Enable verbose mode.
+.TP
+.BI "-o" " filename"
+Specify the log file name.
+.TP
+.BI "-f|-p" " command"
+Filter stacktraces through a filtering command/pipe.
+The result is sent to the log file specified in -o option or to stdout otherwise.
+.TP
+.B "-n"
+Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
+process.
+.TP
+.BI "-T" " number"
+Specify the number of addresses to skip from the top of the stacktrace (farther from function main).
+.TP
+.BI "-B" " number"
+Specify the number of addresses to skip from the bottom of the stacktrace (nearer to function main).
+.TP
+.BI "-M" " number"
+Limit the number of addresses shown in a stacktrace. An incomplete stacktrace
+may be generated, that includes the top of the stack.
 .SH EXAMPLE
 The output of
 .B lmdbg-run
@@ -113,37 +144,6 @@ lmdbg-run -o log ./my_app &&
   lmdbg-sysleaks -s log_leaks2 > log_final
 lmdbg-run -B2 -M6 -f 'lmdbg-leaks | lmdbg-sym > log' ./my_app <args>
 .VE
-.SH OPTIONS
-.TP
-.B "-h"
-Display the help message.
-.TP
-.BI "-V"
-Display the lmdbg version.
-.TP
-.B "-v"
-Enable verbose mode.
-.TP
-.BI "-o" " filename"
-Specify the log file name.
-.TP
-.BI "-f|-p" " command"
-Filter stacktrace through a filtering command/pipe.
-The result is sent to the log file specified in -o option or to stdout otherwise.
-.TP
-.B "-n"
-Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
-process.
-.TP
-.BI "-T" " number"
-Specify the number of addresses to skip from the top of the stacktrace (farther from function main).
-.TP
-.BI "-B" " number"
-Specify the number of addresses to skip from the bottom of the stacktrace (nearer to function main).
-.TP
-.BI "-M" " number"
-Limit the number of addresses shown in a stacktrace. An incomplete stacktrace
-may be generated, that includes the top of the stack.
 .SH ENVIRONMENT
 .TP
 .B LMDBG_LIB

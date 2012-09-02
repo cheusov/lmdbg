@@ -1,4 +1,4 @@
-.\" Copyright (c) 2008-2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Copyright (c) 2008-2012 by Aleksey Cheusov (vle@gmx.net)
 .\" Absolutely no warranty.
 .\"
 .\" ------------------------------------------------------------------
@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-SYM 1 "Nov 26, 2011" "" ""
+.TH LMDBG-SYM 1 "Sep 2, 2012" "" ""
 .SH NAME
 lmdbg-sym \- convert lmdbg-run addresses to source code positions.
 .SH SYNOPSIS
@@ -44,32 +44,32 @@ found out that the address 0x8048764 corresponded to the function
 in the source file
 .I tests/test2.c
 at the line number
-.I 10
-. The address, the source file name and
+.IR 10 .
+The address, the source file name and
 the function name are separated by a TAB character.
 Several log files can be analysed with lmdbg-sym as long as they refer to
 a single program.
 .SH OPTIONS
 .TP
 .B "-h"
-display the help message
+Display the help message.
 .TP
 .BI "-V"
-display the lmdbg version
+Display the lmdbg version.
 .TP
 .BI "-g"
-use gdb(1) for resolving symbols. This is the default.
+Use gdb(1) for resolving symbols. This is the default.
 .TP
 .BI "-a"
-use addr2line(1) for resolving symbols.
+Use addr2line(1) for resolving symbols.
 .TP
 .BI "-P" " progname"
-specify the path to the program the log file of which is being analysed.
+Specify the path to the program the log file of which is being analysed.
 If not given, the program path is used that is found in the
 .IR logfile .
 .TP
 .BI "-s" " library:flags"
-specify the library to open with dlopen(3) and flags, separated by a colon character.
+Specify the library to open with dlopen(3) and flags, separated by a colon character.
 Allowed flags are: RTLD_LAZY, RTLD_NOW and RTLD_GLOBAL .
 This option can be used repeatedly.
 .SH ENVIRONMENT

@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-SORT 1 "Nov 26, 2011" "" ""
+.TH LMDBG-SORT 1 "Sep 2, 2012" "" ""
 .SH NAME
 lmdbg-sort \- sort stacktraces
 .SH SYNOPSIS
@@ -20,7 +20,7 @@ lmdbg-sort \- sort stacktraces
 .SH DESCRIPTION
 .B lmdbg-sort
 sorts stacktraces using the values of
-.IR allocs ", " max ", " peak " or " leaks .
+.IR allocs ", " max ", " peak ", " leaks " or " num.
 .SH OPTIONS
 .TP
 .B "-h"
