@@ -38,7 +38,7 @@ MKC_REQD =	0.13.0
 .include "../version.mk"
 
 .include "../libstacktrace/linkme.mk"
-DPLIBS +=	-lstacktrace_pic
+LDADD +=	-lstacktrace_pic
 
 .include "../libstacktrace/backtrace.mk"
 .include <mkc.lib.mk>
