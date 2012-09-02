@@ -1,12 +1,12 @@
-LIB=		test3
+LIB =		test3
 
 # ${.CURDIR}/ is for test only
-SRCS=		${.CURDIR}/test3.c
+SRCS =		${.CURDIR}/test3.c
 
-COPTS+=		-O0 -g
+COPTS +=	-O0 -g
 
-SHLIB_MAJOR=	0
-SHLIB_MINOR=	0
+SHLIB_MAJOR =	0
+SHLIB_MINOR =	0
 
 MKINSTALL ?=	no
 

@@ -1,4 +1,4 @@
-PATH.stacktrace:=	${.PARSEDIR}
+PATH.stacktrace :=	${.PARSEDIR}
 
-CPPFLAGS+=	-I${PATH.stacktrace}
-DPLIBDIRS+=	${PATH.stacktrace}
+CPPFLAGS  +=	-I${PATH.stacktrace}
+DPLIBDIRS +=	${PATH.stacktrace}

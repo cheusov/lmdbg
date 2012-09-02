@@ -1,6 +1,6 @@
 MKC_NOAUTO_FUNCLIBS =	1
 
-MKC_CHECK_HEADERS +=	execinfo.h
+MKC_CHECK_HEADERS  +=	execinfo.h
 MKC_CHECK_FUNCLIBS +=	backtrace:execinfo
 
 .include <mkc.configure.mk>

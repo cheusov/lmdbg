@@ -1,6 +1,6 @@
-PROG=		prog4
+PROG   =	prog4
 
-COPTS+=		-O0 -g
+COPTS +=	-O0 -g
 
 MKINSTALL ?=	no
 

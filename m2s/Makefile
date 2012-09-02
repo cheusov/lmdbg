@@ -1,4 +1,4 @@
-PROG =		lmdbg-m2s
+PROG  =		lmdbg-m2s
 
 WARNS =		4
 
