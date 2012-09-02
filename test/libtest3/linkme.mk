@@ -1,4 +1,4 @@
-PATH.test3:=   ${.PARSEDIR}
+PATH.test3 :=	${.PARSEDIR}
 
-CPPFLAGS+=      -I${PATH.test3}
-DPLIBDIRS+=     ${PATH.test3}
+CPPFLAGS +=	-I${PATH.test3}
+LDFLAGS  +=	-L${PATH.test3}
