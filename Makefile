@@ -17,6 +17,7 @@ MKC_CHECK_FUNCS3         +=	posix_memalign:stdlib.h
 SUBPRJ +=	libstacktrace:liblmdbg
 SUBPRJ +=	scripts s2m m2s doc
 SUBPRJ +=	liblmdbg:test s2m:test m2s:test scripts:test
+SUBPRJ +=	st_hash:stat stat:test
 
 TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6
 .if ${HAVE_FUNC3.posix_memalign.stdlib_h:U1}
@@ -28,12 +29,7 @@ clean: clean-test/${t}
 cleandir: cleandir-test/${t}
 .endfor
 
-SUBPRJ_DFLT =	s2m m2s scripts liblmdbg
-
-.ifndef WITH_LMDBG_STAT_SCRIPT
-SUBPRJ      +=	st_hash:stat stat:test
-SUBPRJ_DFLT +=	stat
-.endif
+SUBPRJ_DFLT =	s2m m2s scripts liblmdbg stat
 
 MKC_CHECK_DEFINES +=	__GLIBC__:string.h
 

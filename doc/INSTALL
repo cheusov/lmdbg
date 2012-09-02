@@ -3,7 +3,7 @@
                                PACKAGES
 
 NetBSD, DragonFlyBSD etc. (pkgsrc):
-   package - wip/lmdbg
+   package - devel/lmdbg
 
 FreeBSD:
    port - devel/lmdbg
@@ -35,8 +35,8 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
    tested. If you are happy pkgsrc user ;-) (http://www.pkgsrc.org) of
    course bmake is already installed because it is a part pkgsrc
    bootstrap. DragonFlyBSD also have bmake in its base system.  NOTE:
-   FreeBSD and OpenBSD make-s are not good. Unfortunately they are
-   incompatible with NetBSD bmake.
+   FreeBSD and OpenBSD make-s are not good. They are incompatible with
+   NetBSD bmake.
 
    http://freshmeat.net/projects/bmake
    http://www.crufty.net/ftp/pub/sjg/
@@ -46,16 +46,19 @@ Debian and Ubuntu (binaries are available only for Debian/Lenny/x86):
    simple replacement for GNU autotools.
 
    http://sourceforge.net/projects/mk-configure/
+   https://github.com/cheusov/mk-configure
 
 1) At run time LMDBG also needs a pipestatus, a set of shell functions
    for checking an exit status of ALL programs in a pipe.
 
    http://sourceforge.net/projects/pipestatus/
+   https://github.com/cheusov/pipestatus
 
-2) Some of LMDBG programs are written in RunAWK. So, at run time you
+2) Some of LMDBG programs are written in runawk. So, at run time you
    need it too.
 
    http://sourceforge.net/projects/runawk/
+   https://github.com/cheusov/runawk
 
 3) After installing bmake and mk-configure you are ready
    to build and install LMDBG.
@@ -99,10 +102,7 @@ Examples of building and installing:
           mkcmake -s all install
 
 LMDBG's own environment variables that can be changed at build time:
-   GDB - path to gdb [gdb]
    AWK - path to awk, on Solaris it makes sense
          to set it to /usr/xpg4/bin/awk or /usr/gnu/gawk [awk]
-   WITH_LMDBG_STAT_SCRIPT - by default lmdbg-stat written in "C"
-         is built and installed. If this variable is set,
-         script written in AWK is installed instead. []
+   GDB - path to gdb [gdb]
    LIB_Judy - Judy library name [Judy]
