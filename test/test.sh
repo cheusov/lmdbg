@@ -1103,6 +1103,25 @@ stacktrace peak: 68      max: 68      allocs: 1     leaks: 68         module: mo
 stacktrace peak: 8       max: 8       allocs: 1     leaks: 8          module: mod8
 '
 
+lmdbg-sort -f num input6.txt |
+cmp 'lmdbg-sort -f num'  \
+'realloc ( 0x7f7ff7b0cc00 , 888 ) --> 0x7f7ff7b0c800 num: 1
+ 0x7f7ff7800fc0
+ 0x7f7ff7801c4b
+ 0x402a44
+ 0x400902
+realloc ( 0x7f7ff7b0cc00 , 888 ) --> 0x7f7ff7b0c800 num: 3
+ 0x7f7ff7803fc0
+ 0x7f7ff7802c4b
+ 0x400a44
+ 0x400902
+realloc ( 0x7f7ff7b0cc00 , 888 ) --> 0x7f7ff7b0c800 num: 4
+ 0x7f7ff7805fc0
+ 0x7f7ff7804c4b
+ 0x401a44
+ 0x400902
+'
+
 # lmdbg-modules
 lmdbg-modules -c lmdbg-modules_config.txt lmdbg-modules_input.txt |
 cmp 'lmdbg-modules' \
