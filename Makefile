@@ -29,6 +29,9 @@ clean: clean-test/${t}
 cleandir: cleandir-test/${t}
 .endfor
 
+test: all-test
+	@:
+
 SUBPRJ_DFLT =	s2m m2s scripts liblmdbg stat
 
 MKC_CHECK_DEFINES +=	__GLIBC__:string.h
