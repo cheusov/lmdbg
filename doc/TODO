@@ -1,3 +1,9 @@
+- add comment for code that was added for ignoring incompletely read lines
+- regression tests for all recent fixes
+- MKC_REQUIRE_HEADER += Judy.h
+- eliminate double -lJudy when linking
+- restructure directories
+- regression test for killing process
 - fprintf-ing to pipe/stdout should checked for errors
 - lmdbg-grep: -f <n> output n first stacktraces
 - lmdbg-grep: -l <n> output n last stacktraces
