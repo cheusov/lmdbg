@@ -341,15 +341,22 @@ void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
 	int i;
 
 	for (i=0; i < sections_count; ++i){
-		if (!strcmp (sections [i].module, module)){
+		if (sections [i].module [0] == '/' && !strcmp (sections [i].module, module)){
 			return sections [i].addr_beg + (point - base_addr);
 		}
 	}
 
-	/* If we don't find appropriate address range, return
-	 an original address
-	*/
-	return point;
+	for (i=0; i < sections_count; ++i){
+/*		fprintf (stderr, "%p in [%p, %p]\n",
+				 point, sections [i].addr_beg, sections [i].addr_end);
+*/
+
+		if (point >= sections [i].addr_beg && point < sections [i].addr_end){
+			return point;
+		}
+	}
+
+	return NULL;
 }
 
 static void print_progname (void)
@@ -370,7 +377,7 @@ static void print_sections_map (void)
 	FILE *fp;
 	char buf [LINE_MAX];
 	const char *addr_beg=NULL, *addr_end=NULL;
-	char *module=NULL;
+	const char *module=NULL;
 	char *p;
 	size_t len;
 
@@ -420,8 +427,8 @@ static void print_sections_map (void)
 				module = p+1;
 		}
 
-		if (!module || *module != '/')
-			continue;
+		if (!module)
+			module = "";
 
 		/* fill in sections array */
 		if (1 != sscanf (addr_beg, POINTER_FORMAT,

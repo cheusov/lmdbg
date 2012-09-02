@@ -5,6 +5,8 @@ SRCS=		${.CURDIR}/prog3.c
 
 COPTS+=		-O0 -g
 
+MKINSTALL ?=	no
+
 .include "../libtest3/linkme.mk"
 
 DPLIBS+=	-ltest3

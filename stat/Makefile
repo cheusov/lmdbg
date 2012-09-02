@@ -1,17 +1,12 @@
 PROG =		lmdbg-stat
-
 SRCS =		lmdbg-stat.c stat.c
 
-LIB_Judy ?=	Judy
-
 MKC_REQUIRE_FUNCLIBS +=	JudyHSIns:${LIB_Judy}
-MKC_REQUIRE_HEADERS +=	Judy.h
+MKC_REQUIRE_HEADERS  +=	Judy.h
 
 .include <mkc.configure.mk>
 
 CPPFLAGS +=	-DVERSION='"${VERSION}"'
-
-LDADD +=	-l${LIB_Judy}
 
 WARNS =		4
 

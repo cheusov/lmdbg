@@ -170,20 +170,20 @@ cmp "lmdbg-strip -V" \
 # normal tests
 
 # test1.c
-if test -d "$OBJDIR/tests"; then
-    execname1="$OBJDIR"/tests/prog1/prog1
-    execname2="$OBJDIR"/tests/prog2/prog2
-    execname4="$OBJDIR"/tests/prog4/prog4
-    execname5="$OBJDIR"/tests/prog5/prog5
-    execname6="$OBJDIR"/tests/prog6/prog6
+if test -d "$OBJDIR/test"; then
+    execname1="$OBJDIR"/test/prog1/prog1
+    execname2="$OBJDIR"/test/prog2/prog2
+    execname4="$OBJDIR"/test/prog4/prog4
+    execname5="$OBJDIR"/test/prog5/prog5
+    execname6="$OBJDIR"/test/prog6/prog6
 
     logname="$OBJDIR"/_log
 
     libname="$OBJDIR"/libtest3/libtest3.so
 
-    exec3name="$OBJDIR"/tests/prog3/prog3
+    exec3name="$OBJDIR"/test/prog3/prog3
 
-    LD_LIBRARY_PATH=$OBJDIR/tests/libtest3
+    LD_LIBRARY_PATH=$OBJDIR/test/libtest3
 else
     execname1="$OBJDIR"/prog1
     execname2="$OBJDIR"/prog2
