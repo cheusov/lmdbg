@@ -154,18 +154,17 @@ generate_gdb_commands (){
 	$1 == "info" && $2 == "section" {
 	    sub(/^(0x)?0*/, "", $3)
 	    sub(/^(0x)?0*/, "", $4)
-	    if ($5 in beg){
-#		print "BAD! " $5 > "/dev/stderr"
-		dup [$5] = 1
-	    }else{
-		addr = sprintf("%16s", $3)
-		gsub(/ /, "0", addr)
-		beg [$5] = (addr "")
+	    if ($5 == "")
+		$5 = ++sect_num
 
-		addr = sprintf("%16s", $4)
-		gsub(/ /, "0", addr)
-		end [$5] = (addr "")
-	    }
+	    addr = sprintf("%16s", $3)
+	    gsub(/ /, "0", addr)
+	    beg [$5] = (addr "")
+
+	    addr = sprintf("%16s", $4)
+	    gsub(/ /, "0", addr)
+	    end [$5] = (addr "")
+
 	    next
 	}
 	{
@@ -177,6 +176,8 @@ generate_gdb_commands (){
 	    gsub(/ /, "0", addr)
 
 	    for (sect in beg){
+#		print addr, sect, beg [sect], end [sect] > "/dev/stderr"
+
 		if (addr >= beg [sect] && addr < end [sect]){
 		    module   = sect
 		    beg_addr = beg [sect]
@@ -184,13 +185,12 @@ generate_gdb_commands (){
 		}
 	    }
 
-	    if (sect in dup) next
+	    if (module ~ /^[0-9]/)
+		module = ""
 
-	    if (module != ""){
-		printf "print/x 0x%s\n", $0
-		printf "break *lmdbg_get_addr(0x%s, 0x%s, \"%s\")\n", $0, beg_addr, module
-		printf "info break %s\n", br_cnt++
-	    }
+	    printf "print/x 0x%s\n", $0
+	    printf "break *lmdbg_get_addr(0x%s, 0x%s, \"%s\")\n", $0, beg_addr, module
+	    printf "info break %s\n", br_cnt++
 	}' "$info_sections_fn" "$@"
     else
 	@AWK@ '{
