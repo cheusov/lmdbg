@@ -9,9 +9,7 @@ all:
 	OBJDIR=${.CURDIR}/..; \
 	SRCDIR=${.CURDIR}; \
 	CC='${CC}'; \
-	with_glibc=${HAVE_DEFINE.__GLIBC__.string_h}; \
-	with_posix_memalign=${HAVE_FUNC3.posix_memalign.stdlib_h}; \
-	export PATH LMDBG_LIB OBJDIR SRCDIR CC with_glibc with_posix_memalign; \
+	export PATH LMDBG_LIB OBJDIR SRCDIR CC; \
 	./test.sh
 
 .include <mkc.files.mk>

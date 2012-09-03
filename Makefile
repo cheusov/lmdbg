@@ -13,6 +13,9 @@ CLEANFILES =	ChangeLog _*
 ###########################
 MKC_COMMON_DEFINES.Linux  =	-D_GNU_SOURCE
 MKC_CHECK_FUNCS3         +=	posix_memalign:stdlib.h
+MKC_CHECK_DEFINES        +=	__GLIBC__:string.h
+
+.include <mkc.configure.mk>
 
 SUBPRJ +=	libstacktrace:liblmdbg
 SUBPRJ +=	scripts s2m m2s doc
@@ -20,9 +23,16 @@ SUBPRJ +=	liblmdbg:test s2m:test m2s:test scripts:test
 SUBPRJ +=	st_hash:stat stat:test
 
 TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6
+
 .if ${HAVE_FUNC3.posix_memalign.stdlib_h:U1}
 TESTS +=	prog5
+with_posix_memalign =	1
+EXPORT_VARNAMES +=	with_posix_memalign
 .endif
+
+with_glibc =	${HAVE_DEFINE.__GLIBC__.string_h}
+EXPORT_VARNAMES +=	with_glibc
+
 .for t in ${TESTS}
 SUBPRJ +=	test/${t}:test
 clean: clean-test/${t}
@@ -33,8 +43,6 @@ test: all-test
 	@:
 
 SUBPRJ_DFLT =	s2m m2s scripts liblmdbg stat
-
-MKC_CHECK_DEFINES +=	__GLIBC__:string.h
 
 MKC_REQD =	0.23.0
 
