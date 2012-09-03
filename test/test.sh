@@ -169,7 +169,7 @@ cmp "lmdbg-strip -V" \
 ####################
 # normal tests
 
-# test1.c
+#
 if test -d "$OBJDIR/test"; then
     execname1="$OBJDIR"/test/prog1/prog1
     execname2="$OBJDIR"/test/prog2/prog2
