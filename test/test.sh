@@ -10,7 +10,9 @@ export LC_ALL
 
 unify_paths (){
     # /home/cheusov/prjs/lmdbg/ ---> /lmdbg/dir/
-    sed 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' "$@"
+    sed -e 's,\([^[:space:]]*\)/prog,/path/to/prog,' \
+	-e 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' \
+	-e 's,[^[:space:]]*/\([^ /]*[.]c\),\1,' "$@"
 }
 
 unify_paths_inplace (){
@@ -170,38 +172,13 @@ cmp "lmdbg-strip -V" \
 # normal tests
 
 #
-if test -d "$OBJDIR/test"; then
-    execname1="$OBJDIR"/test/prog1/prog1
-    execname2="$OBJDIR"/test/prog2/prog2
-    execname4="$OBJDIR"/test/prog4/prog4
-    execname5="$OBJDIR"/test/prog5/prog5
-    execname6="$OBJDIR"/test/prog6/prog6
-
-    logname="$OBJDIR"/_log
-
-    libname="$OBJDIR"/libtest3/libtest3.so
-
-    exec3name="$OBJDIR"/test/prog3/prog3
-
-    LD_LIBRARY_PATH=$OBJDIR/test/libtest3
-else
-    execname1="$OBJDIR"/prog1
-    execname2="$OBJDIR"/prog2
-    execname4="$OBJDIR"/prog4
-    execname5="$OBJDIR"/prog5
-    execname6="$OBJDIR"/prog6
-
-    logname="$OBJDIR"/_log
-
-    libname="$OBJDIR"/libtest3.so
-
-    exec3name="$OBJDIR"/prog3
-
-    LD_LIBRARY_PATH=$OBJDIR
-fi
-
-#
-export LD_LIBRARY_PATH
+execname1=`which prog1 || true`
+execname2=`which prog2 || true`
+execname3=`which prog3 || true`
+execname4=`which prog4 || true`
+execname5=`which prog5 || true`
+execname6=`which prog6 || true`
+logname="$OBJDIR"/_log
 
 # -o
 lmdbg-run -o "$logname" "$execname1"
@@ -519,7 +496,7 @@ lmdbg -T2 -M allocs -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M allocs #1" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -537,7 +514,7 @@ lmdbg -T2 -Ma -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -Ma #2" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -555,7 +532,7 @@ lmdbg -T2 -Mpeak -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M peak #1" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -573,7 +550,7 @@ lmdbg -T2 -M p -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M p #2" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -591,7 +568,7 @@ lmdbg -T2 -Mmax -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M max #1" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -609,7 +586,7 @@ lmdbg -T2 -M m -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M m #2" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2201
 info stat total_free_cnt: 1
 info stat total_leaks: 2400
@@ -627,7 +604,7 @@ lmdbg -T2 -M leaks -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M leaks #1" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2200
 info stat total_free_cnt: 0
 info stat total_leaks: 2400
@@ -643,7 +620,7 @@ lmdbg -T2 -M l -o "$logname" "$execname6" || true
 unify_address "$logname" | skip_useless_addr |
 hide_line_numbers | unify_paths | hide_foreign_code | grep -E '^[^ ]|main' |
 cmp "prog6.c: lmdbg -M l #2" \
-'info progname /lmdbg/dir/prog6
+'info progname /path/to/prog6
 info stat total_allocs: 2200
 info stat total_free_cnt: 0
 info stat total_leaks: 2400
@@ -654,7 +631,7 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 '
 
 # lmdbg-run -o and shared libraries
-lmdbg-run -o "$logname" "$exec3name"
+lmdbg-run -o "$logname" "$execname3"
 
 unify_address "$logname" | skip_info | skip_useless_addr |
 hide_line_numbers | unify_paths |
@@ -664,7 +641,7 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 '
 
 # lmdbg-sym -g and shared libraries
-lmdbg-sym -g -P "$exec3name" "$logname" |
+lmdbg-sym -g -P "$execname3" "$logname" |
 unify_paths | unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \
