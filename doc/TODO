@@ -1,3 +1,4 @@
+- malloc hooks were deprecated in recent versions of glibc
 - regression tests for all recent fixes
 - regression test for killing process
 - lmdbg-grep: -f <n> output n first stacktraces
