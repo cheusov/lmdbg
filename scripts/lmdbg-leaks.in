@@ -26,7 +26,11 @@ set -e
 LC_ALL=C
 export LC_ALL
 
-sysconfdir=@sysconfdir@
+: ${LMDBG_S2M_DIR:=@libexecdir@}
+: ${LMDBG_M2S_DIR:=@libexecdir@}
+
+s2m_cmd=${LMDBG_S2M_DIR}/lmdbg-s2m
+m2s_cmd=${LMDBG_M2S_DIR}/lmdbg-m2s
 
 usage (){
     cat <<'EOF'
@@ -110,4 +114,4 @@ leaks () {
     }' "$@"
 }
 
-lmdbg-m2s "$@" | leaks | lmdbg-s2m
+"$m2s_cmd" "$@" | leaks | "$s2m_cmd"

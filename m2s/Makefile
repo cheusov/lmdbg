@@ -1,5 +1,7 @@
-PROG  =		lmdbg-m2s
+PROG   =	lmdbg-m2s
 
-WARNS =		4
+BINDIR =	${LIBEXECDIR}
+
+WARNS  =	4
 
 .include <mkc.prog.mk>
