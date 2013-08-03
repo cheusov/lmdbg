@@ -1,0 +1,79 @@
+#!/bin/sh
+
+# Copyright (c) 2013 Aleksey Cheusov <vle@gmx.net>
+# 
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+# 
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+set -e
+
+LC_ALL=C
+export LC_ALL
+
+. pipestatus
+
+: ${LMDBG_S2M_DIR:=@libexecdir@}
+: ${LMDBG_M2S_DIR:=@libexecdir@}
+
+s2m_cmd=${LMDBG_S2M_DIR}/lmdbg-s2m
+m2s_cmd=${LMDBG_M2S_DIR}/lmdbg-m2s
+
+usage () {
+    cat <<'EOF'
+Taking an output of lmdbg on input, lmdbg-head outputs global
+information and first stacktraces
+
+usage: lmdbg-head -h
+       lmdbg-head [OPTIONS] [files...]
+OPTIONS:
+  -h         display this screen
+  -V         display version
+  -n <n>     a number of stacktraces, the default is 10
+EOF
+}
+
+version (){
+cat <<'EOF'
+lmdbg-head @LMDBG_VERSION@
+EOF
+}
+
+n=10
+
+while getopts hVn: f; do
+    case $f in
+	h)
+	    usage
+	    exit 0;;
+	V)
+	    version
+	    exit 0;;
+	n)
+	    n=$OPTARG;;
+	'?')
+	    usage
+	    exit 1;;
+    esac
+done
+shift $(expr $OPTIND - 1)
+
+runpipe0 \
+    "$m2s_cmd" "$@" '|' \
+    @AWK@ -v n="$n" '/^info/ || (++cnt <= n) {print; next} {exit}' '|' \
+    "$s2m_cmd"

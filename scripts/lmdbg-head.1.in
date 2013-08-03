@@ -1,0 +1,49 @@
+.\" Copyright (c) 2010-2011 by Aleksey Cheusov (vle@gmx.net)
+.\" Absolutely no warranty.
+.\"
+.\" ------------------------------------------------------------------
+.de VB \" Verbatim Begin
+.ft CW
+.nf
+.ne \\$1
+..
+.de VE \" Verbatim End
+.ft R
+.fi
+..
+.\" ------------------------------------------------------------------
+.TH LMDBG-HEAD 1 "Aug 3, 2013" "" ""
+.SH NAME
+lmdbg-head \- display first stacktraces
+.SH SYNOPSIS
+.BI lmdbg-head " [OPTIONS] [files...]"
+.SH DESCRIPTION
+.B lmdbg-head
+displays first stacktraces.
+.SH OPTIONS
+.TP
+.B "-h"
+Display the help message.
+.TP
+.BI "-V"
+Display the lmdbg version.
+.TP
+.BI "-n" " count"
+Specify a number of stacktraces. The default is 10.
+.SH EXAMPLE
+.VB
+$ lmdbg -o log -Mpeak ./testprog
+$ lmdbg-head -n 15 log
+.VE
+.SH SEE ALSO
+.BR lmdbg(1) ,
+.BR lmdbg-run(1) ,
+.BR lmdbg-sym(1) ,
+.BR lmdbg-stat(1) ,
+.BR lmdbg-grep(1) ,
+.BR lmdbg-leaks(1) ,
+.BR lmdbg-sysleaks(1) ,
+.BR lmdbg-strip(1) ,
+.B lmdbg-modules(1)
+.SH AUTHOR
+Aleksey Cheusov <vle@gmx.net>

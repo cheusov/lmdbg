@@ -1,9 +1,6 @@
 - malloc hooks were deprecated in recent versions of glibc
 - regression tests for all recent fixes
 - regression test for killing process
-- lmdbg-grep: -f <n> output n first stacktraces
-- lmdbg-grep: -l <n> output n last stacktraces
-- lmdbg-sym: option to NOT generate source.c:NN or funcname component
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free

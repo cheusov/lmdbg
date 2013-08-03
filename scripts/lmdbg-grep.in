@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2010 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2010-2013 Aleksey Cheusov <vle@gmx.net>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -28,7 +28,8 @@ usage () {
 Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 information and those stacktraces that match the specified AWK expression.
 
-usage: lmdbg-grep [OPTIONS] <awk_expr> [files...]
+usage: lmdbg-grep -h
+       lmdbg-grep [OPTIONS] <awk_expr> [files...]
 OPTIONS:
   -h         display this screen
   -V         display version

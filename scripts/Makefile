@@ -1,10 +1,10 @@
 INSCRIPTS +=	lmdbg-run lmdbg-leaks lmdbg-sysleaks
 INSCRIPTS +=	lmdbg-sym lmdbg lmdbg-grep lmdbg-sort
-INSCRIPTS +=	lmdbg-modules lmdbg-strip
+INSCRIPTS +=	lmdbg-head lmdbg-modules lmdbg-strip
 
 INFILES +=	lmdbg-run.1 lmdbg-leaks.1 lmdbg-sysleaks.1
 INFILES +=	lmdbg-sym.1 lmdbg.1 lmdbg-grep.1 lmdbg-sort.1
-INFILES +=	#lmdbg-modules.1 lmdbg-strip.1 
+INFILES +=	lmdbg-head.1 #lmdbg-modules.1 lmdbg-strip.1 
 
 .ifndef AWK
 .if exists(/usr/xpg4/bin/awk)
