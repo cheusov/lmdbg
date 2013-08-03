@@ -211,6 +211,15 @@ cmp 'lmdbg-run -o with empty progname' \
 'ok
 '
 
+if lmdbg-run -o "$logname" "$execname5" 2>/dev/null; then
+    echo FAILED
+else
+    echo $?
+fi |
+cmp 'lmdbg-run: test for exit status' \
+'17
+'
+
 # -o
 if lmdbg-run -o "$logname" 'ls -la' > /dev/null 2>&1; then
     echo ok
@@ -732,7 +741,7 @@ if test "$with_posix_memalign" = 1; then
     # lmdbg-run + prog5.c
     logname="$OBJDIR"/_log
 
-    lmdbg-run -o "$logname" "$execname5"
+    lmdbg-run -o "$logname" "$execname5" || true
 
     unify_address "$logname" | skip_info |
     skip_useless_addr |

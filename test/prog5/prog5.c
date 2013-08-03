@@ -16,5 +16,5 @@ int main (int argc, char **argv)
 		return 1;
 	free (p2);
 
-	return 0;
+	return 17;
 }
