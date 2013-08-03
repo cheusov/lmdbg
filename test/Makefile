@@ -12,6 +12,7 @@ all:
 	PATH=${OBJDIR_prog4}:$$PATH; \
 	PATH=${OBJDIR_prog5}:$$PATH; \
 	PATH=${OBJDIR_prog6}:$$PATH; \
+	PATH=${OBJDIR_prog7}:$$PATH; \
 	LD_LIBRARY_PATH=${OBJDIR_libtest3}; \
 	OBJDIR=${.CURDIR}/..; \
 	SRCDIR=${.CURDIR}; \

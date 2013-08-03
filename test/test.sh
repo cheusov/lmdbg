@@ -178,6 +178,7 @@ execname3=`which prog3 || true`
 execname4=`which prog4 || true`
 execname5=`which prog5 || true`
 execname6=`which prog6 || true`
+execname7=`which prog7 || true`
 logname="$OBJDIR"/_log
 
 # lmdbg-run -o with no progname
@@ -198,6 +199,26 @@ else
 fi |
 cmp 'lmdbg-run -o with empty progname' \
 'ok
+'
+
+# -o
+if lmdbg-run -o "$logname" 'ls -la' > /dev/null 2>&1; then
+    echo ok
+else
+    echo $?
+fi |
+cmp 'stacktrace(3): test for sigsegv seen on NetBSD/x86_64' \
+'ok
+'
+
+# -o
+if lmdbg-run -o "$logname" "$execname7" 2>/dev/null; then
+    echo FAILED
+else
+    echo $?
+fi |
+cmp 'stacktrace(3): test for foreign sigsegv' \
+'139
 '
 
 # -o
