@@ -128,44 +128,54 @@ cmp "lmdbg-grep -h" \
 'Taking an output of lmdbg-stat on input lmdbg-grep outputs global
 '
 
-lmdbg-run -V               | head -1 | version2XXX |
+lmdbg-head -h | head -1 |
+cmp "lmdbg-head -h" \
+'Taking an output of lmdbg on input, lmdbg-head outputs global
+'
+
+lmdbg-run -V | head -1 | version2XXX |
 cmp "lmdbg-run -V" \
 "lmdbg-run XXX
 "
 
-lmdbg-sym -V               | head -1 | version2XXX |
+lmdbg-sym -V | head -1 | version2XXX |
 cmp "lmdbg-sym -V" \
 "lmdbg-sym XXX
 "
 
-lmdbg-leaks -V             | head -1 | version2XXX |
+lmdbg-leaks -V | head -1 | version2XXX |
 cmp "lmdbg-leaks -V" \
 "lmdbg-leaks XXX
 "
 
-lmdbg-sysleaks -V          | head -1 | version2XXX |
+lmdbg-sysleaks -V | head -1 | version2XXX |
 cmp "lmdbg-sysleaks -V" \
 "lmdbg-sysleaks XXX
 "
 
-lmdbg-stat -V              | head -1 | version2XXX |
+lmdbg-stat -V | head -1 | version2XXX |
 cmp 'lmdbg-stat -V' \
 'lmdbg-stat XXX
 '
 
-lmdbg-grep -V              | head -1 | version2XXX |
+lmdbg-grep -V | head -1 | version2XXX |
 cmp 'lmdbg-grep -V' \
 'lmdbg-grep XXX
 '
 
-lmdbg-modules -V       | head -1 | version2XXX |
+lmdbg-modules -V | head -1 | version2XXX |
 cmp "lmdbg-modules -V" \
 "lmdbg-modules XXX
 "
 
-lmdbg-strip -V       | head -1 | version2XXX |
+lmdbg-strip -V | head -1 | version2XXX |
 cmp "lmdbg-strip -V" \
 "lmdbg-strip XXX
+"
+
+lmdbg-head -V | head -1 | version2XXX |
+cmp "lmdbg-head -V" \
+"lmdbg-head XXX
 "
 
 ####################
@@ -1304,6 +1314,55 @@ stacktrace peak: 90 max: 90 allocs: 1
  0x8048788	testme.c:7	main
  0x80485b4
  0x8048517
+'
+
+# lmdbg-strip
+lmdbg-head input1.txt |
+cmp 'lmdbg-head' \
+'info lalala
+malloc ( 123 ) --> 0x1234
+ 0x1
+ 0x2
+calloc ( 2 , 124 ) --> 0x1235
+ 0x2
+ 0x3
+ 0x4
+memalign ( 16 , 120 ) --> 0x1236
+ 0x3
+ 0x4
+ 0x5
+free ( 0x1235 )
+ 0x1
+posix_memalign ( 16 , 130 ) --> 0x1237
+ 0x2
+ 0x3
+malloc ( 100 ) --> 0x1238
+ 0x1
+ 0x2
+malloc ( 200 ) --> 0x1239
+ 0x7
+realloc ( 0x1238 , 300 ) --> 0x123A
+ 0x5
+free ( 0x1239 )
+ 0x1
+realloc ( 0x123A , 110 ) --> 0x123B
+ 0x6
+'
+
+lmdbg-head -n3 input1.txt |
+cmp 'lmdbg-head -n3' \
+'info lalala
+malloc ( 123 ) --> 0x1234
+ 0x1
+ 0x2
+calloc ( 2 , 124 ) --> 0x1235
+ 0x2
+ 0x3
+ 0x4
+memalign ( 16 , 120 ) --> 0x1236
+ 0x3
+ 0x4
+ 0x5
 '
 
 #
