@@ -180,6 +180,26 @@ execname5=`which prog5 || true`
 execname6=`which prog6 || true`
 logname="$OBJDIR"/_log
 
+# lmdbg-run -o with no progname
+if lmdbg-run -o "$logname" 2>/dev/null; then
+    echo FAILED
+else
+    echo ok
+fi |
+cmp 'lmdbg-run -o with no progname' \
+'ok
+'
+
+# lmdbg-run -o with empty progname
+if lmdbg-run -o "$logname" '    ' 2>/dev/null; then
+    echo FAILED
+else
+    echo ok
+fi |
+cmp 'lmdbg-run -o with empty progname' \
+'ok
+'
+
 # -o
 lmdbg-run -o "$logname" "$execname1"
 

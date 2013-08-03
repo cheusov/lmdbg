@@ -38,7 +38,7 @@ malloc, free, realloc and memalign.
 Set LMDBG_LIB environment variable to liblmdbg.$LMDBG_SOEXT
 The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 
-usage: lmdbg-run [OPTIONS] <prog> [args...]
+usage: lmdbg-run [OPTIONS] <progname> [args...]
 OPTIONS:
   -h                     display this screen
   -V                     display version
@@ -88,6 +88,12 @@ while getopts hVvo:f:p:nS:M:T:B: f; do
     esac
 done
 shift $(expr $OPTIND - 1)
+
+progname=`echo $1`
+if test $# -eq 0 -o "$progname" = ''; then
+    echo 'Progname should not be empty, run '"'"'lmdbg-run -h'"'"' for details' 1>&2
+    exit 1
+fi
 
 TMPDIR=${TMPDIR:=/tmp}
 
