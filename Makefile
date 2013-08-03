@@ -44,7 +44,7 @@ test: all-test
 
 SUBPRJ_DFLT =	s2m m2s scripts liblmdbg stat
 
-MKC_REQD =	0.23.0
+MKC_REQD =	0.24.0
 
 ###########################
 .include "version.mk"
