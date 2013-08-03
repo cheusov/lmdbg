@@ -170,6 +170,7 @@ other compilers let me now ;-)
 .BR lmdbg-stat(1) ,
 .BR lmdbg-sort(1) ,
 .BR lmdbg-grep(1) ,
+.BR lmdbg-head(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-sysleaks(1) ,
 .BR lmdbg-strip(1) ,

@@ -19,7 +19,7 @@ Version 1.1.0, by Aleksey Cheusov, Sun,  2 Sep 2012 19:04:21 +0300
 
   lmdbg-stat:
     - Now incompletly read lines (having no LF in the end) are
-      ignored.  This fixes crashes and therefore empty output or
+      ignored.  This fixes crashes and therefore empty output of
       lmdbg(1) when analysed program is killed.
     - Alternative implementation written in awk was removed.
 

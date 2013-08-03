@@ -99,6 +99,7 @@ lmdbg-run -p 'lmdbg-leaks | lmdbg-sym > log' ./my_app <args>
 .BR lmdbg-stat(1) ,
 .BR lmdbg-sort(1) ,
 .BR lmdbg-grep(1) ,
+.BR lmdbg-head(1) ,
 .BR lmdbg-sysleaks(1) ,
 .BR lmdbg-strip(1) ,
 .B lmdbg-modules(1)

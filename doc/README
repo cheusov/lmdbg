@@ -242,6 +242,9 @@ See INSTALL file
 
 - lmdbg-sort - see manual page.
 
+- lmdbg-head - this filter outputs the first <count> stacktraces,
+               see manual page.
+
 - lmdbg-strip
 
   Example:

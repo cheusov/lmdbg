@@ -63,6 +63,7 @@ lmdbg-sysleaks -c ~/.lmdbg.NetBSD.conf -s log_leaks2 > log_final
 .BR lmdbg-stat(1) ,
 .BR lmdbg-sort(1) ,
 .BR lmdbg-grep(1) ,
+.BR lmdbg-head(1) ,
 .BR lmdbg-leaks(1) ,
 .BR lmdbg-strip(1) ,
 .B lmdbg-modules(1)
