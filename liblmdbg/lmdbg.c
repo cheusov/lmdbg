@@ -95,6 +95,14 @@ void destruct(void) { lmdbg_finish(); }
 #define WRAP(name) name
 #endif
 
+struct section_t {
+	char *module;
+	char *addr_beg;
+	char *addr_end;
+};
+static struct section_t sections [1000];
+static int sections_count = 0;
+
 static void enable_logging (void);
 
 static void handler_sigusr1 (int dummy)
@@ -113,10 +121,26 @@ static void set_sigusr1_handler (void)
 	sigaction (SIGUSR1, &sa, NULL);
 }
 
+static int is_addr_valid (char *addr)
+{
+	int i;
+
+	if (!sections_count)
+		return 1;
+
+	for (i=0; i < sections_count; ++i){
+		if (addr >= sections [i].addr_beg && addr < sections [i].addr_end)
+			return 1;
+	}
+
+	return 0;
+}
+
 static void print_stacktrace (void **buffer, int size)
 {
 	int i;
 	int top, bottom;
+	void *addr;
 	if (!log_fd)
 		return;
 
@@ -128,8 +152,14 @@ static void print_stacktrace (void **buffer, int size)
 	}
 
 	for (i = top; i < size - bottom && i-top < st_count; ++i){
-		assert (buffer [i]);
-		fprintf (log_fd, " " POINTER_FORMAT "\n", buffer [i]);
+		addr = buffer [i];
+		if (!is_addr_valid (addr)){
+/*			fprintf (stderr, "bad address: " POINTER_FORMAT "\n", addr); */
+			continue;
+		}
+
+		assert (addr);
+		fprintf (log_fd, " " POINTER_FORMAT "\n", addr);
 	}
 }
 
@@ -327,14 +357,6 @@ void print_pid (void)
 	fprintf (pid_fd, "%li\n", (long) getpid ());
 	fclose (pid_fd);
 }
-
-struct section_t {
-	char *module;
-	char *addr_beg;
-	char *addr_end;
-};
-static struct section_t sections [1000];
-static int sections_count = 0;
 
 void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
 {
