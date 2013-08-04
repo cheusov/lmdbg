@@ -9,7 +9,7 @@ LC_ALL=C
 export LC_ALL
 
 : ${LMDBG_PROCFS:=/proc}
-if test -d "$LMDBG_PROCFS"; then
+if test -f "$LMDBG_PROCFS/$$/maps"; then
     procfs_exists=1
 fi
 
