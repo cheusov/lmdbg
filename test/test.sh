@@ -211,7 +211,7 @@ cmp 'lmdbg-run -o with empty progname' \
 'ok
 '
 
-if lmdbg-run -o "$logname" "$execname5" 2>/dev/null; then
+if lmdbg-run -v -o "$logname" "$execname5" 2>/dev/null; then
     echo FAILED
 else
     echo $?

@@ -122,12 +122,17 @@ LMDBG_PROGNAME="$1"
 export LMDBG_LOGFILE LMDBG_PROGNAME LMDBG_TIMEOUT
 export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
+set +e
 export LD_PRELOAD="$LMDBG_LIB"
 eval "$@"
+ex=$?
 unset LD_PRELOAD
+set -e
 
 wait
 
 if test "$LMDBG_VERBOSE"; then
-    echo Done.
+    echo Done. 1>&2
 fi
+
+exit $ex
