@@ -46,7 +46,7 @@
 
 int log_enabled = 0;
 void print_pid (void);
-void *lmdbg_get_addr (char *point, char *base_addr, const char *module);
+void *lmdbg_get_addr (char *point, char *base_addr, int section_num);
 
 static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
@@ -90,7 +90,6 @@ void destruct(void) __attribute__((destructor));
 void destruct(void) { lmdbg_finish(); }
 
 struct section_t {
-	char *module;
 	char *addr_beg;
 	char *addr_end;
 };
@@ -346,27 +345,9 @@ void print_pid (void)
 	fclose (pid_fd);
 }
 
-void *lmdbg_get_addr (char *point, char *base_addr, const char *module)
+void *lmdbg_get_addr (char *point, char *base_addr, int section_num)
 {
-	int i;
-
-	for (i=0; i < sections_count; ++i){
-		if (sections [i].module [0] == '/' && !strcmp (sections [i].module, module)){
-			return sections [i].addr_beg + (point - base_addr);
-		}
-	}
-
-	for (i=0; i < sections_count; ++i){
-/*		fprintf (stderr, "%p in [%p, %p]\n",
-				 point, sections [i].addr_beg, sections [i].addr_end);
-*/
-
-		if (point >= sections [i].addr_beg && point < sections [i].addr_end){
-			return point;
-		}
-	}
-
-	return NULL;
+	return sections [section_num].addr_beg + (point - base_addr);;
 }
 
 static void print_progname (void)
@@ -388,7 +369,6 @@ static void print_sections_map (void)
 	char buf [LINE_MAX];
 	void *lmdbg_addr=NULL;
 	const char *addr_beg=NULL, *addr_end=NULL;
-	const char *module=NULL;
 	char *p;
 	size_t len;
 
@@ -434,15 +414,6 @@ static void print_sections_map (void)
 		if (p[2] != 'x')
 			continue; /* not executable */
 
-		/* obtaining library name */
-		for (; *p; ++p){
-			if (*p == ' ')
-				module = p+1;
-		}
-
-		if (!module)
-			module = "";
-
 		/* fill in sections array */
 		if (1 != sscanf (addr_beg, POINTER_FORMAT,
 						 &sections [sections_count].addr_beg))
@@ -462,8 +433,6 @@ static void print_sections_map (void)
 			continue;
 		}
 
-		sections [sections_count].module = strdup (module);
-
 		++sections_count;
 
 		/* printing */
@@ -473,8 +442,7 @@ static void print_sections_map (void)
 			addr_end += 2;
 
 		if (log_fd)
-			fprintf (log_fd, "info section 0x%s 0x%s %s\n",
-					 addr_beg, addr_end, module);
+			fprintf (log_fd, "info section 0x%s 0x%s\n", addr_beg, addr_end);
 	}
 
 	fclose (fp);
