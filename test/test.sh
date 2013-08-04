@@ -8,6 +8,11 @@ test -n "$LMDBG_LIB"
 LC_ALL=C
 export LC_ALL
 
+: ${LMDBG_PROCFS:=/proc}
+if test -d "$LMDBG_PROCFS"; then
+    procfs_exists=1
+fi
+
 unify_paths (){
     # /home/cheusov/prjs/lmdbg/ ---> /lmdbg/dir/
     sed -e 's,\([^[:space:]]*\)/prog,/path/to/prog,' \
@@ -66,9 +71,9 @@ version2XXX (){
 }
 
 hide_foreign_code (){
-    awk -F'\t' '
+    awk -F'\t' -v procfs_exists="$procfs_exists" '
 	{ sub(/wrap_/, "") }
-	$0 ~ /^[^ ]/ || $2 ~ /lmdbg[.]c|prog.[.]c/
+	$0 ~ /^[^ ]/ || /prog.[.]c|test3.c/ || (procfs_exists && $2 ~ /lmdbg[.]c/)
     ' "$@"
 }
 
@@ -445,7 +450,7 @@ EOF
 lmdbg-sysleaks -c ./lmdbg1.conf -s > "$logname2" < "$logname"
 
 unify_address "$logname2" | skip_info | skip_useless_addr |
-hide_line_numbers | hide_foreign_code |
+hide_line_numbers |
 cmp "prog2.c: lmdbg-sysleaks -c ./lmdbg1.conf" \
 "malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -479,7 +484,7 @@ lmdbg-sysleaks -c ./lmdbg3.conf -s \
     "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_info | skip_useless_addr |
-hide_line_numbers | hide_foreign_code |
+hide_line_numbers |
 cmp "prog2.c: lmdbg-sysleaks -c ./lmdbg3.conf -s" \
 'malloc ( 555 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
@@ -500,7 +505,7 @@ lmdbg-sysleaks -c ./lmdbg3.conf \
     "$logname" > "$logname2"
 
 unify_address "$logname2" | skip_info | skip_useless_addr |
-hide_line_numbers | hide_foreign_code |
+hide_line_numbers |
 cmp "prog2.c: lmdbg-sysleaks -c ./lmdbg3.conf" \
 'realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF
  0xF00DBEAF	lmdbg.c:NNN	log_stacktrace
