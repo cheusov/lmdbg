@@ -775,7 +775,7 @@ ctrl2norm (){
 
 test_fn="$OBJDIR/_tst"
 
-lmdbg-m2s ./input2.txt | ctrl2norm |
+$LMDBG_M2S_DIR/lmdbg-m2s ./input2.txt | ctrl2norm |
 cmp "lmdbg-m2s:" \
 'info lalala \{031}
 malloc ( 123 ) -> 0x1234 \{031}\{034}0x234\{034}0x456
@@ -795,7 +795,7 @@ ctrl2norm (){
 	print}' "$@"
 }
 
-lmdbg-m2s ./input2.txt | lmdbg-s2m > $test_fn.tmp
+$LMDBG_M2S_DIR/lmdbg-m2s ./input2.txt | $LMDBG_S2M_DIR/lmdbg-s2m > $test_fn.tmp
 printf 'lmdbg-s2m:... ' 1>&2
 if diff ./input2.txt "$test_fn.tmp" > "$test_fn.tmp2"; then
     echo ok
@@ -806,7 +806,7 @@ else
 fi
 
 # lmdbg-stat: malloc
-lmdbg-stat ./input3.txt | lmdbg-m2s | sort | lmdbg-s2m |
+lmdbg-stat ./input3.txt | $LMDBG_M2S_DIR/lmdbg-m2s | sort | $LMDBG_S2M_DIR/lmdbg-s2m |
 cmp "lmdbg-stat (input3.txt):" \
 'info stat total_allocs: 4
 info stat total_free_cnt: 2
@@ -827,7 +827,7 @@ stacktrace peak: 120 max: 70 allocs: 3 leaks: 50
 
 stat_fn="$OBJDIR/_stat"
 
-lmdbg-stat ./input1.txt | lmdbg-m2s | sort | lmdbg-s2m | tee "$stat_fn" |
+lmdbg-stat ./input1.txt | $LMDBG_M2S_DIR/lmdbg-m2s | sort | $LMDBG_S2M_DIR/lmdbg-s2m | tee "$stat_fn" |
 cmp "lmdbg-stat (input1.txt):" \
 'info lalala
 info stat total_allocs: 13
