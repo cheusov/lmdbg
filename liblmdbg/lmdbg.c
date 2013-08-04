@@ -610,7 +610,7 @@ void free (void *p)
 
 #ifndef __GLIBC__
 /* On glibc-based systems lmdbg doesn't work with calloc */
-static void * calloc (size_t number, size_t size)
+void * calloc (size_t number, size_t size)
 {
 	void *p;
 
