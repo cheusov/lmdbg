@@ -235,7 +235,7 @@ static void init_log (void)
 	if (log_verbose)
 		fprintf (stderr, "LMDBG_LOGFILE=%s\n", log_filename);
 
-	if (log_filename){
+	if (log_filename && log_filename [0]){
 		log_fd = fopen (log_filename, "w");
 
 		if (!log_fd){
@@ -243,6 +243,37 @@ static void init_log (void)
 					  "fopen(\"%s\", \"w\") failed", log_filename);
 			perror (err_msg);
 			exit (50);
+		}
+	}
+}
+
+static void init_pid (void)
+{
+	char err_msg [200];
+	FILE *pid_fd = NULL;
+
+	const char *pid_filename = getenv ("LMDBG_PIDFILE");
+
+	if (log_verbose)
+		fprintf (stderr, "LMDBG_PIDFILE=%s\n", pid_filename);
+
+	if (pid_filename && pid_filename [0]){
+		pid_fd = fopen (pid_filename, "w");
+
+		if (!pid_fd){
+			snprintf (err_msg, sizeof (err_msg),
+					  "fopen(\"%s\", \"w\") failed", pid_filename);
+			perror (err_msg);
+			exit (51);
+		}
+
+		fprintf (pid_fd, "%ld\n", (long int) getpid ());
+
+		if (fclose (pid_fd)){
+			snprintf (err_msg, sizeof (err_msg),
+					  "write to \"%s\" failed", pid_filename);
+			perror (err_msg);
+			exit (52);
 		}
 	}
 }
@@ -491,6 +522,7 @@ static void lmdbg_startup (void)
 
 	init_fun_ptrs ();
 	init_log ();
+	init_pid ();
 	init_st_range ();
 	print_sections_map ();
 	print_progname ();

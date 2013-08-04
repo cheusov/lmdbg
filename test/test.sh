@@ -189,7 +189,9 @@ execname4=`which prog4 || true`
 execname5=`which prog5 || true`
 execname6=`which prog6 || true`
 execname7=`which prog7 || true`
+execname8=`which prog8 || true`
 logname="$OBJDIR"/_log
+pidfile="$OBJDIR"/_pid
 
 # lmdbg-run -o with no progname
 if lmdbg-run -o "$logname" 2>/dev/null; then
@@ -689,6 +691,17 @@ stacktrace peak: 2000 max: 1 allocs: 2000 leaks: 2000
 stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  	prog6.c:NNN	main
 '
+
+# lmdbg-run -nN
+lmdbg-run -o "$logname" -nN "$pidfile" "$execname8" &
+sleep 1
+kill -SIGUSR1 `cat $pidfile`
+wait
+
+unify_address "$logname" | skip_info | skip_useless_addr |
+cmp "prog8.c: lmdbg-run + SIGUSR1" \
+"malloc ( 600 ) --> 0xF00DBEAF num: 1
+"
 
 # lmdbg-run -o and shared libraries
 lmdbg-run -o "$logname" "$execname3"

@@ -22,7 +22,7 @@ SUBPRJ +=	scripts s2m m2s doc
 SUBPRJ +=	liblmdbg:test s2m:test m2s:test scripts:test
 SUBPRJ +=	st_hash:stat stat:test
 
-TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6 prog7
+TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6 prog7 prog8
 
 .if ${HAVE_FUNC3.posix_memalign.stdlib_h:U1}
 TESTS +=	prog5

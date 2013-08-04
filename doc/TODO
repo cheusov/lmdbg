@@ -1,8 +1,6 @@
 - environment variable -- support for single-address stacktraces
-
 - malloc hooks were deprecated in recent versions of glibc
 - regression tests for all recent fixes
-- regression test for killing process
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free

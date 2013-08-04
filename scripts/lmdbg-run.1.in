@@ -16,11 +16,11 @@
 .SH NAME
 lmdbg-run \- runs a program and traces the malloc/realloc/free calls
 .SH SYNOPSIS
-.BI lmdbg-run " [OPTIONS] <prog> [args...]"
+.BI lmdbg-run " [OPTIONS] <progname> [args...]"
 .SH DESCRIPTION
 .B lmdbg-run
 lmdbg-run runs an external command
-.I prog args
+.I progname args
 and creates a log file where all
 invocations of
 .IR malloc ", " calloc ", " realloc ", " memalign ", "
@@ -53,6 +53,10 @@ The result is sent to the log file specified in -o option or to stdout otherwise
 .B "-n"
 Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
 process.
+.TP
+.BI "-N" " filename"
+Save pid of
+.IR progname " to " filename .
 .TP
 .BI "-T" " number"
 Specify the number of addresses to skip from the top of the stacktrace (farther from function main).
