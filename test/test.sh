@@ -233,7 +233,7 @@ cmp 'stacktrace(3): test for sigsegv seen on NetBSD/x86_64' \
 '
 
 # -o
-if lmdbg-run -o "$logname" "$execname7" 2>/dev/null; then
+if lmdbg-run -o "$logname" "$execname7" 2>/dev/null 1>&2; then
     echo FAILED
 else
     echo $?
