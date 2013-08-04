@@ -1,0 +1,22 @@
+## this file contains only lmdbg-specific files to ignore by 'git status'
+##
+
+_log
+_log2
+_pid
+test/prog[0-9]/prog[0-9]
+log
+lmdbg-m2s
+lmdbg-s2m
+*.1
+lmdbg
+lmdbg-grep
+lmdbg-head
+lmdbg-leaks
+lmdbg-modules
+lmdbg-run
+lmdbg-sort
+lmdbg-strip
+lmdbg-sym
+lmdbg-sysleaks
+lmdbg-stat
