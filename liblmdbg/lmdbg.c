@@ -429,6 +429,7 @@ static void print_sections_map (void)
 	char map_fn [PATH_MAX];
 	FILE *fp;
 	char buf [LINE_MAX];
+	void *lmdbg_addr=NULL;
 	const char *addr_beg=NULL, *addr_end=NULL;
 	const char *module=NULL;
 	char *p;
@@ -437,9 +438,11 @@ static void print_sections_map (void)
 	snprintf (map_fn, sizeof (map_fn), "/proc/%li/maps", (long) getpid ());
 	fp = fopen (map_fn, "r");
 
-	if (!fp){
+	if (!fp)
 		return;
-	}
+
+	if (stacktrace (&lmdbg_addr, 1) != 1)
+		return;
 
 	while (fgets (buf, sizeof (buf), fp)){
 		/* buf content has the following format 
@@ -493,6 +496,13 @@ static void print_sections_map (void)
 						 &sections [sections_count].addr_end))
 		{
 			abort ();
+		}
+
+		/* ignore addresses from lmdbg.c */
+		if (lmdbg_addr >= (void *) sections [sections_count].addr_beg &&
+			lmdbg_addr <  (void *) sections [sections_count].addr_end)
+		{
+			continue;
 		}
 
 		sections [sections_count].module = strdup (module);
