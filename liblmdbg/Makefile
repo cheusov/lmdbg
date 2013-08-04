@@ -8,8 +8,6 @@ MKC_CHECK_FUNCS2 +=	memalign:malloc.h
 
 MKC_CHECK_FUNCS3 +=	posix_memalign:stdlib.h
 
-MKC_CHECK_VARS   +=	__malloc_hook:malloc.h
-
 MKC_CHECK_FUNCLIBS +=	dlopen:dl
 
 ######################################################################

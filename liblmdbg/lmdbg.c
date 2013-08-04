@@ -89,12 +89,6 @@ void construct(void) { lmdbg_startup(); }
 void destruct(void) __attribute__((destructor));
 void destruct(void) { lmdbg_finish(); }
 
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-#define WRAP(name) wrap_ ## name
-#else
-#define WRAP(name) name
-#endif
-
 struct section_t {
 	char *module;
 	char *addr_beg;
@@ -191,30 +185,42 @@ static void init_fun_ptrs (void)
 	if (!libc_so)
 		exit (40);
 
-	real_malloc  = (malloc_t) dlsym (libc_so, "malloc");
+	real_malloc = (malloc_t) dlsym (libc_so, "__libc_malloc");
+	if (!real_malloc)
+		real_malloc  = (malloc_t) dlsym (libc_so, "malloc");
 	if (!real_malloc)
 		exit (41);
 
-	real_realloc = (realloc_t) dlsym (libc_so, "realloc");
+	real_realloc = (realloc_t) dlsym (libc_so, "__libc_realloc");
+	if (!real_realloc)
+		real_realloc = (realloc_t) dlsym (libc_so, "realloc");
 	if (!real_realloc)
 		exit (42);
 
-	real_free    = (free_t) dlsym (libc_so, "free");
+	real_free    = (free_t) dlsym (libc_so, "__libc_free");
+	if (!real_free)
+		real_free    = (free_t) dlsym (libc_so, "free");
 	if (!real_free)
 		exit (43);
 
-	real_calloc  = (calloc_t) dlsym (libc_so, "calloc");
+	real_calloc  = (calloc_t) dlsym (libc_so, "__libc_calloc");
+	if (!real_calloc)
+		real_calloc  = (calloc_t) dlsym (libc_so, "calloc");
 	if (!real_calloc)
 		exit (44);
 
 #if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
-	real_posix_memalign = (posix_memalign_t) dlsym (libc_so, "posix_memalign");
+	real_posix_memalign = (posix_memalign_t) dlsym (libc_so, "__libc_posix_memalign");
+	if (!real_posix_memalign)
+		real_posix_memalign = (posix_memalign_t) dlsym (libc_so, "posix_memalign");
 	if (!real_posix_memalign)
 		exit (45);
 #endif
 
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
-	real_memalign    = (memalign_t) dlsym (libc_so, "memalign");
+	real_memalign    = (memalign_t) dlsym (libc_so, "__libc_memalign");
+	if (!real_memalign)
+		real_memalign    = (memalign_t) dlsym (libc_so, "memalign");
 	if (!real_memalign)
 		exit (46);
 #endif
@@ -312,66 +318,17 @@ static void init_enabling_timeout (void)
 		enabling_timeout = atoi(s);
 }
 
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-#define EXTRA_ARG , const void *CALLER
-#else
-#define EXTRA_ARG
-#endif
-
-void * WRAP(malloc) (size_t s EXTRA_ARG);
-void * WRAP(realloc) (void *p, size_t s EXTRA_ARG);
-void WRAP(free) (void *p EXTRA_ARG);
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG);
-#endif
-
-/* no WRAP and EXTRA_ARG! for calloc(3) and posix_memalign(3) */
-#ifndef __GLIBC__
-/* On glibc-based systems calloc doesn't work */
-void * calloc (size_t number, size_t s);
-#endif /* __GLIBC__ */
-#if HAVE_FUNC3_POSIX_MEMALIGN_STDLIB_H
-int posix_memalign (void **memptr, size_t align, size_t size);
-#endif
-
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-static void *(*malloc_hook_orig) (size_t size EXTRA_ARG);
-static void *(*realloc_hook_orig) (void *p, size_t s EXTRA_ARG);
-static void (*free_hook_orig) (void *p EXTRA_ARG);
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-static void *(*memalign_hook_orig) (size_t align, size_t size EXTRA_ARG);
-#endif
-#endif
-
 static void enable_logging (void)
 {
 	if (!log_fd)
 		return;
 
 	log_enabled = 1;
-
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-	__malloc_hook   = WRAP(malloc);
-	__realloc_hook  = WRAP(realloc);
-	__free_hook     = WRAP(free);
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-	__memalign_hook = WRAP(memalign);
-#endif
-#endif
 }
 
 static void disable_logging (void)
 {
 	log_enabled = 0;
-
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-	__malloc_hook   = malloc_hook_orig;
-	__realloc_hook  = realloc_hook_orig;
-	__free_hook     = free_hook_orig;
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-	__memalign_hook = memalign_hook_orig;
-#endif
-#endif
 }
 
 void print_pid (void)
@@ -539,15 +496,6 @@ static void lmdbg_startup (void)
 	init_verbose_flag ();
 	init_enabling_timeout ();
 
-#ifdef HAVE_VAR___MALLOC_HOOK_MALLOC_H
-	malloc_hook_orig   = __malloc_hook;
-	realloc_hook_orig  = __realloc_hook;
-	free_hook_orig     = __free_hook;
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-	memalign_hook_orig = __memalign_hook;
-#endif
-#endif
-
 	if (log_filename != NULL && enabling_timeout == 0)
 		enable_logging ();
 	else if (enabling_timeout == -1)
@@ -563,10 +511,14 @@ static void lmdbg_finish (void)
 }
 
 /* replacement functions */
-void * WRAP(malloc) (size_t s EXTRA_ARG)
+void * malloc (size_t s)
 {
 	void *p;
-	assert (real_malloc);
+	
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
@@ -584,19 +536,23 @@ void * WRAP(malloc) (size_t s EXTRA_ARG)
 		log_stacktrace ();
 
 		enable_logging ();
+
 		return p;
 	}else{
 		return real_malloc (s);
 	}
 }
 
-void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
+void * realloc (void *p, size_t s)
 {
 	void *np;
 	char np_buf [100];
 	const char *np_ptr = "NULL";
 
-	assert (real_realloc);
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
@@ -626,9 +582,12 @@ void * WRAP(realloc) (void *p, size_t s EXTRA_ARG)
 	}
 }
 
-void WRAP(free) (void *p EXTRA_ARG)
+void free (void *p)
 {
-	assert (real_free);
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
@@ -651,10 +610,14 @@ void WRAP(free) (void *p EXTRA_ARG)
 
 #ifndef __GLIBC__
 /* On glibc-based systems lmdbg doesn't work with calloc */
-void * calloc (size_t number, size_t size)
+static void * calloc (size_t number, size_t size)
 {
 	void *p;
-	assert (real_calloc);
+
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
@@ -683,7 +646,11 @@ void * calloc (size_t number, size_t size)
 int posix_memalign (void **memptr, size_t align, size_t size)
 {
 	int ret;
-	assert (real_posix_memalign);
+
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
@@ -711,10 +678,14 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 #endif
 
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
-void * WRAP(memalign) (size_t align, size_t size EXTRA_ARG)
+void * memalign (size_t align, size_t size)
 {
 	void *p;
-	assert (real_memalign);
+
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		init_fun_ptrs ();
+	}
 
 	if (log_enabled){
 		disable_logging ();
