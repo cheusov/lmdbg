@@ -679,7 +679,7 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 # lmdbg-run -nN
 lmdbg-run -o "$logname" -nN "$pidfile" "$execname8" &
 sleep 1
-kill -SIGUSR1 `cat $pidfile`
+kill -USR1 `cat $pidfile`
 wait
 
 unify_address "$logname" | skip_info | skip_useless_addr |
