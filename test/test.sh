@@ -233,7 +233,7 @@ Done.
 # -o
 rm -f "$logname"
 
-if lmdbg-run -o "$logname" 'ls -la' > /dev/null 2>&1; then
+if echo qwerty | lmdbg-run -o "$logname" grep qwerty > /dev/null 2>&1; then
     echo ok
 else
     echo $?
