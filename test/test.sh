@@ -228,12 +228,23 @@ cmp 'lmdbg-run: test for exit status' \
 '
 
 # -o
+rm -f "$logname"
+
 if lmdbg-run -o "$logname" 'ls -la' > /dev/null 2>&1; then
     echo ok
 else
     echo $?
 fi |
 cmp 'stacktrace(3): test for sigsegv seen on NetBSD/x86_64' \
+'ok
+'
+
+if grep '^ ' "$logname" 2>&1 > /dev/null; then
+    echo ok
+else
+    echo "grep(1) exit status is $?"
+fi |
+cmp 'lmdbg-run: non-empty log' \
 'ok
 '
 

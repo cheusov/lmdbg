@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+ * Copyright (c) 2003-2013 Aleksey Cheusov <vle@gmx.net>
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -485,7 +485,7 @@ void * malloc (size_t s)
 	
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
@@ -519,7 +519,7 @@ void * realloc (void *p, size_t s)
 
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
@@ -554,7 +554,7 @@ void free (void *p)
 {
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
@@ -584,7 +584,7 @@ void * calloc (size_t number, size_t size)
 
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
@@ -617,7 +617,7 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
@@ -652,7 +652,7 @@ void * memalign (size_t align, size_t size)
 
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
-		init_fun_ptrs ();
+		lmdbg_startup ();
 	}
 
 	if (log_enabled){
