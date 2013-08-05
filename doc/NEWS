@@ -1,4 +1,46 @@
 ======================================================================
+Version 1.2.0, by Aleksey Cheusov, Mon,  5 Aug 2013 13:35:22 +0300
+
+  New tool lmdbg-head(1) was implemented, see the man page for
+  details.
+
+  lmdbg-sym:
+    - Much simplier (and correct) method for address convertion was
+      implemented. As a result lmdbg-sym works correctly on AltLinux
+      where ASLR and PIE are enabled by default.
+
+  lmdbg-run:
+    - On glibc-based systems (e.g. Linux) malloc hooks are not used
+      anymore as they are declared deprecated
+
+    - Addresses from lmdbg.c are not included to stacktrace
+
+    - Additional checks for address (returned by stacktrace(3))
+      correctness.  As a result gdb(1) doesn't crash and therefore
+      lmdbg-sym(1) work correctly.
+
+    - stacktrace(3) doesn't not crash anymore on NetBSD/x64_64 with
+      system utilities.  See implementation details in stacktrace.c.
+
+    - new option -N
+
+    - option -v works correctly with non-zero exit status of progname.
+
+    - exits with error if progname is not specified.
+
+  AWK interpreter is found at configure time via MKC_REQUIRE_PROGS.
+
+  Build and regression tests were fixed for non-empty MAKEOBJDIR case.
+
+  ChangeLog file is never installed.
+
+  lmdbg-s2m and lmsbg-m2s was moved to libexec dir.
+
+  mk-configure-0.24 is required for build.
+
+  Fixes, improvements and additions in regression tests.
+
+======================================================================
 Version 1.1.0, by Aleksey Cheusov, Sun,  2 Sep 2012 19:04:21 +0300
 
   Fix in regression tests. Now "make test" exits with non-zero status
