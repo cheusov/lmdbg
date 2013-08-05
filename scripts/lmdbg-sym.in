@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2003-2012 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2003-2013 Aleksey Cheusov <vle@gmx.net>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -184,7 +184,9 @@ generate_gdb_commands (){
 
 	    printf "print/x 0x%s\n", $0
 	    printf "break *lmdbg_get_addr(0x%s, 0x%s, %d)\n", $0, beg [sect], sect
-	    printf "info break %s\n", br_cnt++
+	    printf "info break %s\n", br_cnt
+	    printf "delete %s\n", br_cnt
+	    ++br_cnt
 	}' "$info_sections_fn" "$@"
     else
 	@AWK@ '{
