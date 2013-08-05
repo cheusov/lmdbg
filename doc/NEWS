@@ -8,28 +8,25 @@ Version 1.2.0, by Aleksey Cheusov, Mon,  5 Aug 2013 13:35:22 +0300
     - Much simplier (and correct) method for address convertion was
       implemented. As a result lmdbg-sym works correctly on AltLinux
       where ASLR and PIE are enabled by default.
+    - Breakpoint are removed very soon after creation.
+      This saves a lot of memory consumed by gdb(1)
+      and dramatically speeds up it.
 
   lmdbg-run:
     - On glibc-based systems (e.g. Linux) malloc hooks are not used
       anymore as they are declared deprecated
-
     - Addresses from lmdbg.c are not included to stacktrace
-
     - Additional checks for address (returned by stacktrace(3))
       correctness.  As a result gdb(1) doesn't crash and therefore
       lmdbg-sym(1) work correctly.
-
     - stacktrace(3) doesn't not crash anymore on NetBSD/x64_64 with
       system utilities.  See implementation details in stacktrace.c.
-
-    - new option -N
-
-    - option -v works correctly with non-zero exit status of progname.
-
-    - exits with error if progname is not specified.
+    - New option -N
+    - Option -v works correctly with non-zero exit status of progname.
+    - Exits with error if progname is not specified.
 
   lmdbg-stat:
-    - fix for NULL dereference appeared if free(3) stacktrace is seen
+    - Fix for NULL dereference appeared if free(3) stacktrace is seen
       without appropriate malloc(3) stacktrace.
 
   AWK interpreter is found at configure time via MKC_REQUIRE_PROGS.

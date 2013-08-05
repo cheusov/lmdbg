@@ -1,9 +1,16 @@
-               LMDBG - lightweight malloc debugger
+            LMDBG - lightweight modular malloc debugger
 
 ====================================================================
                       INSTALLATION
 
 See INSTALL file
+
+====================================================================
+                      PREPARATIONS
+
+LMDBG uses /proc/PID/maps file, so on NetBSD and Linux
+I strongly recomment to mount it, otherwise lmdbg-sym(1)
+may work incorrectly.
 
 ====================================================================
                       DOCUMENTATION/TUTORIAL
@@ -294,12 +301,17 @@ See INSTALL file
 ====================================================================
                           QUICK GUIDE
 
+lmdbg            --help
 lmdbg-run        --help
 lmdbg-leaks      --help
+lmdbg-sysleaks   --help
 lmdbg-sym        --help
-lmdbg            --help
 lmdbg-stat       --help
+lmdbg-sort       --help
+lmdbg-head       --help
 lmdbg-grep       --help
+lmdbg-strip      --help
+lmdbg-modules    --help
 
 Sample of usage:
 
