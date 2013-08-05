@@ -218,13 +218,16 @@ cmp 'lmdbg-run -o with empty progname' \
 'ok
 '
 
-if lmdbg-run -v -o "$logname" "$execname5" 2>/dev/null; then
+if lmdbg-run -v -o "$logname" "$execname5" 2>&1; then
     echo FAILED
 else
     echo $?
 fi |
+unify_paths |
 cmp 'lmdbg-run: test for exit status' \
-'17
+'Running /path/to/prog5 with LD_PRELOAD=/lmdbg/dir/liblmdbg.so
+Done.
+17
 '
 
 # -o

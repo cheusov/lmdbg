@@ -116,7 +116,7 @@ if test "$pipe"; then
 fi
 
 if test "$LMDBG_VERBOSE"; then
-    echo Running "'$@' with LD_PRELOAD=$LMDBG_LIB" 1>&2
+    echo Running "$* with LD_PRELOAD=$LMDBG_LIB" 1>&2
 fi
 
 LMDBG_LOGFILE="$ofile"
