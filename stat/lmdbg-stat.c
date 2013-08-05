@@ -89,6 +89,7 @@ static void ptr2data_destroy (void)
 
 		ptr = (stat_t **) JudyLNext (ptr2data, &idx, NULL);
 	} while (ptr != NULL);
+
 	JudyLFreeArray (&ptr2data, NULL);
 }
 
@@ -101,11 +102,10 @@ static void **stacktrace_dup (void **st, int st_len)
 
 static void process_stacktrace (void)
 {
-	PWord_t ret;
 	int id;
 	int old_maxid;
 	int new = 0;
-	ptrdata_t *ptrdata;
+	ptrdata_t **ptrdata;
 	stat_t **stat_cell_p = NULL;
 	stat_t *stat_cell = NULL;
 
@@ -149,11 +149,11 @@ static void process_stacktrace (void)
 			total_allocated += op.bytes;
 
 			/* pointer to associated data */
-			ret = (PWord_t) JudyLIns (&ptr2data, (Word_t) op.addr, 0);
-			*ret = (Word_t) malloc (sizeof (ptrdata_t));
-			ptrdata = (ptrdata_t*) *ret;
-			ptrdata->allocated = op.bytes;
-			ptrdata->stacktrace_id = id;
+			ptrdata = (ptrdata_t **) JudyLIns (&ptr2data, (Word_t) op.addr, 0);
+			assert (ptrdata);
+			*ptrdata = (ptrdata_t *) malloc (sizeof (ptrdata_t));
+			(*ptrdata)->allocated = op.bytes;
+			(*ptrdata)->stacktrace_id = id;
 			break;
 		case ft_free:
 			break;
@@ -168,30 +168,33 @@ static void process_stacktrace (void)
 			break;
 		case ft_realloc:
 			if (op.oldaddr){
-				ptrdata = *(ptrdata_t **) JudyLGet (
+				ptrdata = (ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
-				total_allocated -= ptrdata->allocated;
-				stat_cell_p = get_stat (ptrdata->stacktrace_id);
+				assert (ptrdata);
+				total_allocated -= (*ptrdata)->allocated;
+				stat_cell_p = get_stat ((*ptrdata)->stacktrace_id);
 				stat_cell = *stat_cell_p;
-				stat_cell->allocated -= ptrdata->allocated;
+				stat_cell->allocated -= (*ptrdata)->allocated;
 
-				free (ptrdata);
+				free (*ptrdata);
 				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
 			}
 			break;
 		case ft_free:
 			if (op.oldaddr){
-				ptrdata = *(ptrdata_t **) JudyLGet (
+				ptrdata = (ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
-				total_allocated -= ptrdata->allocated;
-				stat_cell_p = get_stat (ptrdata->stacktrace_id);
-				stat_cell = *stat_cell_p;
-				stat_cell->allocated -= ptrdata->allocated;
+				if (ptrdata){
+					total_allocated -= (*ptrdata)->allocated;
+					stat_cell_p = get_stat ((*ptrdata)->stacktrace_id);
+					stat_cell = *stat_cell_p;
+					stat_cell->allocated -= (*ptrdata)->allocated;
 
-				++total_free_cnt;
+					++total_free_cnt;
 
-				free (ptrdata);
-				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
+					free (*ptrdata);
+					JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
+				}
 			}
 			break;
 		default:

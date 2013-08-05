@@ -28,6 +28,10 @@ Version 1.2.0, by Aleksey Cheusov, Mon,  5 Aug 2013 13:35:22 +0300
 
     - exits with error if progname is not specified.
 
+  lmdbg-stat:
+    - fix for NULL dereference appeared if free(3) stacktrace is seen
+      without appropriate malloc(3) stacktrace.
+
   AWK interpreter is found at configure time via MKC_REQUIRE_PROGS.
 
   Build and regression tests were fixed for non-empty MAKEOBJDIR case.
