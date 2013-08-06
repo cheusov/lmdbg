@@ -1,3 +1,4 @@
+- lmdbg-run: internal "stat" and "leak" functionality
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output
 - lmdbg-leaks written in C (libJudy)
 - lmdbg-leaks: double free
