@@ -4,6 +4,8 @@ Version 1.2.0, by Aleksey Cheusov, Tue,  6 Aug 2013 12:51:53 +0300
   New tool lmdbg-head(1) was implemented, see the man page for
   details.
 
+  README: recomendations for procfs
+
   lmdbg-sym:
     - Much simplier (and correct) method for address convertion was
       implemented. As a result lmdbg-sym works correctly on AltLinux
@@ -13,6 +15,7 @@ Version 1.2.0, by Aleksey Cheusov, Tue,  6 Aug 2013 12:51:53 +0300
       and dramatically speeds up it.
 
   lmdbg-run:
+    - Arguments are passed correctly to progname
     - On glibc-based systems (e.g. Linux) malloc hooks are not used
       anymore as they are declared deprecated
     - Addresses from lmdbg.c are not included to stacktrace
@@ -26,8 +29,8 @@ Version 1.2.0, by Aleksey Cheusov, Tue,  6 Aug 2013 12:51:53 +0300
     - Exits with error if progname is not specified.
 
   lmdbg-stat:
-    - Fix for NULL dereference appeared if free(3) stacktrace is seen
-      without appropriate malloc(3) stacktrace.
+    - Fix for NULL dereference appeared if free(3) or realloc(3)
+      stacktrace is seen without appropriate malloc(3) stacktrace.
 
   AWK interpreter is found at configure time via MKC_REQUIRE_PROGS.
 
@@ -37,7 +40,7 @@ Version 1.2.0, by Aleksey Cheusov, Tue,  6 Aug 2013 12:51:53 +0300
 
   lmdbg-s2m and lmsbg-m2s was moved to libexec dir.
 
-  mk-configure-0.24 is required for build.
+  mk-configure >= 0.24.0 is required for build.
 
   Fixes, improvements and additions in regression tests.
 
