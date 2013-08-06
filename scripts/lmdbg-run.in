@@ -127,7 +127,7 @@ export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
 set +e
 export LD_PRELOAD="$LMDBG_LIB"
-eval "$@"
+"$@"
 ex=$?
 unset LD_PRELOAD
 set -e

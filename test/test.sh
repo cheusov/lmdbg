@@ -198,6 +198,23 @@ execname8=`which prog8 || true`
 logname="$OBJDIR"/_log
 pidfile="$OBJDIR"/_pid
 
+# lmdbg-run and $#
+if lmdbg-run -o "$logname" "$execname1 1 2 3 4" 2>/dev/null; then
+    echo FAILED
+else
+    echo ok
+fi |
+cmp 'lmdbg-run and $# #1' \
+'ok
+'
+
+if ! lmdbg-run -o "$logname" "$execname1" '1 1 1' 2 '3 3' 4 2>/dev/null; then
+    echo FAILED
+fi |
+cmp 'lmdbg-run and $# #2' \
+'argc=4
+'
+
 # lmdbg-run -o with no progname
 if lmdbg-run -o "$logname" 2>/dev/null; then
     echo FAILED
