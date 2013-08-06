@@ -170,20 +170,23 @@ static void process_stacktrace (void)
 			if (op.oldaddr){
 				ptrdata = (ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
-				assert (ptrdata);
-				total_allocated -= (*ptrdata)->allocated;
-				stat_cell_p = get_stat ((*ptrdata)->stacktrace_id);
-				stat_cell = *stat_cell_p;
-				stat_cell->allocated -= (*ptrdata)->allocated;
 
-				free (*ptrdata);
-				JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
+				if (ptrdata){
+					total_allocated -= (*ptrdata)->allocated;
+					stat_cell_p = get_stat ((*ptrdata)->stacktrace_id);
+					stat_cell = *stat_cell_p;
+					stat_cell->allocated -= (*ptrdata)->allocated;
+
+					free (*ptrdata);
+					JudyLDel (&ptr2data, (Word_t) op.oldaddr, 0);
+				}
 			}
 			break;
 		case ft_free:
 			if (op.oldaddr){
 				ptrdata = (ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
+
 				if (ptrdata){
 					total_allocated -= (*ptrdata)->allocated;
 					stat_cell_p = get_stat ((*ptrdata)->stacktrace_id);
