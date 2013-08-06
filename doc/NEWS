@@ -1,5 +1,5 @@
 ======================================================================
-Version 1.2.0, by Aleksey Cheusov, Mon,  5 Aug 2013 13:35:22 +0300
+Version 1.2.0, by Aleksey Cheusov, Tue,  6 Aug 2013 12:51:53 +0300
 
   New tool lmdbg-head(1) was implemented, see the man page for
   details.
