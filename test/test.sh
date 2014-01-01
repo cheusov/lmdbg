@@ -16,6 +16,7 @@ fi
 unify_paths (){
     # /home/cheusov/prjs/lmdbg/ ---> /lmdbg/dir/
     sed -e 's,\([^[:space:]]*\)/prog,/path/to/prog,' \
+	-e 's,'`dirname "$LMDBG_LIB"`',/lmdbg/dir,g' \
 	-e 's,/[^ ]*lmdbg[^ ]*/,/lmdbg/dir/,g' \
 	-e 's,[^[:space:]]*/\([^ /]*[.]c\),\1,' "$@"
 }
