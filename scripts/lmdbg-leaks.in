@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2003-2009 Aleksey Cheusov <vle@gmx.net>
+# Copyright (c) 2003-2014 Aleksey Cheusov <vle@gmx.net>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -70,17 +70,12 @@ shift $(expr $OPTIND - 1)
 
 leaks () {
     @AWK@ '
-    $1 == "malloc" || $1 == "calloc" {
+    $1 == "malloc" {
 	h [$6] = $0
 	next
     }
 
-    $1 == "memalign" {
-	h [$8] = $0
-	next
-    }
-
-    $1 == "posix_memalign" {
+    $1 == "calloc" || $1 == "memalign" || $1 == "posix_memalign" {
 	h [$8] = $0
 	next
     }

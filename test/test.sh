@@ -248,6 +248,137 @@ Done.
 17
 '
 
+# lmdbg-leaks
+cat > "$logname" <<EOF
+info section 0x00000000400000 0x00000000401000
+info section 0x007f7ff7400000 0x007f7ff751f000
+info section 0x007f7ff7c00000 0x007f7ff7c12000
+info progname ./hello_SLIST
+malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
+ 0x7f7ff74f0a8a
+malloc ( 10 ) --> 0x7f7ff7b09080 num: 2
+ 0x7f7ff74dc6e7
+calloc ( 1 , 16 ) --> 0x7f7ff7b09090 num: 3
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 10 ) --> 0x7f7ff7b090a0 num: 4
+ 0x7f7ff74dc6e7
+calloc ( 1 , 16 ) --> 0x7f7ff7b090b0 num: 5
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 11 ) --> 0x7f7ff7b090c0 num: 6
+ 0x7f7ff74dc6e7
+calloc ( 1 , 16 ) --> 0x7f7ff7b090d0 num: 7
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
+ 0x7f7ff74f0a8a
+free ( 0x7f7ff7b090c0 ) num: 9
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090d0 ) num: 10
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090a0 ) num: 11
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090b0 ) num: 12
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b09080 ) num: 13
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b09090 ) num: 14
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+EOF
+
+lmdbg-leaks < "$logname" |
+cmp 'lmdbg-leaks real #1' \
+'info section 0x00000000400000 0x00000000401000
+info section 0x007f7ff7400000 0x007f7ff751f000
+info section 0x007f7ff7c00000 0x007f7ff7c12000
+info progname ./hello_SLIST
+malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
+ 0x7f7ff74f0a8a
+malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
+ 0x7f7ff74f0a8a
+'
+
+cat > "$logname" <<EOF
+info section 0x00000000400000 0x00000000401000
+info section 0x007f7ff7400000 0x007f7ff751f000
+info section 0x007f7ff7c00000 0x007f7ff7c12000
+info progname ./hello_SLIST
+malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
+ 0x7f7ff74f0a8a
+malloc ( 10 ) --> 0x7f7ff7b09080 num: 2
+ 0x7f7ff74dc6e7
+malloc ( 16 ) --> 0x7f7ff7b09090 num: 3
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 10 ) --> 0x7f7ff7b090a0 num: 4
+ 0x7f7ff74dc6e7
+malloc ( 16 ) --> 0x7f7ff7b090b0 num: 5
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 11 ) --> 0x7f7ff7b090c0 num: 6
+ 0x7f7ff74dc6e7
+malloc ( 16 ) --> 0x7f7ff7b090d0 num: 7
+ 0x400c68
+ 0x400d0e
+ 0x400b13
+malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
+ 0x7f7ff74f0a8a
+free ( 0x7f7ff7b090c0 ) num: 9
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090d0 ) num: 10
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090a0 ) num: 11
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b090b0 ) num: 12
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b09080 ) num: 13
+ 0x400c22
+ 0x400d33
+ 0x400b13
+free ( 0x7f7ff7b09090 ) num: 14
+ 0x400c3f
+ 0x400d33
+ 0x400b13
+EOF
+
+lmdbg-leaks < "$logname" |
+cmp 'lmdbg-leaks real #2' \
+'info section 0x00000000400000 0x00000000401000
+info section 0x007f7ff7400000 0x007f7ff751f000
+info section 0x007f7ff7c00000 0x007f7ff7c12000
+info progname ./hello_SLIST
+malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
+ 0x7f7ff74f0a8a
+malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
+ 0x7f7ff74f0a8a
+'
+
 # -o
 rm -f "$logname"
 
