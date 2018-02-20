@@ -509,21 +509,15 @@ free ( 0xF00DBEAF ) num: 5
 "
 
 if addr2line --help >/dev/null 2>&1 && test `uname -s` != SunOS; then
-# lmdbg-sym -a
     lmdbg-sym -a -P "$execname1" "$logname" |
     unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
-    canonize_paths | skip_useless_addr |
+    canonize_paths | skip_useless_addr | grep -v 0xFOODBEAF |
     cmp "prog1.c: lmdbg-sym -a" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
- 0xF00DBEAF	prog1.c:NNN
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
- 0xF00DBEAF	prog1.c:NNN
 realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: 3
- 0xF00DBEAF	prog1.c:NNN
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: 4
- 0xF00DBEAF	prog1.c:NNN
 free ( 0xF00DBEAF ) num: 5
- 0xF00DBEAF	prog1.c:NNN
 "
 fi
 
