@@ -25,14 +25,11 @@ CFLAGS +=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS    =	4
 
-MKC_REQD =	0.13.0
+MKC_REQD =	0.29.1
 
 .include <mkc.configure.mk>
 
-.include "../libstacktrace/linkme.mk"
-LDADD +=	-lstacktrace_pic
-
-.include "../libstacktrace/backtrace.mk"
+# .include "../libstacktrace/backtrace.mk"
 
 .include "../version.mk"
 .include <mkc.lib.mk>

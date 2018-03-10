@@ -17,7 +17,8 @@ MKC_CHECK_DEFINES        +=	__GLIBC__:string.h
 
 .include <mkc.configure.mk>
 
-SUBPRJ +=	libstacktrace:liblmdbg
+LIBDEPS =	libstacktrace:liblmdbg
+
 SUBPRJ +=	scripts s2m m2s doc
 SUBPRJ +=	liblmdbg:test s2m:test m2s:test scripts:test
 SUBPRJ +=	st_hash:stat stat:test
@@ -44,7 +45,7 @@ test: all-test
 
 SUBPRJ_DFLT =	s2m m2s scripts liblmdbg stat
 
-MKC_REQD =	0.24.0
+MKC_REQD =	0.29.1
 
 ###########################
 .include "version.mk"
