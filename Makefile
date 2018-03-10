@@ -17,11 +17,11 @@ MKC_CHECK_DEFINES        +=	__GLIBC__:string.h
 
 .include <mkc.configure.mk>
 
-LIBDEPS =	libstacktrace:liblmdbg
+LIBDEPS =	libstacktrace:liblmdbg st_hash:stat
 
 SUBPRJ +=	scripts s2m m2s doc
 SUBPRJ +=	liblmdbg:test s2m:test m2s:test scripts:test
-SUBPRJ +=	st_hash:stat stat:test
+SUBPRJ +=	stat:test
 
 TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6 prog7 prog8
 

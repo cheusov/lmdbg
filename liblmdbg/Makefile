@@ -29,7 +29,7 @@ MKC_REQD =	0.29.1
 
 .include <mkc.configure.mk>
 
-# .include "../libstacktrace/backtrace.mk"
+.include "../libstacktrace/backtrace.mk"
 
 .include "../version.mk"
 .include <mkc.lib.mk>

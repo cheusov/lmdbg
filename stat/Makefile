@@ -11,9 +11,5 @@ CPPFLAGS +=	-DVERSION='"${VERSION}"'
 
 WARNS     =	4
 
-.include "../st_hash/linkme.mk"
-
-LDADD    +=	-lst_hash
-
 .include "../version.mk"
 .include <mkc.prog.mk>
