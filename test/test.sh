@@ -413,7 +413,7 @@ cmp 'stacktrace(3): test for foreign sigsegv' \
 # -o
 lmdbg-run -o "$logname" "$execname1"
 
-unify_address "$logname" | skip_info | skip_useless_addr |
+unify_address "$logname" | skip_info | skip_useless_addr | head -5 |
 cmp "prog1.c: lmdbg-run -o" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -432,7 +432,7 @@ cmp "prog1.c: lmdbg-run -n" \
 # -T
 lmdbg-run -o "$logname" -T1 "$execname1"
 
-unify_address "$logname" | skip_info | skip_useless_addr |
+unify_address "$logname" | skip_info | skip_useless_addr | head -5 |
 cmp "prog1.c: lmdbg-run -T" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -444,7 +444,7 @@ free ( 0xF00DBEAF ) num: 5
 # -B
 lmdbg-run -o "$logname" -B2 "$execname1"
 
-unify_address "$logname" | skip_info | skip_useless_addr |
+unify_address "$logname" | skip_info | skip_useless_addr | head -5 |
 cmp "prog1.c: lmdbg-run -B" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -456,7 +456,7 @@ free ( 0xF00DBEAF ) num: 5
 # -o
 lmdbg-run -o "$logname" "$execname1"
 
-unify_address "$logname" | skip_info | skip_useless_addr |
+unify_address "$logname" | skip_info | skip_useless_addr | head -5 |
 cmp "prog1.c: lmdbg-run -o" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -477,7 +477,7 @@ cmp "prog1.c: lmdbg-leaks" \
 # lmdbg-sym -g
 lmdbg-sym -g "$logname" |
 unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
-canonize_paths | skip_useless_addr |
+canonize_paths | skip_useless_addr | lmdbg-head -n 5 |
 cmp "prog1.c: lmdbg-sym" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN	main
@@ -494,7 +494,7 @@ free ( 0xF00DBEAF ) num: 5
 # lmdbg-sym -g
 lmdbg-sym -g -P "$execname1" "$logname" |
 unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
-canonize_paths | skip_useless_addr |
+canonize_paths | skip_useless_addr | lmdbg-head -n 5 |
 cmp "prog1.c: lmdbg-sym -g" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog1.c:NNN	main
@@ -511,7 +511,7 @@ free ( 0xF00DBEAF ) num: 5
 if addr2line --help >/dev/null 2>&1 && test `uname -s` != SunOS; then
     lmdbg-sym -a -P "$execname1" "$logname" |
     unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
-    canonize_paths | skip_useless_addr | grep -v '0xF00DBEAF.*prog1' |
+    canonize_paths | skip_useless_addr |  lmdbg-head -n 5 | grep -v '0xF00DBEAF.*prog1' |
     cmp "prog1.c: lmdbg-sym -a" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
 realloc ( NULL , 666 ) --> 0xF00DBEAF num: 2
@@ -549,7 +549,7 @@ lmdbg-run -o "$logname" -f"lmdbg-sym" "$execname2"
 
 unify_address "$logname" | skip_info | skip_useless_addr |
 hide_line_numbers |
-canonize_paths | skip_useless_addr | hide_foreign_code |
+canonize_paths | skip_useless_addr | hide_foreign_code | lmdbg-head -n 4 |
 cmp "prog2.c: lmdbg-run -f" \
 "malloc ( 555 ) --> 0xF00DBEAF num: 1
  0xF00DBEAF	prog2.c:NNN	main
@@ -844,7 +844,7 @@ sleep 1
 kill -USR1 `cat $pidfile`
 wait
 
-unify_address "$logname" | skip_info | skip_useless_addr |
+unify_address "$logname" | skip_info | skip_useless_addr | grep -E ' (500|600) ' |
 cmp "prog8.c: lmdbg-run + SIGUSR1" \
 "malloc ( 600 ) --> 0xF00DBEAF num: 1
 "
@@ -853,7 +853,8 @@ cmp "prog8.c: lmdbg-run + SIGUSR1" \
 lmdbg-run -o "$logname" "$execname3"
 
 unify_address "$logname" | skip_info | skip_useless_addr |
-hide_line_numbers | unify_paths |
+    grep -E ' (555|666) ' |
+    hide_line_numbers | unify_paths |
 cmp "prog3.c: lmdbg-run -o" \
 'malloc ( 555 ) --> 0xF00DBEAF num: 1
 malloc ( 666 ) --> 0xF00DBEAF num: 2
@@ -861,7 +862,8 @@ malloc ( 666 ) --> 0xF00DBEAF num: 2
 
 # lmdbg-sym -g and shared libraries
 lmdbg-sym -g -P "$execname3" "$logname" |
-unify_paths | unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
+    unify_paths | unify_address | skip_info | hide_lmdbg_code | hide_line_numbers |
+    lmdbg-head -n 2 |
 skip_useless_addr | 
 cmp "prog3.c: lmdbg-sym -g" \
 'malloc ( 555 ) --> 0xF00DBEAF num: 1
@@ -878,7 +880,7 @@ if test "$with_glibc" = 0; then
     lmdbg-run -o "$logname" "$execname4"
 
     unify_address "$logname" | skip_info | 
-    skip_useless_addr |
+    skip_useless_addr | head -5 |
     cmp "prog4.c: lmdbg-run -o" \
 'calloc ( 555 , 16 ) --> 0xF00DBEAF num: 1
 calloc ( 5 , 256 ) --> 0xF00DBEAF num: 2
@@ -903,7 +905,7 @@ if test "$with_posix_memalign" = 1; then
     lmdbg-run -o "$logname" "$execname5" || true
 
     unify_address "$logname" | skip_info |
-    skip_useless_addr |
+    skip_useless_addr | head -5 |
     cmp "prog5.c: lmdbg-run -o" \
 'posix_memalign ( 16 , 200 ) --> 0xF00DBEAF num: 1
 posix_memalign ( 8 , 256 ) --> 0xF00DBEAF num: 2
