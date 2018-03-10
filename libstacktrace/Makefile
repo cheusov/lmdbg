@@ -9,6 +9,8 @@ MKPICLIB =	yes
 
 WARNS    =	4
 
+CFLAGS   =	-Wno-error=frame-address -Wno-frame-address
+
 MKINSTALL ?=	no # internal library, do not install it
 
 MKC_REQD =	0.15.0
