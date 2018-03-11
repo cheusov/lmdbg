@@ -8,8 +8,7 @@ INCS   =	stacktrace.h
 MKPICLIB =	yes
 
 WARNS    =	4
-
-CFLAGS   =	-Wno-error=frame-address -Wno-frame-address
+WARNERR  =	no # ignore some warnings, such as -Wframe-address
 
 MKINSTALL ?=	no # internal library, do not install it
 
