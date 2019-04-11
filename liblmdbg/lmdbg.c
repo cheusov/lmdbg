@@ -57,6 +57,7 @@ static int st_skip_bottom = 0;
 static int st_count = INT_MAX;
 
 static int enabling_timeout = 0;
+static int allow_writeable = 1;
 
 static unsigned alloc_count = 0;
 
@@ -225,10 +226,16 @@ static void init_fun_ptrs (void)
 #endif
 }
 
-static void init_verbose_flag (void)
+static void init_environment (void)
 {
 	const char *v = getenv ("LMDBG_VERBOSE");
 	log_verbose = v && v [0];
+
+	v = getenv ("LMDBG_ALLOW_WRITEABLE");
+	if (v && v[0] == '1')
+		allow_writeable = 1;
+	else if (v && v[0] == '0')
+		allow_writeable = 0;
 }
 
 static void init_log (void)
@@ -409,8 +416,10 @@ static void print_sections_map (void)
 		/* We need only executable sections (code) */
 		if (*p != 'r')
 			continue; /* not readable? */
-		if (p[1] != '-')
-			continue; /* bad input */
+		if (!allow_writeable) {
+			if (p[1] != '-')
+				continue; /* segment should not be writable! */
+		}
 		if (p[2] != 'x')
 			continue; /* not executable */
 
@@ -461,7 +470,7 @@ static void lmdbg_startup (void)
 	init_st_range ();
 	print_sections_map ();
 	print_progname ();
-	init_verbose_flag ();
+	init_environment ();
 	init_enabling_timeout ();
 
 	if (log_filename != NULL && enabling_timeout == 0)
