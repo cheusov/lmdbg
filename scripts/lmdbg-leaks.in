@@ -109,4 +109,4 @@ leaks () {
     }' "$@"
 }
 
-"$m2s_cmd" "$@" | leaks | "$s2m_cmd"
+"$m2s_cmd" "$@" | leaks | sort | "$s2m_cmd"

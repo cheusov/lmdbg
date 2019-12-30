@@ -304,10 +304,10 @@ EOF
 
 lmdbg-leaks < "$logname" |
 cmp 'lmdbg-leaks real #1' \
-'info section 0x00000000400000 0x00000000401000
+'info progname ./hello_SLIST
+info section 0x00000000400000 0x00000000401000
 info section 0x007f7ff7400000 0x007f7ff751f000
 info section 0x007f7ff7c00000 0x007f7ff7c12000
-info progname ./hello_SLIST
 malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
  0x7f7ff74f0a8a
 malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
@@ -315,10 +315,10 @@ malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
 '
 
 cat > "$logname" <<EOF
+info progname ./hello_SLIST
 info section 0x00000000400000 0x00000000401000
 info section 0x007f7ff7400000 0x007f7ff751f000
 info section 0x007f7ff7c00000 0x007f7ff7c12000
-info progname ./hello_SLIST
 malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
  0x7f7ff74f0a8a
 malloc ( 10 ) --> 0x7f7ff7b09080 num: 2
@@ -369,10 +369,10 @@ EOF
 
 lmdbg-leaks < "$logname" |
 cmp 'lmdbg-leaks real #2' \
-'info section 0x00000000400000 0x00000000401000
+'info progname ./hello_SLIST
+info section 0x00000000400000 0x00000000401000
 info section 0x007f7ff7400000 0x007f7ff751f000
 info section 0x007f7ff7c00000 0x007f7ff7c12000
-info progname ./hello_SLIST
 malloc ( 16384 ) --> 0x7f7ff7b01000 num: 1
  0x7f7ff74f0a8a
 malloc ( 4096 ) --> 0x7f7ff7b0b000 num: 8
