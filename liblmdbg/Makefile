@@ -20,7 +20,7 @@ SHLIB_MINOR =	0
 
 LDCOMPILER =	yes
 
-COPTS  +=	-O0 -g # gcc`s -O2 is not allowed!
+COPTS  +=	-O0 -g -U_FORTIFY_SOURCE # gcc`s -O2 is not allowed!
 CFLAGS +=	-DLMDBG_VERSION=\"$(VERSION)\" -I.
 
 WARNS    =	4
