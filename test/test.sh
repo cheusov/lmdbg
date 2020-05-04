@@ -879,7 +879,7 @@ malloc ( 666 ) --> 0xF00DBEAF num: MMM
 # lmdbg-sym -g and shared libraries
 lmdbg-sym -g -P "$execname3" "$logname" |
     unify_paths | unify_address | skip_info | hide_lmdbg_code | skip_foreign_mallocs |
-    hide_line_numbers | lmdbg-head -n 2 | hide_num |
+    hide_line_numbers | lmdbg-head -n 2 | hide_num | skip_useless_addr |
 cmp "prog3.c: lmdbg-sym -g" \
 'malloc ( 555 ) --> 0xF00DBEAF num: MMM
  0xF00DBEAF	test3.c:NNN	allocate_memory
