@@ -5,7 +5,7 @@ int main ()
 {
 	void *p1 = NULL;
 
-	p1 = malloc (500);
+	p1 = malloc (555);
 
 	*(int *) NULL = 100500;
 

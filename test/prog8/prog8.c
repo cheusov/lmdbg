@@ -5,9 +5,9 @@ int main ()
 {
 	void *p;
 
-	p = malloc (500);
+	p = malloc (555);
 	sleep (3);
-	p = malloc (600);
+	p = malloc (666);
 
 	return 0;
 }

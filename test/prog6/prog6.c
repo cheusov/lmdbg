@@ -3,7 +3,7 @@
 int main ()
 {
 	int i;
-	void *p1 = malloc (1000);
+	void *p1 = malloc (888);
 
 	for (i=0; i < 2000; ++i)
 		malloc (1);
