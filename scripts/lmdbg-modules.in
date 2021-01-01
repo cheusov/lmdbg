@@ -162,7 +162,7 @@ function process_stacktrace (){
 	op     = "+"
 }
 
-/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
+/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|aligned_alloc|free) / {
 	process_stacktrace()
 
 	lines [++cnt] = $0

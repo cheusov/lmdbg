@@ -34,11 +34,12 @@ expression :
 the number of allocated bytes,
 .TP
 .I allocs
-the number of calls of malloc/calloc/memalign/posix_memalign,
+the number of calls of malloc, calloc, memalign, posix_memalign
+and aligned_alloc functions,
 .TP
 .I max
-the maximum number of bytes allocated per malloc/calloc/memalign/posix_memalign
-function,
+the maximum number of bytes allocated per malloc, calloc,
+memalign, posix_memalign and aligned_alloc functions,
 .TP
 .I peak
 the peak number of allocated bytes,

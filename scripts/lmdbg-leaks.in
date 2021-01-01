@@ -75,7 +75,7 @@ leaks () {
 	next
     }
 
-    $1 == "calloc" || $1 == "memalign" || $1 == "posix_memalign" {
+    $1 == "calloc" || $1 == "memalign" || $1 == "posix_memalign" || $1 == "aligned_alloc" {
 	h [$8] = $0
 	next
     }

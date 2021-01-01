@@ -34,7 +34,7 @@ usage () {
 lmdbg-run is intended to run your program with
 liblmdbg.$LMDBG_SOEXT LD_PRELOAD-ed in order to log
 the calls of the following functions:
-malloc, free, realloc and memalign.
+malloc, free, realloc, aligned_alloc and memalign.
 Set LMDBG_LIB environment variable to liblmdbg.$LMDBG_SOEXT
 The default is $libdir/liblmdbg.$LMDBG_SOEXT.
 

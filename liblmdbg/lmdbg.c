@@ -80,6 +80,9 @@ static posix_memalign_t real_posix_memalign;
 #if HAVE_FUNC2_MEMALIGN_MALLOC_H
 static memalign_t real_memalign;
 #endif
+#if HAVE_FUNC2_ALIGNED_ALLOC_STDLIB_H
+static memalign_t real_aligned_alloc;
+#endif
 
 static void lmdbg_startup (void);
 static void lmdbg_finish (void);
@@ -223,6 +226,14 @@ static void init_fun_ptrs (void)
 		real_memalign    = (memalign_t) dlsym (libc_so, "memalign");
 	if (!real_memalign)
 		exit (46);
+#endif
+
+#if HAVE_FUNC2_ALIGNED_ALLOC_STDLIB_H
+	real_aligned_alloc    = (memalign_t) dlsym (libc_so, "__libc_aligned_alloc");
+	if (!real_aligned_alloc)
+		real_aligned_alloc    = (memalign_t) dlsym (libc_so, "aligned_alloc");
+	if (!real_aligned_alloc)
+		exit (47);
 #endif
 }
 
@@ -654,8 +665,8 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 }
 #endif
 
-#if HAVE_FUNC2_MEMALIGN_MALLOC_H
-void * memalign (size_t align, size_t size)
+static void * memalign_impl (
+	memalign_t func, const char *func_name, size_t align, size_t size)
 {
 	void *p;
 
@@ -669,15 +680,29 @@ void * memalign (size_t align, size_t size)
 
 		++alloc_count;
 
-		p = (*real_memalign) (align, size);
-		fprintf (log_fd, "memalign ( %u , %u ) --> %p num: %u\n",
-				 (unsigned) align, (unsigned) size, p, alloc_count);
+		p = func (align, size);
+		fprintf (log_fd, "%s ( %u , %u ) --> %p num: %u\n",
+				 func_name, (unsigned) align, (unsigned) size,
+				 p, alloc_count);
 		log_stacktrace ();
 
 		enable_logging ();
 		return p;
 	}else{
-		return (*real_memalign) (align, size);
+		return func (align, size);
 	}
+}
+
+#if HAVE_FUNC2_MEMALIGN_MALLOC_H
+void * memalign (size_t align, size_t size)
+{
+	return memalign_impl(real_memalign, "memalign", align, size);
+}
+#endif
+
+#if HAVE_FUNC2_ALIGNED_ALLOC_STDLIB_H
+void * aligned_alloc(size_t align, size_t size)
+{
+	return memalign_impl(real_aligned_alloc, "aligned_alloc", align, size);
 }
 #endif

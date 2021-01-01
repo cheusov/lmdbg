@@ -1,4 +1,3 @@
-- aligned_alloc, posix_memalign etc.
 - use uint64_t for sum sizes instead of plain int
 - lmdbg-run: internal "stat" and "leak" functionality
 - lmdbg-leaks: native order of leaks, earlier allocated -- earlier in output

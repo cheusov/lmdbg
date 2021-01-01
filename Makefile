@@ -12,6 +12,7 @@ CLEANFILES =	ChangeLog _*
 
 ###########################
 MKC_COMMON_DEFINES.Linux  =	-D_GNU_SOURCE
+MKC_CHECK_FUNCS2         +=	aligned_alloc:stdlib.h
 MKC_CHECK_FUNCS3         +=	posix_memalign:stdlib.h
 MKC_CHECK_DEFINES        +=	__GLIBC__:string.h
 
@@ -29,6 +30,12 @@ TESTS +=	prog1 prog2 libtest3 prog3 prog4 prog6 prog7 prog8
 TESTS +=	prog5
 with_posix_memalign =	1
 EXPORT_VARNAMES +=	with_posix_memalign
+.endif
+
+.if ${HAVE_FUNC2.aligned_alloc.stdlib_h:U1}
+TESTS +=	prog9
+with_aligned_alloc =	1
+EXPORT_VARNAMES +=	with_aligned_alloc
 .endif
 
 with_glibc =	${HAVE_DEFINE.__GLIBC__.string_h}

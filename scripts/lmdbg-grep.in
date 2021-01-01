@@ -171,7 +171,7 @@ $0 ~ /^ / {
     module = op = op_type = ""
 }
 
-/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|free) / {
+/^(stacktrace|malloc|calloc|realloc|(posix_)?memalign|aligned_alloc|free) / {
     if ($1 == "malloc") {
 	bytes   = $3 + 0
 	op      = "malloc"
@@ -184,7 +184,7 @@ $0 ~ /^ / {
 	bytes   = $3 * $5
 	op      = "calloc"
 	op_type = "alloc"
-    }else if ($1 == "memalign" || $1 == "posix_memalign"){
+    }else if ($1 == "memalign" || $1 == "posix_memalign" || $1 == "aligned_alloc"){
 	bytes   = $5 + 0
 	op      = $1
 	op_type = "alloc"

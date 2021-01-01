@@ -28,7 +28,7 @@ may work incorrectly.
 
 - lmdbg-run is a main lmdbg utility. It runs application and creates a
   log file (or fifo) where all
-  malloc/calloc/realloc/free/memalign/posix_memalign invocations are
+  malloc/calloc/realloc/free/memalign/posix_memalign/aligned_alloc invocations are
   registered with their input (bytes count and/or pointer), output
   (pointer) and FULL STACKTRACE (pointers).
 

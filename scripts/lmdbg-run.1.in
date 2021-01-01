@@ -24,7 +24,7 @@ lmdbg-run runs an external command
 and creates a log file where all
 invocations of
 .IR malloc ", " calloc ", " realloc ", " memalign ", "
-.IR posix_memalign " and " free
+.IR posix_memalign ", " aligned_alloc " and " free
 are registered accompanied by the following information: full
 stacktrace (addresses), input argument(s) (requested size and/or
 address), result value (returned address, if any) and ordinal number

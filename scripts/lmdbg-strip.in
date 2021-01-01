@@ -71,7 +71,7 @@ mode_a && /^ / {
 }
 
 mode_r && /^[^ ]/ {
-	if (/^(malloc|calloc|memalign|posix_memalign|free) /){
+	if (/^(malloc|calloc|memalign|posix_memalign|aligned_alloc|free) /){
 		sub(/0x[0-9A-Fa-f]+/, "0xXYZ")
 	}else if (/^realloc /){
 		sub(/0x[0-9A-Fa-f]+/, "0xXYZ")

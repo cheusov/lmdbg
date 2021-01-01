@@ -53,6 +53,7 @@ typedef enum {
 	ft_realloc,
 	ft_memalign,
 	ft_posix_memalign,
+	ft_aligned_alloc,
 	ft_free
 } func_t;
 
@@ -117,6 +118,7 @@ static void process_stacktrace (void)
 		case ft_realloc:
 		case ft_memalign:
 		case ft_posix_memalign:
+		case ft_aligned_alloc:
 			old_maxid = st_hash_getmaxid (hash);
 			id = st_hash_insert (hash, stacktrace, stacktrace_len);
 
@@ -165,6 +167,7 @@ static void process_stacktrace (void)
 		case ft_malloc:
 		case ft_memalign:
 		case ft_posix_memalign:
+		case ft_aligned_alloc:
 			break;
 		case ft_realloc:
 			if (op.oldaddr){
@@ -367,7 +370,8 @@ static void process_line (char *buf)
 
 		if (token_count >= 8 &&
 			(!strcmp (tokens [0], "memalign") ||
-			 !strcmp (tokens [0], "posix_memalign")) &&
+			 !strcmp (tokens [0], "posix_memalign") ||
+			 !strcmp (tokens [0], "aligned_alloc")) &&
 			!strcmp (tokens [1], "(") &&
 			!strcmp (tokens [3], ",") &&
 			!strcmp (tokens [5], ")") &&

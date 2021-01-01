@@ -34,7 +34,7 @@ unify_address (){
     awk '
 	$1 == "malloc"         {$6 = "0xF00DBEAF"}
 	$1 == "calloc"         {$8 = "0xF00DBEAF"}
-	$1 == "posix_memalign" && $8 != "NULL" {$8 = "0xF00DBEAF"}
+	($1 == "posix_memalign" || $1 == "aligned_alloc") && $8 != "NULL" {$8 = "0xF00DBEAF"}
 	$1 == "free"           {$3 = "0xF00DBEAF"}
 	$1 == "realloc"        {$8 = "0xF00DBEAF"}
 	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
@@ -208,6 +208,7 @@ execname5=`which prog5 || true`
 execname6=`which prog6 || true`
 execname7=`which prog7 || true`
 execname8=`which prog8 || true`
+execname9=`which prog9 || true`
 logname="$OBJDIR"/_log
 pidfile="$OBJDIR"/_pid
 
@@ -942,6 +943,35 @@ realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: MMM
 '
 fi
 
+if test "$with_aligned_alloc" = 1; then
+    # lmdbg-run + prog9.c
+    logname="$OBJDIR"/_log
+
+    lmdbg-run -o "$logname" "$execname9" || true
+
+    unify_address "$logname" | skip_info |
+    skip_all | head -5 |
+    cmp "prog9.c: lmdbg-run -o" \
+'aligned_alloc ( 16 , 200 ) --> 0xF00DBEAF num: MMM
+aligned_alloc ( 8 , 256 ) --> 0xF00DBEAF num: MMM
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: MMM
+aligned_alloc ( 256 , 10240 ) --> 0xF00DBEAF num: MMM
+free ( 0xF00DBEAF ) num: MMM
+'
+
+    # lmdbg-leaks + prog9.c
+    lmdbg-leaks "$logname" | lmdbg-sym -p |
+    unify_paths | hide_line_numbers |
+    unify_address | skip_info | skip_all |
+    hide_foreign_code | sort |
+    cmp "prog9.c: lmdbg-leaks + lmdbg-sym" \
+' 0xF00DBEAF	prog9.c:NNN	main
+ 0xF00DBEAF	prog9.c:NNN	main
+aligned_alloc ( 256 , 10240 ) --> 0xF00DBEAF num: MMM
+realloc ( 0xF00DBEAF , 1024 ) --> 0xF00DBEAF num: MMM
+'
+fi
+
 # lmdbg-m2s: malloc
 ctrl2norm (){
     awk '{
@@ -960,6 +990,7 @@ cmp "lmdbg-m2s:" \
 malloc ( 123 ) -> 0x1234 \{031}\{034}0x234\{034}0x456
 calloc ( 16 , 124 ) -> 0x1235 \{031}\{034}0x235\{034}0x457\{034}0x678
 memalign ( 16 , 123 ) -> 0x1235000 \{031}\{034}0x1\{034}0x2\{034}0x3
+aligned_alloc ( 8 , 124 ) -> 0x123E000 \{031}\{034}0x1\{034}0x2\{034}0x8
 realloc ( 0x1235000 , 12300 ) -> 0x2236000 \{031}\{034}0x2\{034}0x3\{034}0x4
 posix_memalign ( 16 , 123 ) -> 0x3235000 \{031}\{034}0x1\{033}foo\{034}0x2\{033}bar\{032}baz\{034}0x3\{033}foobar
 stacktrace peak: 123 max: 234 allocs: 456 \{031}\{034}0x111\{034}0x222\{034}0x333
@@ -1009,9 +1040,9 @@ stat_fn="$OBJDIR/_stat"
 lmdbg-stat ./input1.txt | $LMDBG_M2S_DIR/lmdbg-m2s | sort | $LMDBG_S2M_DIR/lmdbg-s2m | tee "$stat_fn" |
 cmp "lmdbg-stat (input1.txt):" \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
+info stat total_leaks: 933
 stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
@@ -1020,10 +1051,6 @@ stacktrace peak: 200 max: 200 allocs: 1
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
  0x1
  0x2
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
- 0x3
- 0x4
- 0x5
 stacktrace peak: 248 max: 248 allocs: 1
  0x2
  0x3
@@ -1032,6 +1059,10 @@ stacktrace peak: 300 max: 300 allocs: 1
  0x5
 stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
  0x6
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
+ 0x3
+ 0x4
+ 0x5
 '
 
 # lmdbg-grep
@@ -1136,6 +1167,10 @@ memalign ( 16 , 123 ) -> 0x1235000
  0x1
  0x2
  0x3
+aligned_alloc ( 8 , 124 ) -> 0x123E000
+ 0x1
+ 0x2
+ 0x8
 realloc ( 0x1235000 , 12300 ) -> 0x2236000
  0x2
  0x3
@@ -1160,39 +1195,35 @@ stacktrace peak: 123 max: 234 allocs: 456
 lmdbg-grep 'max > 100 && max < 200' "$stat_fn" |
 cmp 'lmdbg-grep + max' \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
+info stat total_leaks: 933
 stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
  0x1
  0x2
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
  0x3
  0x4
  0x5
-stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
- 0x6
 '
 
 # lmdbg-grep
 lmdbg-grep -v 'peak < 200' "$stat_fn" |
 cmp 'lmdbg-grep -v + peak' \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
+info stat total_leaks: 933
 stacktrace peak: 200 max: 200 allocs: 1
  0x7
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
  0x1
  0x2
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
- 0x3
- 0x4
- 0x5
 stacktrace peak: 248 max: 248 allocs: 1
  0x2
  0x3
@@ -1201,15 +1232,23 @@ stacktrace peak: 300 max: 300 allocs: 1
  0x5
 stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
  0x6
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
+ 0x3
+ 0x4
+ 0x5
 '
 
 # lmdbg-sort
 lmdbg-sort -f peak < "$stat_fn" |
 cmp 'lmdbg-sort -f peak' \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
+info stat total_leaks: 933
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
+ 0x3
+ 0x4
+ 0x5
 stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
  0x6
 stacktrace peak: 300 max: 300 allocs: 1
@@ -1218,10 +1257,6 @@ stacktrace peak: 248 max: 248 allocs: 1
  0x2
  0x3
  0x4
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
- 0x3
- 0x4
- 0x5
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
  0x1
  0x2
@@ -1235,15 +1270,15 @@ stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
 lmdbg-sort -f leaks < "$stat_fn" |
 cmp 'lmdbg-sort -f leaks' \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
-stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
- 0x6
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
+info stat total_leaks: 933
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
  0x3
  0x4
  0x5
+stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
+ 0x6
 stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
@@ -1263,9 +1298,9 @@ stacktrace peak: 300 max: 300 allocs: 1
 lmdbg-sort -f max < "$stat_fn" |
 cmp 'lmdbg-sort -f max' \
 'info lalala
-info stat total_allocs: 13
+info stat total_allocs: 14
 info stat total_free_cnt: 2
-info stat total_leaks: 793
+info stat total_leaks: 933
 stacktrace peak: 300 max: 300 allocs: 1
  0x5
 stacktrace peak: 248 max: 248 allocs: 1
@@ -1276,16 +1311,16 @@ stacktrace peak: 200 max: 200 allocs: 1
  0x7
 stacktrace peak: 310 max: 180 allocs: 5 leaks: 310
  0x6
+stacktrace peak: 370 max: 140 allocs: 3 leaks: 370
+ 0x3
+ 0x4
+ 0x5
 stacktrace peak: 130 max: 130 allocs: 1 leaks: 130
  0x2
  0x3
 stacktrace peak: 223 max: 123 allocs: 2 leaks: 123
  0x1
  0x2
-stacktrace peak: 230 max: 120 allocs: 2 leaks: 230
- 0x3
- 0x4
- 0x5
 '
 
 lmdbg-sort -f leaks input5.txt |
@@ -1437,6 +1472,10 @@ memalign ( 16 , 110 ) --> 0xXYZ
  0x5
 realloc ( 0xXYZ , 180 ) --> 0xXYZ
  0x6
+aligned_alloc ( 8 , 140 ) --> 0xXYZ
+ 0x3
+ 0x4
+ 0x5
 '
 
 lmdbg-strip -al input4.txt |
