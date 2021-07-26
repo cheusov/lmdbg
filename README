@@ -107,7 +107,7 @@ may work incorrectly.
 
   Example:
 
-     $ lmdbg-sym ./_test2 _log
+     $ lmdbg-sym _log
      malloc ( 555 ) --> 0xbb901400
       0xbbbe58e8
       0xbbbe5b03
@@ -182,7 +182,7 @@ may work incorrectly.
           14          return 0;
           15  }
      $ cc -O0 -g -o testme testme.c
-     $ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym ./testme' ./testme     
+     $ lmdbg-run -o log -p 'lmdbg-stat | lmdbg-sym' ./testme
      $ cat log
      info stat total_leaks: 50
      info stat total_allocs: 4
@@ -317,8 +317,7 @@ Sample of usage:
 
 user@host$ lmdbg-run -o /tmp/PROG.log PROG ARG1 ARG2 ... ARGN
 user@host$ lmdbg-leak < /tmp/PROG.log > /tmp/PROG.log2
-user@host$ lmdbg-sym PROG \
-   < /tmp/PROG.log2 > /tmp/PROG_LEAKS_SRC.log3
+user@host$ lmdbg-sym < /tmp/PROG.log2 > /tmp/PROG_LEAKS_SRC.log3
 
 ====================================================================
                 AUTHOR: Aleksey Cheusov <vle@gmx.net>
