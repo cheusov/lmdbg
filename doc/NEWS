@@ -1,4 +1,10 @@
 ======================================================================
+Version 1.3.1, by Aleksey Cheusov, Mon, 26 Jul 2021 16:18:54 +0300
+
+  Fix README (samples for lmdbg-sym) in order it correspond to the
+  documentation.
+
+======================================================================
 Version 1.3.0, by Aleksey Cheusov, Sat,  2 Jan 2021 23:06:13 +0300
 
   Support for aligned_alloc(3) was added.
