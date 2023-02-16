@@ -33,6 +33,8 @@
 #include <assert.h>
 #include <limits.h>
 #include <signal.h>
+#include <pthread.h>
+#include <error.h>
 
 #include <dlfcn.h>
 
@@ -101,6 +103,38 @@ static struct section_t sections [1000];
 static int sections_count = 0;
 
 static void enable_logging (void);
+
+static pthread_mutex_t mutex;
+
+static pid_t pid;
+
+static void init_mutex(void)
+{
+	int status = pthread_mutex_init(&mutex, NULL);
+	if (status)
+		error(1, status, "pthread_mutex_init failed");
+}
+
+static void lock_mutex(void)
+{
+	int status = pthread_mutex_lock(&mutex);
+	if (status)
+		error(1, status, "pthread_mutex_lock failed");
+}
+
+static void unlock_mutex(void)
+{
+	int status = pthread_mutex_unlock(&mutex);
+	if (status)
+		error(1, status, "pthread_mutex_unlock failed");
+}
+
+static void destroy_mutex(void)
+{
+	int status = pthread_mutex_destroy(&mutex);
+	if (status)
+		error(1, status, "pthread_mutex_destroy failed");
+}
 
 static void handler_sigusr1 (int dummy)
 {
@@ -279,6 +313,8 @@ static void init_pid (void)
 
 	if (log_verbose)
 		fprintf (stderr, "LMDBG_PIDFILE=%s\n", pid_filename);
+
+	pid = getpid();
 
 	if (pid_filename && pid_filename [0]){
 		pid_fd = fopen (pid_filename, "w");
@@ -483,6 +519,7 @@ static void lmdbg_startup (void)
 	print_progname ();
 	init_environment ();
 	init_enabling_timeout ();
+	init_mutex();
 
 	if (log_filename != NULL && enabling_timeout == 0)
 		enable_logging ();
@@ -496,19 +533,22 @@ static void lmdbg_finish (void)
 	if (log_fd)
 		fclose (log_fd);
 	log_fd = NULL;
+	destroy_mutex();
 }
 
 /* replacement functions */
 void * malloc (size_t s)
 {
 	void *p;
-	
+
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
 		lmdbg_startup ();
 	}
 
 	if (log_enabled){
+		lock_mutex();
+
 		disable_logging ();
 
 		++alloc_count;
@@ -524,6 +564,7 @@ void * malloc (size_t s)
 		log_stacktrace ();
 
 		enable_logging ();
+		unlock_mutex();
 
 		return p;
 	}else{
@@ -543,6 +584,8 @@ void * realloc (void *p, size_t s)
 	}
 
 	if (log_enabled){
+		lock_mutex();
+
 		disable_logging ();
 
 		++alloc_count;
@@ -564,6 +607,8 @@ void * realloc (void *p, size_t s)
 		log_stacktrace ();
 
 		enable_logging ();
+
+		unlock_mutex();
 		return np;
 	}else{
 		return (*real_realloc) (p, s);
@@ -578,6 +623,8 @@ void free (void *p)
 	}
 
 	if (log_enabled){
+		lock_mutex();
+
 		disable_logging ();
 
 		++alloc_count;
@@ -591,6 +638,7 @@ void free (void *p)
 		log_stacktrace ();
 
 		enable_logging ();
+		unlock_mutex();
 	}else{
 		(*real_free) (p);
 	}
@@ -608,6 +656,8 @@ void * calloc (size_t number, size_t size)
 	}
 
 	if (log_enabled){
+		lock_mutex();
+
 		disable_logging ();
 
 		++alloc_count;
@@ -623,6 +673,7 @@ void * calloc (size_t number, size_t size)
 		log_stacktrace ();
 
 		enable_logging ();
+		unlock_mutex();
 		return p;
 	}else{
 		return (*real_calloc) (number, size);
@@ -641,6 +692,7 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 	}
 
 	if (log_enabled){
+		lock_mutex();
 		disable_logging ();
 
 		++alloc_count;
@@ -658,6 +710,7 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 		log_stacktrace ();
 
 		enable_logging ();
+		unlock_mutex();
 		return ret;
 	}else{
 		return (*real_posix_memalign) (memptr, align, size);
@@ -676,6 +729,7 @@ static void * memalign_impl (
 	}
 
 	if (log_enabled){
+		lock_mutex();
 		disable_logging ();
 
 		++alloc_count;
@@ -687,6 +741,7 @@ static void * memalign_impl (
 		log_stacktrace ();
 
 		enable_logging ();
+		unlock_mutex();
 		return p;
 	}else{
 		return func (align, size);
