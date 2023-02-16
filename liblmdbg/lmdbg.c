@@ -546,6 +546,10 @@ void * malloc (size_t s)
 		lmdbg_startup ();
 	}
 
+	if (log_enabled && pid != getpid()){
+		disable_logging();
+	}
+
 	if (log_enabled){
 		lock_mutex();
 
@@ -581,6 +585,10 @@ void * realloc (void *p, size_t s)
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
 		lmdbg_startup ();
+	}
+
+	if (log_enabled && pid != getpid()){
+		disable_logging();
 	}
 
 	if (log_enabled){
@@ -622,6 +630,10 @@ void free (void *p)
 		lmdbg_startup ();
 	}
 
+	if (log_enabled && pid != getpid()){
+		disable_logging();
+	}
+
 	if (log_enabled){
 		lock_mutex();
 
@@ -653,6 +665,10 @@ void * calloc (size_t number, size_t size)
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
 		lmdbg_startup ();
+	}
+
+	if (log_enabled && pid != getpid()){
+		disable_logging();
 	}
 
 	if (log_enabled){
@@ -691,6 +707,10 @@ int posix_memalign (void **memptr, size_t align, size_t size)
 		lmdbg_startup ();
 	}
 
+	if (log_enabled && pid != getpid()){
+		disable_logging();
+	}
+
 	if (log_enabled){
 		lock_mutex();
 		disable_logging ();
@@ -726,6 +746,10 @@ static void * memalign_impl (
 	if (!real_malloc){
 		/* for glibc, normally real_malloc should be already initialized */
 		lmdbg_startup ();
+	}
+
+	if (log_enabled && pid != getpid()){
+		disable_logging();
 	}
 
 	if (log_enabled){
