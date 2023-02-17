@@ -30,6 +30,10 @@ Display help message.
 .TP
 .BI "-V"
 Display the lmdbg version.
+.TP
+.BI "-p"
+Flush leaks per <count> allocations. This option is for debugging
+purposes only.
 .SH EXAMPLE
 .VB
 $ cat test3.c
