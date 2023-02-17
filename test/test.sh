@@ -453,7 +453,7 @@ lmdbg-run -mo "$logname" "$execname10" || true
 unify_address "$logname" | skip_info |
     skip_all | head -5 |
     cmp "prog10.c: lmdbg-run -m -o" \
-'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_ANON ) --> 0xF00DBEAF num: MMM
+'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
 '
 
 # -n
