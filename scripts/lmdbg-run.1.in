@@ -54,6 +54,11 @@ The result is sent to the log file specified in -o option or to stdout otherwise
 Do not enable logging on startup. To enable it, send SIGUSR1 signal to the
 process.
 .TP
+.B "-m"
+Enable logging of anonymous
+.I mmap
+in addition to standard memory allocation functions.
+.TP
 .BI "-N" " filename"
 Save pid of
 .IR progname " to " filename .
