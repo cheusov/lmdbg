@@ -46,7 +46,7 @@ OPTIONS:
   -o <filename>          set a filename for logging
   -f|-p <filter>         save filter's output to log file
   -n                     do not enable logging on startup, SIGUSR1 enables it
-  -m                     enable logging of anonymous mmap(2)
+  -m                     enable logging of anonymous mmap(2) and munmap(2)
   -N <pidfile>           save pid of progname to pidfile
   -T <stacktrace-skip>   addresses to skip in the top of stacktrace
   -B <stacktrace-skip>   addresses to skip in the bottom of stacktrace

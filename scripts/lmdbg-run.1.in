@@ -56,8 +56,8 @@ process.
 .TP
 .B "-m"
 Enable logging of anonymous
-.I mmap
-in addition to standard memory allocation functions.
+.IR mmap " and " munmap
+in addition to standard memory allocation and functions.
 .TP
 .BI "-N" " filename"
 Save pid of

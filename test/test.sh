@@ -34,10 +34,12 @@ unify_address (){
     awk '
 	$1 == "malloc"         {$6 = "0xF00DBEAF"}
 	$1 == "calloc"         {$8 = "0xF00DBEAF"}
-	($1 == "posix_memalign" || $1 == "aligned_alloc") && $8 != "NULL" {$8 = "0xF00DBEAF"}
+	$1 == "posix_memalign" && $8 != "NULL" {$8 = "0xF00DBEAF"}
+	$1 == "aligned_alloc"  && $8 != "NULL" {$8 = "0xF00DBEAF"}
 	$1 == "free"           {$3 = "0xF00DBEAF"}
 	$1 == "realloc"        {$8 = "0xF00DBEAF"}
 	$1 == "mmap"           {$12 = "0xF00DBEAF"}
+	$1 == "munmap"         {$3 = "0xF00DBEAF"}
 	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
 	match($0, /^ [^ \t]+/) {$0 = " 0xF00DBEAF" substr($0, RSTART+RLENGTH)}
 	{ print }
@@ -454,6 +456,7 @@ unify_address "$logname" | skip_info |
     skip_all | head -5 |
     cmp "prog10.c: lmdbg-run -m -o" \
 'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+munmap ( 0xF00DBEAF , 40960 ) num: MMM
 '
 
 # -n

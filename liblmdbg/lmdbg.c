@@ -75,6 +75,7 @@ typedef void* (*calloc_t)  (size_t, size_t);
 typedef int  (*posix_memalign_t)  (void **, size_t, size_t);
 typedef void* (*memalign_t) (size_t, size_t);
 typedef void* (*mmap_t)(void *, size_t, int, int, int, off_t);
+typedef int (*munmap_t)(void *addr, size_t length);
 
 static malloc_t  real_malloc;
 static realloc_t real_realloc;
@@ -89,6 +90,8 @@ static memalign_t real_memalign;
 #if HAVE_FUNC2_ALIGNED_ALLOC_STDLIB_H
 static memalign_t real_aligned_alloc;
 #endif
+static mmap_t real_mmap;
+static munmap_t real_munmap;
 
 static void lmdbg_startup (void);
 static void lmdbg_finish (void);
@@ -98,7 +101,6 @@ void construct(void) { lmdbg_startup(); }
 
 void destruct(void) __attribute__((destructor));
 void destruct(void) { lmdbg_finish(); }
-static mmap_t real_mmap;
 
 struct section_t {
 	char *addr_beg;
@@ -280,6 +282,12 @@ static void init_fun_ptrs (void)
 		real_mmap  = (mmap_t) dlsym (libc_so, "mmap");
 	if (!real_mmap)
 		exit (48);
+
+	real_munmap  = (munmap_t) dlsym (libc_so, "__libc_munmap");
+	if (!real_munmap)
+		real_munmap  = (munmap_t) dlsym (libc_so, "munmap");
+	if (!real_munmap)
+		exit (49);
 }
 
 static void init_environment (void)
@@ -899,4 +907,43 @@ void* mmap(void* addr, size_t length, int prot, int flags, int fd, off_t offset)
 	}else{
 		return real_mmap(addr, length, prot, flags, fd, offset);
 	}
+}
+
+int munmap(void *ptr, size_t length)
+{
+	int ret;
+
+	if (!real_malloc){
+		/* for glibc, normally real_malloc should be already initialized */
+		lmdbg_startup ();
+	}
+
+	if (log_enabled && pid != getpid()){
+		disable_logging();
+	}
+
+	if (log_enabled && log_mmap){
+		lock_mutex();
+
+		disable_logging ();
+
+		++alloc_count;
+
+		ret = (*real_munmap) (ptr, length);
+		if (ptr)
+			fprintf (log_fd, "munmap ( %p , %zd ) num: %u\n",
+					 ptr, length, alloc_count);
+		else
+			fprintf (log_fd, "munmap ( NULL , %zd ) num: %u\n",
+					 length, alloc_count);
+
+		log_stacktrace ();
+
+		enable_logging ();
+		unlock_mutex();
+	}else{
+		ret = (*real_munmap) (ptr, length);
+	}
+
+	return ret;
 }
