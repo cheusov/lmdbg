@@ -46,6 +46,7 @@ OPTIONS:
   -o <filename>          set a filename for logging
   -f|-p <filter>         save filter's output to log file
   -n                     do not enable logging on startup, SIGUSR1 enables it
+  -m                     enable logging of anonymous mmap(2)
   -N <pidfile>           save pid of progname to pidfile
   -T <stacktrace-skip>   addresses to skip in the top of stacktrace
   -B <stacktrace-skip>   addresses to skip in the bottom of stacktrace
@@ -60,7 +61,7 @@ lmdbg-run @LMDBG_VERSION@
 EOF
 }
 
-while getopts hVvo:f:p:nS:M:T:B:N: f; do
+while getopts hVvo:f:p:mnS:M:T:B:N: f; do
     case $f in
 	h)
 	    usage
@@ -73,17 +74,19 @@ while getopts hVvo:f:p:nS:M:T:B:N: f; do
 	    export LMDBG_VERBOSE;;
 	o)
 	    ofile="$OPTARG";;
-        f|p)
+	f|p)
 	    pipe="$OPTARG";;
+	m)
+	    LMDBG_LOG_MMAP=1;;
 	n)
 	    LMDBG_TIMEOUT=-1;;
 	N)
 	    LMDBG_PIDFILE="$OPTARG";;
-        S|T)
+	S|T)
 	    LMDBG_ST_SKIP_TOP="$OPTARG";;
-        B)
+	B)
 	    LMDBG_ST_SKIP_BOTTOM="$OPTARG";;
-        M)
+	M)
 	    LMDBG_ST_COUNT="$OPTARG";;
 	'?')
 	    usage 1>&2
@@ -122,7 +125,7 @@ fi
 LMDBG_LOGFILE="$ofile"
 LMDBG_PROGNAME="$1"
 
-export LMDBG_LOGFILE LMDBG_PIDFILE LMDBG_PROGNAME LMDBG_TIMEOUT
+export LMDBG_LOGFILE LMDBG_LOG_MMAP LMDBG_PIDFILE LMDBG_PROGNAME LMDBG_TIMEOUT
 export LMDBG_ST_SKIP_TOP LMDBG_ST_SKIP_BOTTOM LMDBG_ST_COUNT
 
 set +e

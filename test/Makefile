@@ -8,6 +8,7 @@ all:
 	PATH=${OBJDIR_prog1}:${OBJDIR_prog2}:${OBJDIR_prog3}:$$PATH; \
 	PATH=${OBJDIR_prog4}:${OBJDIR_prog5}:${OBJDIR_prog6}:$$PATH; \
 	PATH=${OBJDIR_prog7}:${OBJDIR_prog8}:${OBJDIR_prog9}:$$PATH; \
+	PATH=${OBJDIR_prog10}:$$PATH; \
 	LD_LIBRARY_PATH=${OBJDIR_libtest3}; \
 	OBJDIR=${.CURDIR}/..; \
 	SRCDIR=${.CURDIR}; \

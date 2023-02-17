@@ -37,6 +37,7 @@ unify_address (){
 	($1 == "posix_memalign" || $1 == "aligned_alloc") && $8 != "NULL" {$8 = "0xF00DBEAF"}
 	$1 == "free"           {$3 = "0xF00DBEAF"}
 	$1 == "realloc"        {$8 = "0xF00DBEAF"}
+	$1 == "mmap"           {$12 = "0xF00DBEAF"}
 	$1 == "realloc" && $3 != "NULL" {$3 = "0xF00DBEAF"}
 	match($0, /^ [^ \t]+/) {$0 = " 0xF00DBEAF" substr($0, RSTART+RLENGTH)}
 	{ print }
@@ -209,6 +210,7 @@ execname6=`which prog6 || true`
 execname7=`which prog7 || true`
 execname8=`which prog8 || true`
 execname9=`which prog9 || true`
+execname10=`which prog10 || true`
 logname="$OBJDIR"/_log
 pidfile="$OBJDIR"/_pid
 
@@ -434,6 +436,25 @@ realloc ( 0xF00DBEAF , 777 ) --> 0xF00DBEAF num: MMM
 realloc ( 0xF00DBEAF , 888 ) --> 0xF00DBEAF num: MMM
 free ( 0xF00DBEAF ) num: MMM
 "
+
+# lmdbg-run + prog10.c
+logname="$OBJDIR"/_log
+
+lmdbg-run -o "$logname" "$execname10" || true
+
+unify_address "$logname" | skip_info |
+    skip_all | head -5 |
+    cmp "prog10.c: lmdbg-run -o" \
+''
+
+#
+lmdbg-run -mo "$logname" "$execname10" || true
+
+unify_address "$logname" | skip_info |
+    skip_all | head -5 |
+    cmp "prog10.c: lmdbg-run -m -o" \
+'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_ANON ) --> 0xF00DBEAF num: MMM
+'
 
 # -n
 lmdbg-run -o "$logname" -n "$execname1"

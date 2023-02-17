@@ -35,6 +35,8 @@
 #include <signal.h>
 #include <pthread.h>
 #include <error.h>
+#include <sys/mman.h>
+#include <mkc_strlcat.h>
 
 #include <dlfcn.h>
 
@@ -53,6 +55,7 @@ void *lmdbg_get_addr (char *point, char *base_addr, int section_num);
 static const char *log_filename = NULL;
 static FILE *      log_fd       = NULL;
 static int         log_verbose  = 0;
+static int         log_mmap     = 0;
 
 static int st_skip_top    = 0;
 static int st_skip_bottom = 0;
@@ -71,6 +74,7 @@ typedef void (*free_t)    (void *);
 typedef void* (*calloc_t)  (size_t, size_t);
 typedef int  (*posix_memalign_t)  (void **, size_t, size_t);
 typedef void* (*memalign_t) (size_t, size_t);
+typedef void* (*mmap_t)(void *, size_t, int, int, int, off_t);
 
 static malloc_t  real_malloc;
 static realloc_t real_realloc;
@@ -94,6 +98,7 @@ void construct(void) { lmdbg_startup(); }
 
 void destruct(void) __attribute__((destructor));
 void destruct(void) { lmdbg_finish(); }
+static mmap_t real_mmap;
 
 struct section_t {
 	char *addr_beg;
@@ -269,12 +274,21 @@ static void init_fun_ptrs (void)
 	if (!real_aligned_alloc)
 		exit (47);
 #endif
+
+	real_mmap  = (mmap_t) dlsym (libc_so, "__libc_mmap");
+	if (!real_mmap)
+		real_mmap  = (mmap_t) dlsym (libc_so, "mmap");
+	if (!real_mmap)
+		exit (48);
 }
 
 static void init_environment (void)
 {
 	const char *v = getenv ("LMDBG_VERBOSE");
-	log_verbose = v && v [0];
+	log_verbose = v && v[0];
+
+	v = getenv ("LMDBG_LOG_MMAP");
+	log_mmap = v && v[0];
 
 	v = getenv ("LMDBG_ALLOW_WRITEABLE");
 	if (v && v[0] == '1')
@@ -436,7 +450,7 @@ static void print_sections_map (void)
 		return;
 
 	while (fgets (buf, sizeof (buf), fp)){
-		/* buf content has the following format 
+		/* buf content has the following format
 		   bbbd1000-bbbd9000 rw-p 000d7000 00:18 116162   /lib/libc.so.12.163
 		*/
 		len = strlen (buf);
@@ -785,3 +799,104 @@ void * aligned_alloc(size_t align, size_t size)
 	return memalign_impl(real_aligned_alloc, "aligned_alloc", align, size);
 }
 #endif
+
+static char *get_mmap_prot(int prot)
+{
+	static char buffer[256];
+	static char number[64];
+	buffer[0] = '\0';
+
+	if ((prot & PROT_READ) != 0){
+		strlcat(buffer, "|PROT_READ", sizeof(buffer));
+	}
+	if ((prot & PROT_WRITE) != 0){
+		strlcat(buffer, "|PROT_WRITE", sizeof(buffer));
+	}
+	if ((prot & PROT_EXEC) != 0){
+		strlcat(buffer, "|PROT_EXEC", sizeof(buffer));
+	}
+	if ((prot & PROT_NONE) != 0){
+		strlcat(buffer, "|PROT_NONE", sizeof(buffer));
+	}
+	int rest_prot = prot & ~(PROT_READ|PROT_WRITE|PROT_EXEC|PROT_NONE);
+	if (rest_prot){
+		snprintf(number, sizeof(number), "|0x%x", rest_prot);
+		strlcat(buffer, number, sizeof(buffer));
+	}
+
+	return buffer + 1;
+}
+
+static char *get_mmap_flags(int flags)
+{
+	static char buffer[256];
+	static char number[64];
+	buffer[0] = '\0';
+
+	if ((flags & MAP_PRIVATE) != 0){
+		strlcat(buffer, "|MAP_PRIVATE", sizeof(buffer));
+	}
+	if ((flags & MAP_FIXED) != 0){
+		strlcat(buffer, "|MAP_FIXED", sizeof(buffer));
+	}
+	if ((flags & MAP_ANON) != 0){
+		strlcat(buffer, "|MAP_ANON", sizeof(buffer));
+	}
+	int rest_flags = flags & ~(MAP_PRIVATE|MAP_FIXED|MAP_ANON);
+	if (rest_flags){
+		snprintf(number, sizeof(number), "|0x%x", rest_flags);
+		strlcat(buffer, number, sizeof(buffer));
+	}
+
+	return buffer + 1;
+}
+
+void* mmap(void* addr, size_t length, int prot, int flags, int fd, off_t offset)
+{
+	void *p;
+
+	if (!real_malloc){
+		// for glibc, normally real_malloc should be already initialized
+		lmdbg_startup ();
+	}
+
+	if (log_enabled && log_mmap && pid != getpid()){
+		disable_logging();
+	}
+
+	if (log_enabled && log_mmap && (flags & MAP_ANON) != 0){
+		lock_mutex();
+
+		disable_logging ();
+
+		++alloc_count;
+
+		p = (*real_mmap) (addr, length, prot, flags, fd, offset);
+		char* mmap_flags = get_mmap_flags(flags);
+		char* mmap_prot = get_mmap_prot(prot);
+		static char addr_buffer[64];
+		const char* mmap_addr;
+		if (addr){
+			addr_buffer[0] = '\0';
+			snprintf(addr_buffer, sizeof(addr_buffer), "%p", addr);
+			mmap_addr = addr_buffer;
+		}else{
+			mmap_addr = "NULL";
+		}
+
+		if (p)
+			fprintf (log_fd, "mmap ( %s , %zd , %s , %s ) --> %p num: %u\n",
+					 mmap_addr, length, mmap_prot, mmap_flags, p, alloc_count);
+		else
+			fprintf (log_fd, "mmap ( %s , %zd , %s , %s ) --> NULL num: %u\n",
+					 mmap_addr, length, mmap_prot, mmap_flags, alloc_count);
+
+		log_stacktrace ();
+
+		enable_logging ();
+		unlock_mutex();
+		return p;
+	}else{
+		return real_mmap(addr, length, prot, flags, fd, offset);
+	}
+}
