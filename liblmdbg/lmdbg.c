@@ -931,11 +931,11 @@ int munmap(void *ptr, size_t length)
 
 		ret = (*real_munmap) (ptr, length);
 		if (ptr)
-			fprintf (log_fd, "munmap ( %p , %zd ) num: %u\n",
-					 ptr, length, alloc_count);
+			fprintf (log_fd, "munmap ( %p , %zd ) --> %d num: %u\n",
+					 ptr, length, ret, alloc_count);
 		else
-			fprintf (log_fd, "munmap ( NULL , %zd ) num: %u\n",
-					 length, alloc_count);
+			fprintf (log_fd, "munmap ( NULL , %zd ) --> %d num: %u\n",
+					 length, ret, alloc_count);
 
 		log_stacktrace ();
 

@@ -442,6 +442,7 @@ free ( 0xF00DBEAF ) num: MMM
 # lmdbg-run + prog10.c
 logname="$OBJDIR"/_log
 
+# without -m
 lmdbg-run -o "$logname" "$execname10" || true
 
 unify_address "$logname" | skip_info |
@@ -449,15 +450,20 @@ unify_address "$logname" | skip_info |
     cmp "prog10.c: lmdbg-run -o" \
 ''
 
-#
+# with -m
 lmdbg-run -mo "$logname" "$execname10" || true
 
 unify_address "$logname" | skip_info |
     skip_all | head -5 |
     cmp "prog10.c: lmdbg-run -m -o" \
 'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
-munmap ( 0xF00DBEAF , 40960 ) num: MMM
+munmap ( 0xF00DBEAF , 40960 ) --> 0 num: MMM
 '
+
+# lmdbg-run -n + prog10.c + lmdbg-leaks
+lmdbg-leaks < "$logname" | skip_info |
+cmp 'prog10.c: lmdbg-leaks with mmap(2) and munmap(2)' \
+''
 
 # -n
 lmdbg-run -o "$logname" -n "$execname1"

@@ -88,6 +88,15 @@ realloc ( NULL , 666 ) --> 0xbb90a800 num: 2
  0x80486a8
 $
 .VE
+.SH KNOWN BUGS
+.B lmdbg-leaks
+works incorrectly for memory allocated by
+.B mmap(2)
+and freed by multiple
+.BR munmap(2) .
+See
+.BI lmdbg-run " -m"
+for details.
 .SH EXAMPLE
 .VB
 lmdbg-run -o log ./my_app &&

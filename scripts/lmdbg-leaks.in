@@ -103,19 +103,33 @@ leaks () {
 	next
     }
 
+    $1 == "mmap" {
+	flush_test()
+	delete h [$3]
+	delete mmap_size [$3]
+
+	h [$12] = $0
+	mmap_size [$12] = $5
+	next
+    }
+
     $1 == "free" {
 	delete h [$3]
 	next
     }
 
+    $1 == "munmap" {
+	if (mmap_size [$3] == $5){
+	    delete h [$3]
+	    delete mmap_size [$3]
+	}
+	next
+    }
+
     $1 == "realloc" {
 	flush_test()
-	if ($3 == "NULL" || $3 == $8){
-	    h [$8] = $0
-	}else{
-	    h [$8] = $0
-	    delete h [$3]
-	}
+	delete h [$3]
+	h [$8] = $0
 	next
     }
 
