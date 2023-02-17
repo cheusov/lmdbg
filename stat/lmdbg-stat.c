@@ -256,11 +256,14 @@ static void * s2p (const char *s)
 		ret = sscanf (s, "%p", &addr);
 		if (!addr){
 			/* Under Solaris %p doesn't accept 0x prefix for address */
-			assert (s[0] == '0' && s[1] == 'x');
+			if (s[0] != '0' || s[1] != 'x')
+				goto err;
+
 			ret = sscanf (s+2, "%p", &addr);
 		}
 		if (ret != 1){
-			fprintf (stderr, "Bad address: %s\n", s);
+		err:
+			fprintf (stderr, "Line #%d, bad address: %s\n", line_num, s);
 			exit (1);
 		}
 	}
