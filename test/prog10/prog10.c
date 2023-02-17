@@ -5,14 +5,18 @@
 
 int main (int argc, char **argv)
 {
-	void *p = NULL;
+	char *p = NULL;
+	--argc;
+	++argv;
+	const char *arg1 = argc ? argv[0] : "";
 
 	if (p = mmap(NULL, FINAL_LENGTH,
 				 PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
 				 -1, 0), p == NULL)
 		return 1;
 
-	munmap(p, FINAL_LENGTH);
+	if (!strchr(arg1, 'n'))
+		munmap(p, FINAL_LENGTH);
 
 	return 0;
 }

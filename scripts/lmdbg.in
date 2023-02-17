@@ -54,6 +54,7 @@ OPTIONS:
 
   -T <num>          pass -T<num> to lmdbg-run
   -B <num>          pass -B<num> to lmdbg-run
+  -m                pass -m to lmdbg-run
   -n                pass -n to lmdbg-run
 
   -a                pass -a to lmdbg-sym
@@ -66,7 +67,7 @@ lmdbg_run_opts=''
 
 mode=default
 
-while getopts hVvo:c:gaT:B:nM: f; do
+while getopts aB:c:ghmM:no:T:vV f; do
     case $f in
 	h)
 	    usage
@@ -88,6 +89,8 @@ while getopts hVvo:c:gaT:B:nM: f; do
 	    lmdbg_run_opts="$lmdbg_run_opts -T$OPTARG";;
 	B)
 	    lmdbg_run_opts="$lmdbg_run_opts -B$OPTARG";;
+	m)
+	    lmdbg_run_opts="$lmdbg_run_opts -m";;
 	n)
 	    lmdbg_run_opts="$lmdbg_run_opts -n";;
 	M)

@@ -885,6 +885,15 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
  	prog6.c:NNN	main
 '
 
+# lmdbg -m
+lmdbg -m -o "$logname" "$execname10" n || true
+
+unify_address "$logname" | skip_all |
+hide_line_numbers | unify_paths | hide_foreign_code |
+cmp "prog10.c: lmdbg -m #3" \
+'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+'
+
 # lmdbg-run -nN
 lmdbg-run -o "$logname" -nN "$pidfile" "$execname8" &
 sleep 1
