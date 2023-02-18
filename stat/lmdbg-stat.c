@@ -54,7 +54,9 @@ typedef enum {
 	ft_memalign,
 	ft_posix_memalign,
 	ft_aligned_alloc,
-	ft_free
+	ft_free,
+	ft_mmap,
+	ft_munmap,
 } func_t;
 
 typedef struct {
@@ -119,6 +121,7 @@ static void process_stacktrace (void)
 		case ft_memalign:
 		case ft_posix_memalign:
 		case ft_aligned_alloc:
+		case ft_mmap:
 			old_maxid = st_hash_getmaxid (hash);
 			id = st_hash_insert (hash, stacktrace, stacktrace_len);
 
@@ -158,6 +161,7 @@ static void process_stacktrace (void)
 			(*ptrdata)->stacktrace_id = id;
 			break;
 		case ft_free:
+		case ft_munmap:
 			break;
 		default:
 			abort ();
@@ -170,6 +174,7 @@ static void process_stacktrace (void)
 		case ft_aligned_alloc:
 			break;
 		case ft_realloc:
+		case ft_mmap:
 			if (op.oldaddr){
 				ptrdata = (ptrdata_t **) JudyLGet (
 					ptr2data, (Word_t) op.oldaddr, 0);
@@ -289,7 +294,7 @@ static void process_line (char *buf)
 {
 	void *addr;
 	char *p, *last_p;
-	char * tokens [10];
+	char * tokens [14];
 	int token_count = 0;
 
 	char orig_buf [20480];
@@ -368,6 +373,22 @@ static void process_line (char *buf)
 			op.bytes   = (size_t) s2i (tokens [4]);
 			op.oldaddr = s2p (tokens [2]);
 			op.addr    = s2p (tokens [7]);
+			return;
+		}
+
+		if (token_count >= 8 &&
+			!strcmp (tokens [0], "mmap") &&
+			!strcmp (tokens [1], "(") &&
+			!strcmp (tokens [3], ",") &&
+			!strcmp (tokens [5], ",") &&
+			!strcmp (tokens [7], ",") &&
+			!strcmp (tokens [9], ")") &&
+			!strcmp (tokens [10], "-->"))
+		{
+			op.type    = ft_mmap;
+			op.bytes   = (size_t) s2i (tokens [4]);
+			op.oldaddr = s2p (tokens [2]);
+			op.addr    = s2p (tokens [11]);
 			return;
 		}
 

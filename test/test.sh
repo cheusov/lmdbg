@@ -894,6 +894,30 @@ cmp "prog10.c: lmdbg -m #3" \
 'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
 '
 
+# lmdbg -m
+lmdbg -m -o "$logname" "$execname10" t || true
+
+unify_address "$logname" | skip_all |
+hide_line_numbers | unify_paths | hide_foreign_code |
+cmp "prog10.c: lmdbg -m #4" \
+'mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+'
+
+#
+lmdbg -m -o "$logname" "$execname10" nt || true
+
+lmdbg-stat "$logname" | unify_address | skip_all |
+hide_line_numbers | unify_paths | hide_foreign_code |
+cmp "prog10.c: lmdbg -m and lmdbg-stat #5" \
+'info stat total_allocs: 4
+info stat total_free_cnt: 0
+info stat total_leaks: 53248
+stacktrace peak: 12288 max: 4096 allocs: 3 leaks: 12288
+stacktrace peak: 40960 max: 40960 allocs: 1 leaks: 40960
+'
+
 # lmdbg-run -nN
 lmdbg-run -o "$logname" -nN "$pidfile" "$execname8" &
 sleep 1

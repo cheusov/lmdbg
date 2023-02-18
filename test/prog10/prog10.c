@@ -1,7 +1,8 @@
 #include <sys/mman.h>
 #include <stdlib.h>
 
-#define FINAL_LENGTH (4096 * 10)
+#define PAGE_SIZE 4096
+#define FINAL_LENGTH (PAGE_SIZE * 10)
 
 int main (int argc, char **argv)
 {
@@ -14,6 +15,13 @@ int main (int argc, char **argv)
 				 PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON,
 				 -1, 0), p == NULL)
 		return 1;
+
+	if (strchr(arg1, 't')){
+		for (int i = 0; i < 3; ++i){
+			mmap(NULL, PAGE_SIZE, PROT_READ|PROT_WRITE,
+				 MAP_PRIVATE|MAP_ANON, -1, 0);
+		}
+	}
 
 	if (!strchr(arg1, 'n'))
 		munmap(p, FINAL_LENGTH);
