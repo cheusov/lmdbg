@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-RUN 1 "Aug 4, 2013" "" ""
+.TH LMDBG-RUN 1 "Feb 17, 2023" "" ""
 .SH NAME
 lmdbg-run \- runs a program and traces the malloc/realloc/free calls
 .SH SYNOPSIS

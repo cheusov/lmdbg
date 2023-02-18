@@ -12,7 +12,7 @@
 .fi
 ..
 .\" ------------------------------------------------------------------
-.TH LMDBG-LEAKS 1 "Nov 26, 2011" "" ""
+.TH LMDBG-LEAKS 1 "Feb 17, 2023" "" ""
 .SH NAME
 lmdbg-leaks \- extracts memory leaks from lmdbg-run's output
 .SH SYNOPSIS
