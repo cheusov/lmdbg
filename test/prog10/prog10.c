@@ -1,5 +1,6 @@
 #include <sys/mman.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define PAGE_SIZE 4096
 #define FINAL_LENGTH (PAGE_SIZE * 10)
