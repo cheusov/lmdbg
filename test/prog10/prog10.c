@@ -8,6 +8,7 @@
 int main (int argc, char **argv)
 {
 	char *p = NULL;
+	unsigned i;
 	--argc;
 	++argv;
 	const char *arg1 = argc ? argv[0] : "";
@@ -18,7 +19,7 @@ int main (int argc, char **argv)
 		return 1;
 
 	if (strchr(arg1, 't')){
-		for (int i = 0; i < 3; ++i){
+		for (i = 0; i < 3; ++i){
 			mmap(NULL, PAGE_SIZE, PROT_READ|PROT_WRITE,
 				 MAP_PRIVATE|MAP_ANON, -1, 0);
 		}
