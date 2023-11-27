@@ -446,7 +446,7 @@ logname="$OBJDIR"/_log
 lmdbg-run -o "$logname" "$execname10" || true
 
 unify_address "$logname" | skip_info |
-    skip_all | head -5 |
+    skip_all | head -n 5 |
     cmp "prog10.c: lmdbg-run -o" \
 ''
 
@@ -454,10 +454,10 @@ unify_address "$logname" | skip_info |
 lmdbg-run -mo "$logname" "$execname10" || true
 
 unify_address "$logname" | skip_info |
-    skip_all | head -5 |
+    skip_all | grep 12288 |
     cmp "prog10.c: lmdbg-run -m -o" \
-'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
-munmap ( 0xF00DBEAF , 40960 ) --> 0 num: MMM
+'mmap ( NULL , 122880 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+munmap ( 0xF00DBEAF , 122880 ) --> 0 num: MMM
 '
 
 # lmdbg-run -n + prog10.c + lmdbg-leaks
@@ -889,20 +889,20 @@ stacktrace peak: 400 max: 2 allocs: 200 leaks: 400
 lmdbg -m -o "$logname" "$execname10" n || true
 
 unify_address "$logname" | skip_all |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep 12288 |
 cmp "prog10.c: lmdbg -m #3" \
-'mmap ( NULL , 40960 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+'mmap ( NULL , 122880 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
 '
 
 # lmdbg -m
 lmdbg -m -o "$logname" "$execname10" t || true
 
 unify_address "$logname" | skip_all |
-hide_line_numbers | unify_paths | hide_foreign_code |
+hide_line_numbers | unify_paths | hide_foreign_code | grep 12288 |
 cmp "prog10.c: lmdbg -m #4" \
-'mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
-mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
-mmap ( NULL , 4096 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+'mmap ( NULL , 12288 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+mmap ( NULL , 12288 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
+mmap ( NULL , 12288 , PROT_READ|PROT_WRITE , MAP_PRIVATE|MAP_ANON ) --> 0xF00DBEAF num: MMM
 '
 
 #
@@ -914,8 +914,8 @@ cmp "prog10.c: lmdbg -m and lmdbg-stat #5" \
 'info stat total_allocs: 4
 info stat total_free_cnt: 0
 info stat total_leaks: 53248
-stacktrace peak: 12288 max: 4096 allocs: 3 leaks: 12288
-stacktrace peak: 40960 max: 40960 allocs: 1 leaks: 40960
+stacktrace peak: 36864 max: 12288 allocs: 3 leaks: 36864
+stacktrace peak: 122880 max: 122880 allocs: 1 leaks: 122880
 '
 
 # lmdbg-run -nN

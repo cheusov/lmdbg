@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define PAGE_SIZE 4096
+#define PAGE_SIZE 12288
 #define FINAL_LENGTH (PAGE_SIZE * 10)
 
 int main (int argc, char **argv)
