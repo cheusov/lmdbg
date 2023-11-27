@@ -9,7 +9,7 @@ MKC_CHECK_FUNCS3 +=	posix_memalign:stdlib.h
 
 MKC_CHECK_FUNCLIBS +=	dlopen:dl
 
-MKC_FEATURES       +=	strlcat
+MKC_FEATURES       +=	strlcat errc
 
 ######################################################################
 

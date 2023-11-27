@@ -34,9 +34,9 @@
 #include <limits.h>
 #include <signal.h>
 #include <pthread.h>
-#include <error.h>
 #include <sys/mman.h>
 #include <mkc_strlcat.h>
+#include <mkc_errc.h>
 
 #include <dlfcn.h>
 
@@ -119,28 +119,28 @@ static void init_mutex(void)
 {
 	int status = pthread_mutex_init(&mutex, NULL);
 	if (status)
-		error(1, status, "pthread_mutex_init failed");
+		errc(1, status, "pthread_mutex_init failed");
 }
 
 static void lock_mutex(void)
 {
 	int status = pthread_mutex_lock(&mutex);
 	if (status)
-		error(1, status, "pthread_mutex_lock failed");
+		errc(1, status, "pthread_mutex_lock failed");
 }
 
 static void unlock_mutex(void)
 {
 	int status = pthread_mutex_unlock(&mutex);
 	if (status)
-		error(1, status, "pthread_mutex_unlock failed");
+		errc(1, status, "pthread_mutex_unlock failed");
 }
 
 static void destroy_mutex(void)
 {
 	int status = pthread_mutex_destroy(&mutex);
 	if (status)
-		error(1, status, "pthread_mutex_destroy failed");
+		errc(1, status, "pthread_mutex_destroy failed");
 }
 
 static void handler_sigusr1 (int dummy)
