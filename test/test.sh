@@ -462,6 +462,7 @@ munmap ( 0xF00DBEAF , 122880 ) --> 0 num: MMM
 
 # lmdbg-run -n + prog10.c + lmdbg-leaks
 lmdbg-leaks < "$logname" | skip_info |
+grep 12288 | # we are interested in our own leaks only
 cmp 'prog10.c: lmdbg-leaks with mmap(2) and munmap(2)' \
 ''
 
@@ -910,10 +911,11 @@ lmdbg -m -o "$logname" "$execname10" nt || true
 
 lmdbg-stat "$logname" | unify_address | skip_all |
 hide_line_numbers | unify_paths | hide_foreign_code |
+sed -e '/total_leaks:/ s/[0-9][0-9]*/nnn/' | # we are interested in our own memory leaks only
 cmp "prog10.c: lmdbg -m and lmdbg-stat #5" \
 'info stat total_allocs: 4
 info stat total_free_cnt: 0
-info stat total_leaks: 53248
+info stat total_leaks: nnn
 stacktrace peak: 36864 max: 12288 allocs: 3 leaks: 36864
 stacktrace peak: 122880 max: 122880 allocs: 1 leaks: 122880
 '
